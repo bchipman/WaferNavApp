@@ -3,15 +3,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
-    <EditText android:id="@+id/edit_message"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/edit_message" />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_send"
-        android:onClick="sendMessage" />
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText android:id="@+id/edit_message"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/edit_message" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/button_send"
+            android:onClick="sendMessage"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="13dp" />
+
+    <TextView
+        android:text="Here is some text in a TextView object:
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras consequat ultrices vehicula. Mauris at felis ac dolor efficitur luctus vel hendrerit sapien. Donec eros nisl, bibendum ut laoreet id, pellentesque lobortis libero. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus sagittis felis sit amet neque euismod sollicitudin. Proin ac tellus est. Quisque porta metus nec nibh pharetra scelerisque.
+
+Vivamus quis euismod mi, et condimentum urna. Mauris accumsan cursus arcu. Sed eu laoreet urna. Vivamus feugiat efficitur dolor vel sollicitudin. Nulla elit neque, fermentum vel tempus vehicula, feugiat ac felis. Morbi volutpat tortor eu consequat porta. Sed a odio molestie, mollis ipsum in, accumsan purus."
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/textView3" />
+
 </LinearLayout>
