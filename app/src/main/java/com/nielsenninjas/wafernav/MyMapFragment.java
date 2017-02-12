@@ -12,22 +12,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
  Created by brian on 2/12/2017.
  */
 
-public class MapFragment extends SupportMapFragment implements OnMapReadyCallback {
+public class MyMapFragment extends SupportMapFragment implements OnMapReadyCallback {
 
     private static final LatLng IRVINE_LAT_LNG = new LatLng(33.6839, -117.7947);
     private GoogleMap mMap;
-
-    private static MapFragment mapFragment;
-
-    public static MapFragment getInstance() {
-        return mapFragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getMapAsync(this);
-        mapFragment = this;
     }
 
     @Override

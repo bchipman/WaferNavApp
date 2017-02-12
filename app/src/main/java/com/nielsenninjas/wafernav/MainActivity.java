@@ -60,14 +60,14 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
 
     protected String mLastUpdateTime;
 
-    private MapFragment mapFragment;
+    private MyMapFragment myMapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mapFragment = MapFragment.getInstance();
+        myMapFragment = (MyMapFragment) getSupportFragmentManager().findFragmentById(R.id.activity_fragment_mapview);
 
 
         // Set the UI elements
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         mLatitudeTextView.setText(String.format("%s: %f", mLatitudeLabel, mCurrentLocation.getLatitude()));
         mLongitudeTextView.setText(String.format("%s: %f", mLongitudeLabel, mCurrentLocation.getLongitude()));
         mLastUpdateTimeTextView.setText(String.format("%s: %s", mLastUpdateTimeLabel, mLastUpdateTime));
-        mapFragment.updateMap(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
+        myMapFragment.updateMap(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
     }
 
     protected void stopLocationUpdates() {
