@@ -2,4 +2,12 @@
     <string name="app_name">WaferNav</string>
     <string name="edit_message">Enter a message</string>
     <string name="button_send">Send</string>
+
+    <string name="latitude_label">Latitude</string>
+    <string name="longitude_label">Longitude</string>
+    <string name="last_update_time_label">Last location update time</string>
+
+    <string name="start_updates">Start updates</string>
+    <string name="stop_updates">Stop updates</string>
+    <string name="location_updated_message">Location updated</string>
 </resources>
