@@ -20,6 +20,7 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -59,10 +60,15 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
 
     protected String mLastUpdateTime;
 
+    private MapFragment mapFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mapFragment = MapFragment.getInstance();
+
 
         // Set the UI elements
         mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);
@@ -167,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         mLatitudeTextView.setText(String.format("%s: %f", mLatitudeLabel, mCurrentLocation.getLatitude()));
         mLongitudeTextView.setText(String.format("%s: %f", mLongitudeLabel, mCurrentLocation.getLongitude()));
         mLastUpdateTimeTextView.setText(String.format("%s: %s", mLastUpdateTimeLabel, mLastUpdateTime));
+        mapFragment.updateMap(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
     }
 
     protected void stopLocationUpdates() {
