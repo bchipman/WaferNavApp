@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     protected final static String LOCATION_KEY = "location-key";
     protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
     public final static String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
+    private final static int PERMISSIONS_REQUEST_ACCESS_LOCATION = 0;
 
     protected GoogleApiClient mGoogleApiClient;
     protected Location mCurrentLocation;
@@ -139,12 +140,14 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     }
 
     protected void startLocationUpdates() {
-        try {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        boolean fineLocationPermissionOk = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        boolean coarseLocationPermissionOk = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        if (!fineLocationPermissionOk || !coarseLocationPermissionOk) {
+            // Ask for permissions
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_LOCATION);
+            return;
         }
-        catch (SecurityException e) {
-
-        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
 
     private void setButtonsEnabledState() {
@@ -214,20 +217,9 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
             boolean coarseLocationPermissionOk = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
             if (!fineLocationPermissionOk || !coarseLocationPermissionOk) {
                 // Ask for permissions
-
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_LOCATION);
+                return;
             }
-
-
-            //if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //    // TODO: Consider calling
-            //    //    ActivityCompat#requestPermissions
-            //    // here to request the missing permissions, and then overriding
-            //    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //    //                                          int[] grantResults)
-            //    // to handle the case where the user grants the permission. See the documentation
-            //    // for ActivityCompat#requestPermissions for more details.
-            //    return;
-            //}
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
             updateUI();
@@ -235,6 +227,20 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
 
         if (mRequestingLocationUpdates) {
             startLocationUpdates();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_ACCESS_LOCATION: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission granted
+                }
+                else {
+                    // Permission denied
+                }
+            }
         }
     }
 
