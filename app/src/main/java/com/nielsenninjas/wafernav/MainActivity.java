@@ -1,6 +1,5 @@
 package com.nielsenninjas.wafernav;
 
-import android.*;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -27,6 +26,10 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
 
+    public final static String EXTRA_MESSAGE = "com.nielsenninjas.wafernav.MESSAGE";
+    public final static String LAT_MESSAGE = "com.nielsenninjas.wafernav.LAT";
+    public final static String LNG_MESSAGE = "com.nielsenninjas.wafernav.LNG";
+
     public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
 
@@ -34,7 +37,6 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
     protected final static String LOCATION_KEY = "location-key";
     protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
-    public final static String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
     private final static int PERMISSIONS_REQUEST_ACCESS_LOCATION = 0;
 
     protected GoogleApiClient mGoogleApiClient;
@@ -204,6 +206,15 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         EditText editText = (EditText) findViewById(R.id.edit_message);
         String message = editText.getText().toString();
         intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+    }
+
+    public void toMapActivity(View view) {
+        Intent intent = new Intent(this, MapActivity.class);
+        double lat = mCurrentLocation.getLatitude();
+        double lng = mCurrentLocation.getLongitude();
+        intent.putExtra(LAT_MESSAGE, lat);
+        intent.putExtra(LNG_MESSAGE, lng);
         startActivity(intent);
     }
 
