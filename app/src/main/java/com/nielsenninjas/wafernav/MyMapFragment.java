@@ -16,6 +16,7 @@ public class MyMapFragment extends SupportMapFragment implements OnMapReadyCallb
 
     private static final LatLng IRVINE_LAT_LNG = new LatLng(33.6839, -117.7947);
     private GoogleMap mMap;
+    private float zoom = 18.0f;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,12 +30,19 @@ public class MyMapFragment extends SupportMapFragment implements OnMapReadyCallb
         mMap.addMarker(new MarkerOptions().position(IRVINE_LAT_LNG).title("Irvine"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(IRVINE_LAT_LNG));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15.0f));
+
+        mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+            @Override
+            public void onCameraIdle() {
+                zoom = mMap.getCameraPosition().zoom;
+            }
+        });
     }
 
     public void updateMap(LatLng loc) {
         mMap.clear();
         mMap.addMarker(new MarkerOptions().position(loc).title("Current location"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(18.0f));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(zoom));
     }
 }
