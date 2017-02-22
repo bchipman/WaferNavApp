@@ -169,10 +169,12 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     }
 
     private void updateUI() {
-        mLatitudeTextView.setText(String.format("%s: %f", mLatitudeLabel, mCurrentLocation.getLatitude()));
-        mLongitudeTextView.setText(String.format("%s: %f", mLongitudeLabel, mCurrentLocation.getLongitude()));
-        mLastUpdateTimeTextView.setText(String.format("%s: %s", mLastUpdateTimeLabel, mLastUpdateTime));
-        myMapFragment.updateMap(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
+        if (mCurrentLocation != null) {
+            mLatitudeTextView.setText(String.format("%s: %f", mLatitudeLabel, mCurrentLocation.getLatitude()));
+            mLongitudeTextView.setText(String.format("%s: %f", mLongitudeLabel, mCurrentLocation.getLongitude()));
+            mLastUpdateTimeTextView.setText(String.format("%s: %s", mLastUpdateTimeLabel, mLastUpdateTime));
+            myMapFragment.updateMap(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
+        }
     }
 
     @Override
