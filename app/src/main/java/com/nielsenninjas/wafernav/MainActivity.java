@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     protected Location mCurrentLocation;
     protected LocationRequest mLocationRequest;
 
-    // UI elements
+    // UI elements.
     protected Button mStartUpdatesButton;
     protected Button mStopUpdatesButton;
     protected TextView mLastUpdateTimeTextView;
