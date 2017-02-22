@@ -1,14 +1,20 @@
 package com.nielsenninjas.wafernav;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
@@ -42,9 +48,11 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     // UI elements
     protected Button mStartUpdatesButton;
     protected Button mStopUpdatesButton;
+    protected Button mGetLocationButton;
     protected TextView mLastUpdateTimeTextView;
     protected TextView mLatitudeTextView;
     protected TextView mLongitudeTextView;
+    protected EditText mIdEditText;
 
     // Labels
     protected String mLatitudeLabel;
@@ -67,9 +75,11 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         // Set the UI elements
         mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);
         mStopUpdatesButton = (Button) findViewById(R.id.stop_updates_button);
+        mGetLocationButton = (Button) findViewById(R.id.get_location_button);
         mLatitudeTextView = (TextView) findViewById(R.id.latitude_text);
         mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
         mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
+        mIdEditText = (EditText) findViewById(R.id.id_edit_text);
 
         // Set labels
         mLatitudeLabel = getResources().getString(R.string.latitude_label);
@@ -82,6 +92,15 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         updateValuesFromBundle(savedInstanceState);
 
         buildGoogleApiClient();
+
+        // Pressing enter on keyboard triggers 'Get Location' button
+        mIdEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    getLocationButtonHandler(mIdEditText);
+                } return false;
+            }
+        });
     }
 
     private void updateValuesFromBundle(Bundle savedInstanceState) {
@@ -140,6 +159,19 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
             setButtonsEnabledState();
             stopLocationUpdates();
         }
+    }
+
+    public void getLocationButtonHandler(View view) {
+        mRequestingLocationUpdates = false;
+        setButtonsEnabledState();
+        stopLocationUpdates();
+        LatLng latLng = MockData.getData().get(mIdEditText.getText().toString());
+        if (latLng != null) {
+            myMapFragment.updateMap(latLng);
+        }
+        // Dismiss keyboard
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mIdEditText.getWindowToken(), 0);
     }
 
     protected void startLocationUpdates() {
