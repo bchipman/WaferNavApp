@@ -14,31 +14,6 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            >
-
-        <EditText
-                android:layout_width="174dp"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:ems="10"
-                android:id="@+id/id_edit_text"
-                android:hint="Enter ID"
-                />
-
-        <Button
-                android:text="Get Location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/get_location_button"
-                android:layout_weight="1"
-                android:onClick="getLocationButtonHandler"
-                />
-    </LinearLayout>
-
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:baselineAligned="false"
             >
 
