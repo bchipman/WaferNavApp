@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +30,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
 
@@ -60,9 +62,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     protected String mLastUpdateTimeLabel;
 
     protected Boolean mRequestingLocationUpdates;
-
     protected String mLastUpdateTime;
-
     private MyMapFragment myMapFragment;
 
     @Override
@@ -98,7 +98,8 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
                     getLocationButtonHandler(mIdEditText);
-                } return false;
+                }
+                return false;
             }
         });
     }
@@ -130,11 +131,10 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     }
 
     protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)
+                                                            .addOnConnectionFailedListener(this)
+                                                            .addApi(LocationServices.API)
+                                                            .build();
         createLocationRequest();
     }
 
@@ -165,13 +165,29 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         mRequestingLocationUpdates = false;
         setButtonsEnabledState();
         stopLocationUpdates();
-        LatLng latLng = MockData.getData().get(mIdEditText.getText().toString());
-        if (latLng != null) {
-            myMapFragment.updateMap(latLng);
-        }
+
         // Dismiss keyboard
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mIdEditText.getWindowToken(), 0);
+
+        // This anonymous class is here just to slow down the update time by 500ms after tapping 'Get Location' button.
+        //  Otherwise, it's hard to tell the location was updated.
+        new CountDownTimer(500, 100) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+            }
+            @Override
+            public void onFinish() {
+                Location loc = MockData.getData().get(mIdEditText.getText().toString().toUpperCase());
+                if (loc != null) {
+                    onLocationChanged(loc);
+                }
+                else {
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.id_not_found_message), Toast.LENGTH_SHORT)
+                         .show();
+                }
+            }
+        }.start();
     }
 
     protected void startLocationUpdates() {
@@ -202,10 +218,10 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
 
     private void updateUI() {
         if (mCurrentLocation != null) {
-            mLatitudeTextView.setText(String.format("%s: %f", mLatitudeLabel, mCurrentLocation.getLatitude()));
-            mLongitudeTextView.setText(String.format("%s: %f", mLongitudeLabel, mCurrentLocation.getLongitude()));
+            mLatitudeTextView.setText(String.format(Locale.US, "%s: %f", mLatitudeLabel, mCurrentLocation.getLatitude()));
+            mLongitudeTextView.setText(String.format(Locale.US, "%s: %f", mLongitudeLabel, mCurrentLocation.getLongitude()));
             mLastUpdateTimeTextView.setText(String.format("%s: %s", mLastUpdateTimeLabel, mLastUpdateTime));
-            myMapFragment.updateMap(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
+            myMapFragment.updateMap(mCurrentLocation);
         }
     }
 

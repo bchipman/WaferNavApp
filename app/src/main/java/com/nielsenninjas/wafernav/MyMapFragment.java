@@ -1,5 +1,6 @@
 package com.nielsenninjas.wafernav;
 
+import android.location.Location;
 import android.os.Bundle;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -39,10 +40,11 @@ public class MyMapFragment extends SupportMapFragment implements OnMapReadyCallb
         });
     }
 
-    public void updateMap(LatLng loc) {
+    public void updateMap(Location loc) {
+        LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
         mMap.clear();
-        mMap.addMarker(new MarkerOptions().position(loc).title("Current location"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+        mMap.addMarker(new MarkerOptions().position(latLng).title("Current location"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(zoom));
     }
 }
