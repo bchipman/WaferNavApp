@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
 
     // Keys for storing activity state in the Bundle.
     protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
+    protected final static String LAST_LOCATION_NAME_KEY = "last-location-name-key";
     protected final static String LOCATION_KEY = "location-key";
     protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
     private final static int PERMISSIONS_REQUEST_ACCESS_LOCATION = 0;
@@ -51,17 +52,20 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     protected Button mStartUpdatesButton;
     protected Button mStopUpdatesButton;
     protected Button mGetLocationButton;
-    protected TextView mLastUpdateTimeTextView;
+    protected TextView mLocationNameTextView;
     protected TextView mLatitudeTextView;
     protected TextView mLongitudeTextView;
+    protected TextView mLastUpdateTimeTextView;
     protected EditText mIdEditText;
 
     // Labels
+    protected String mLocationNameLabel;
     protected String mLatitudeLabel;
     protected String mLongitudeLabel;
     protected String mLastUpdateTimeLabel;
 
     protected Boolean mRequestingLocationUpdates;
+    protected String mLastLocationName;
     protected String mLastUpdateTime;
     private MyMapFragment myMapFragment;
 
@@ -76,17 +80,20 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);
         mStopUpdatesButton = (Button) findViewById(R.id.stop_updates_button);
         mGetLocationButton = (Button) findViewById(R.id.get_location_button);
+        mLocationNameTextView = (TextView) findViewById(R.id.location_name_text);
         mLatitudeTextView = (TextView) findViewById(R.id.latitude_text);
         mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
         mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
         mIdEditText = (EditText) findViewById(R.id.id_edit_text);
 
         // Set labels
+        mLocationNameLabel = "Name";
         mLatitudeLabel = getResources().getString(R.string.latitude_label);
         mLongitudeLabel = getResources().getString(R.string.longitude_label);
         mLastUpdateTimeLabel = getResources().getString(R.string.last_update_time_label);
 
         mRequestingLocationUpdates = false;
+        mLastLocationName = "";
         mLastUpdateTime = "";
 
         updateValuesFromBundle(savedInstanceState);
@@ -114,6 +121,10 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
                 setButtonsEnabledState();
             }
 
+            if (savedInstanceState.keySet().contains(LAST_LOCATION_NAME_KEY)) {
+                mLastLocationName = savedInstanceState.getString(LAST_LOCATION_NAME_KEY);
+            }
+
             // Update the value of mCurrentLocation from the Bundle and update the UI to show the
             // correct latitude and longitude.
             if (savedInstanceState.keySet().contains(LOCATION_KEY)) {
@@ -131,10 +142,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     }
 
     protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)
-                                                            .addOnConnectionFailedListener(this)
-                                                            .addApi(LocationServices.API)
-                                                            .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(LocationServices.API).build();
         createLocationRequest();
     }
 
@@ -178,13 +186,15 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
             }
             @Override
             public void onFinish() {
-                Location loc = MockData.getData().get(mIdEditText.getText().toString().toUpperCase());
+                String id = mIdEditText.getText().toString().toUpperCase();
+                Location loc = MockData.getData().get(id);
                 if (loc != null) {
+                    mLastLocationName = id;
+                    mIdEditText.setText(null);
                     onLocationChanged(loc);
                 }
                 else {
-                    Toast.makeText(MainActivity.this, getResources().getString(R.string.id_not_found_message), Toast.LENGTH_SHORT)
-                         .show();
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.id_not_found_message), Toast.LENGTH_SHORT).show();
                 }
             }
         }.start();
@@ -218,6 +228,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
 
     private void updateUI() {
         if (mCurrentLocation != null) {
+            mLocationNameTextView.setText(String.format(Locale.US, "%s: %s", mLocationNameLabel, mLastLocationName));
             mLatitudeTextView.setText(String.format(Locale.US, "%s: %f", mLatitudeLabel, mCurrentLocation.getLatitude()));
             mLongitudeTextView.setText(String.format(Locale.US, "%s: %f", mLongitudeLabel, mCurrentLocation.getLongitude()));
             mLastUpdateTimeTextView.setText(String.format("%s: %s", mLastUpdateTimeLabel, mLastUpdateTime));
@@ -270,6 +281,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates);
+        savedInstanceState.putString(LAST_LOCATION_NAME_KEY, mLastLocationName);
         savedInstanceState.putParcelable(LOCATION_KEY, mCurrentLocation);
         savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY, mLastUpdateTime);
         super.onSaveInstanceState(savedInstanceState);
@@ -308,6 +320,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     @Override
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
+        mLastLocationName = location.getProvider().equals(MockData.MOCK_DATA_PROVIDER) ? mLastLocationName : "GPS";
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
         updateUI();
         Toast.makeText(this, getResources().getString(R.string.location_updated_message), Toast.LENGTH_SHORT).show();

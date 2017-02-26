@@ -13,6 +13,7 @@ import java.util.Map;
 public class MockData {
 
     private static Map<String, Location> data;
+    public static final String MOCK_DATA_PROVIDER = "MOCK_DATA_PROVIDER";
 
     public static Map<String, Location> getData() {
         if (data == null) {
@@ -38,7 +39,7 @@ public class MockData {
     }
 
     private static Location createLocation(double lat, double lng) {
-        Location loc = new Location("");
+        Location loc = new Location(MOCK_DATA_PROVIDER);
         loc.setLatitude(lat);
         loc.setLongitude(lng);
         return loc;
