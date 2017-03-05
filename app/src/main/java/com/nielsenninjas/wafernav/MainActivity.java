@@ -35,10 +35,10 @@ public class MainActivity extends AppCompatActivity {
     // UI elements
     protected EditText mEditTextBrokerUrl;
     protected EditText mEditTextPubTopic;
-    protected Spinner mSpinnerSubTopic;
+    protected AutoCompleteTextView mAutoCompleteTextViewSubTopic;
     protected EditText mEditTextId;
-    protected TextView mTextViewOutput;
-    protected ScrollView mScrollViewOutput;
+    protected ScrollView mScrollViewOutputLog;
+    protected TextView mTextViewOutputLog;
 
     // MQTT
     private MqttAndroidClient mqttAndroidClient;
@@ -52,21 +52,21 @@ public class MainActivity extends AppCompatActivity {
 
         // Set the UI elements
         mEditTextBrokerUrl = (EditText) findViewById(R.id.editTextBrokerUrl);
+        mEditTextBrokerUrl.setEnabled(false);
         mEditTextPubTopic = (EditText) findViewById(R.id.editTextPubTopic);
         mEditTextId = (EditText) findViewById(R.id.editTextId);
-        mTextViewOutput = (TextView) findViewById(R.id.textViewOutput);
-        mScrollViewOutput = (ScrollView) findViewById(R.id.scrollViewOutput);
-        mEditTextBrokerUrl.setEnabled(false);
+        mTextViewOutputLog = (TextView) findViewById(R.id.textViewOutputLog);
+        mScrollViewOutputLog = (ScrollView) findViewById(R.id.scrollViewOutputLog);
 
-        mSpinnerSubTopic = (Spinner) findViewById(R.id.spinnerSubTopic);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sub_topics, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinnerSubTopic.setAdapter(adapter);
-
+        // AutoCompleteTextView for sub topic
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sub_topics, android.R.layout.simple_dropdown_item_1line);
+        mAutoCompleteTextViewSubTopic = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextViewSubTopic);
+        mAutoCompleteTextViewSubTopic.setAdapter(adapter);
 
         // Set default data
         mEditTextBrokerUrl.setText(DEFAULT_BROKER_URL);
         mEditTextPubTopic.setText(DEFAULT_PUB_TOPIC);
+        mAutoCompleteTextViewSubTopic.setText(DEFAULT_SUB_TOPIC);
 
         // Pressing enter on keyboard triggers 'Publish' button
         mEditTextId.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
     private void setConnectionInfoStrings() {
         brokerUrl = mEditTextBrokerUrl.getText().toString();
         pubTopic = mEditTextPubTopic.getText().toString();
-        subTopic = mSpinnerSubTopic.getSelectedItem().toString();
+        subTopic = mAutoCompleteTextViewSubTopic.getText().toString();
     }
 
     private void initMqtt() {
@@ -139,13 +139,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void messageArrived(String topic, MqttMessage message) throws Exception {
             System.out.println("Message Arrived!: " + topic + ": " + new String(message.getPayload()));
-            mTextViewOutput.append("\n" + topic + ": " + new String(message.getPayload()));
+            mTextViewOutputLog.append("\n" + topic + ": " + new String(message.getPayload()));
 
             // Auto scroll to bottom
-            mScrollViewOutput.post(new Runnable() {
+            mScrollViewOutputLog.post(new Runnable() {
                 @Override
                 public void run() {
-                    mScrollViewOutput.fullScroll(ScrollView.FOCUS_DOWN);
+                    mScrollViewOutputLog.fullScroll(ScrollView.FOCUS_DOWN);
                 }
             });
         }
@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
         resubscribe();
     }
 
-    public void ClearLogButtonHandler(View view) {
-        mTextViewOutput.setText(null);
+    public void ClearOutputLogButtonHandler(View view) {
+        mTextViewOutputLog.setText(null);
     }
 }

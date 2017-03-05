@@ -34,6 +34,7 @@
                 />
 
     </LinearLayout>
+
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -57,6 +58,7 @@
                 />
 
     </LinearLayout>
+
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -71,11 +73,13 @@
                 android:text="Sub Topic"
                 />
 
-        <Spinner
-                android:id="@+id/spinnerSubTopic"
+        <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextViewSubTopic"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:hint="Enter Sub Topic"
+                android:completionThreshold="1"
                 />
 
     </LinearLayout>
@@ -123,21 +127,21 @@
             />
 
     <Button
-            android:id="@+id/buttonClearLog"
+            android:id="@+id/buttonClearOutputLog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Clear Log"
-            android:onClick="ClearLogButtonHandler"
+            android:text="Clear Output Log"
+            android:onClick="ClearOutputLogButtonHandler"
             />
 
     <ScrollView
-            android:id="@+id/scrollViewOutput"
+            android:id="@+id/scrollViewOutputLog"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >
 
         <TextView
-                android:id="@+id/textViewOutput"
+                android:id="@+id/textViewOutputLog"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 />
