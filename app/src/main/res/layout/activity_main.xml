@@ -1,6 +1,6 @@
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:map="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -8,105 +8,140 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context="com.nielsenninjas.wafernav.MainActivity"
         >
 
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:baselineAligned="false"
             >
 
-        <EditText
-                android:id="@+id/id_edit_text"
+        <TextView
+                android:id="@+id/textViewBrokerUrl"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:ems="10"
-                android:hint="Enter ID"
-                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:text="Broker URL"
+                />
+
+        <EditText
+                android:id="@+id/editTextBrokerUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Enter Broker URL"
+                />
+
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+        <TextView
+                android:id="@+id/textViewPubTopic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="Pub Topic"
+                />
+
+        <EditText
+                android:id="@+id/editTextPubTopic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Enter Pub Topic"
+                />
+
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+        <TextView
+                android:id="@+id/textViewSubTopic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="Sub Topic"
+                />
+
+        <Spinner
+                android:id="@+id/spinnerSubTopic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 />
 
-        <Button
-                android:id="@+id/get_location_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Get Location"
-                android:onClick="getLocationButtonHandler"
-                />
     </LinearLayout>
 
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:baselineAligned="false"
             >
 
-        <Button
-                android:id="@+id/start_updates_button"
-                android:layout_width="0dp"
+        <TextView
+                android:id="@+id/textViewId"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/start_updates"
-                android:onClick="startUpdatesButtonHandler"
+                android:layout_weight="3"
+                android:text="ID"
                 />
 
-        <Button
-                android:id="@+id/stop_updates_button"
-                android:layout_width="0dp"
+        <EditText
+                android:id="@+id/editTextId"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/stop_updates"
-                android:onClick="stopUpdatesButtonHandler"
+                android:inputType="number"
+                android:hint="Enter ID"
                 />
 
     </LinearLayout>
 
-    <TextView
-            android:id="@+id/location_name_text"
-            android:layout_width="wrap_content"
+
+    <Button
+            android:id="@+id/buttonResubscribe"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
+            android:text="Resubscribe"
+            android:onClick="ResubscribeButtonHandler"
             />
 
-    <TextView
-            android:id="@+id/latitude_text"
-            android:layout_width="wrap_content"
+    <Button
+            android:id="@+id/buttonPublish"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
+            android:text="Publish"
+            android:onClick="publishButtonHandler"
             />
 
-    <TextView
-            android:id="@+id/longitude_text"
-            android:layout_width="wrap_content"
+    <Button
+            android:id="@+id/buttonClearLog"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
+            android:text="Clear Log"
+            android:onClick="ClearLogButtonHandler"
             />
 
-    <TextView
-            android:id="@+id/last_update_time_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="10dp"
-            />
-
-    <fragment
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            class="com.nielsenninjas.wafernav.MyMapFragment"
-            android:id="@+id/activity_fragment_mapview"
-            android:name="com.google.android.gms.maps.MapFragment"
+    <ScrollView
+            android:id="@+id/scrollViewOutput"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            map:uiZoomControls="true"
-            />
+            >
+
+        <TextView
+                android:id="@+id/textViewOutput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+    </ScrollView>
 
 </LinearLayout>

@@ -15,4 +15,9 @@
     <string name="title_activity_maps">Map</string>
     <string name="map_button_label">Map</string>
 
+    <string-array name="sub_topics">
+        <item>wafernav/location_data</item>
+        <item>subs/bbcnews</item>
+    </string-array>
+
 </resources>

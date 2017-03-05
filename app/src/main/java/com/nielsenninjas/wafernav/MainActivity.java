@@ -1,328 +1,204 @@
 package com.nielsenninjas.wafernav;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.LocationSource;
-import com.google.android.gms.maps.model.LatLng;
+import android.widget.*;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.*;
 
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
+public class MainActivity extends AppCompatActivity {
 
-    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
-    public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
+    // Logging
+    private static final String TAG = "MainActivity";
 
-    // Keys for storing activity state in the Bundle.
-    protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
-    protected final static String LAST_LOCATION_NAME_KEY = "last-location-name-key";
-    protected final static String LOCATION_KEY = "location-key";
-    protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
-    private final static int PERMISSIONS_REQUEST_ACCESS_LOCATION = 0;
-
-    protected GoogleApiClient mGoogleApiClient;
-    protected Location mCurrentLocation;
-    protected LocationRequest mLocationRequest;
+    // Connection info
+    private static final String DEFAULT_BROKER_URL = "tcp://iot.eclipse.org:1883";
+    private static final String DEFAULT_PUB_TOPIC = "wafernav/location_requests";
+    private static final String DEFAULT_SUB_TOPIC = "wafernav/location_data";
+    private static final String CLIENT_ID = UUID.randomUUID().toString();
+    private String brokerUrl;
+    private String pubTopic;
+    private String subTopic;
 
     // UI elements
-    protected Button mStartUpdatesButton;
-    protected Button mStopUpdatesButton;
-    protected Button mGetLocationButton;
-    protected TextView mLocationNameTextView;
-    protected TextView mLatitudeTextView;
-    protected TextView mLongitudeTextView;
-    protected TextView mLastUpdateTimeTextView;
-    protected EditText mIdEditText;
+    protected EditText mEditTextBrokerUrl;
+    protected EditText mEditTextPubTopic;
+    protected Spinner mSpinnerSubTopic;
+    protected EditText mEditTextId;
+    protected TextView mTextViewOutput;
+    protected ScrollView mScrollViewOutput;
 
-    // Labels
-    protected String mLocationNameLabel;
-    protected String mLatitudeLabel;
-    protected String mLongitudeLabel;
-    protected String mLastUpdateTimeLabel;
-
-    protected Boolean mRequestingLocationUpdates;
-    protected String mLastLocationName;
-    protected String mLastUpdateTime;
-    private MyMapFragment myMapFragment;
+    // MQTT
+    private MqttAndroidClient mqttAndroidClient;
+    private IMqttToken mqttSubToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        myMapFragment = (MyMapFragment) getSupportFragmentManager().findFragmentById(R.id.activity_fragment_mapview);
+        Log.i(TAG, "onCreate()");
 
         // Set the UI elements
-        mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);
-        mStopUpdatesButton = (Button) findViewById(R.id.stop_updates_button);
-        mGetLocationButton = (Button) findViewById(R.id.get_location_button);
-        mLocationNameTextView = (TextView) findViewById(R.id.location_name_text);
-        mLatitudeTextView = (TextView) findViewById(R.id.latitude_text);
-        mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
-        mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
-        mIdEditText = (EditText) findViewById(R.id.id_edit_text);
+        mEditTextBrokerUrl = (EditText) findViewById(R.id.editTextBrokerUrl);
+        mEditTextPubTopic = (EditText) findViewById(R.id.editTextPubTopic);
+        mEditTextId = (EditText) findViewById(R.id.editTextId);
+        mTextViewOutput = (TextView) findViewById(R.id.textViewOutput);
+        mScrollViewOutput = (ScrollView) findViewById(R.id.scrollViewOutput);
+        mEditTextBrokerUrl.setEnabled(false);
 
-        // Set labels
-        mLocationNameLabel = "Name";
-        mLatitudeLabel = getResources().getString(R.string.latitude_label);
-        mLongitudeLabel = getResources().getString(R.string.longitude_label);
-        mLastUpdateTimeLabel = getResources().getString(R.string.last_update_time_label);
+        mSpinnerSubTopic = (Spinner) findViewById(R.id.spinnerSubTopic);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sub_topics, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinnerSubTopic.setAdapter(adapter);
 
-        mRequestingLocationUpdates = false;
-        mLastLocationName = "";
-        mLastUpdateTime = "";
 
-        updateValuesFromBundle(savedInstanceState);
+        // Set default data
+        mEditTextBrokerUrl.setText(DEFAULT_BROKER_URL);
+        mEditTextPubTopic.setText(DEFAULT_PUB_TOPIC);
 
-        buildGoogleApiClient();
-
-        // Pressing enter on keyboard triggers 'Get Location' button
-        mIdEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        // Pressing enter on keyboard triggers 'Publish' button
+        mEditTextId.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    getLocationButtonHandler(mIdEditText);
+                    publishButtonHandler(mEditTextId);
                 }
                 return false;
             }
         });
+
+        setConnectionInfoStrings();
+        initMqtt();
     }
 
-    private void updateValuesFromBundle(Bundle savedInstanceState) {
+    private void setConnectionInfoStrings() {
+        brokerUrl = mEditTextBrokerUrl.getText().toString();
+        pubTopic = mEditTextPubTopic.getText().toString();
+        subTopic = mSpinnerSubTopic.getSelectedItem().toString();
+    }
 
-        if (savedInstanceState != null) {
-            // Update the value of mRequestingLocationUpdates from the Bundle, and make sure that
-            // the Start Updates and Stop Updates buttons are correctly enabled or disabled.
-            if (savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES_KEY)) {
-                mRequestingLocationUpdates = savedInstanceState.getBoolean(REQUESTING_LOCATION_UPDATES_KEY);
-                setButtonsEnabledState();
-            }
+    private void initMqtt() {
+        mqttAndroidClient = new MqttAndroidClient(this.getApplicationContext(), brokerUrl, CLIENT_ID);
+        mqttAndroidClient.setCallback(new SubscribeCallback());
 
-            if (savedInstanceState.keySet().contains(LAST_LOCATION_NAME_KEY)) {
-                mLastLocationName = savedInstanceState.getString(LAST_LOCATION_NAME_KEY);
-            }
+        try {
+            mqttAndroidClient.connect(null, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    System.out.println("Connection Success!");
+                    try {
+                        mqttSubToken = mqttAndroidClient.subscribe(subTopic, 0);
+                        System.out.println("Subscribed to " + subTopic);
+                    }
+                    catch (MqttException ex) {
+                        ex.printStackTrace();
+                    }
+                }
 
-            // Update the value of mCurrentLocation from the Bundle and update the UI to show the
-            // correct latitude and longitude.
-            if (savedInstanceState.keySet().contains(LOCATION_KEY)) {
-                // Since LOCATION_KEY was found in the Bundle, we can be sure that mCurrentLocation
-                // is not null.
-                mCurrentLocation = savedInstanceState.getParcelable(LOCATION_KEY);
-            }
-
-            // Update the value of mLastUpdateTime from the Bundle and update the UI.
-            if (savedInstanceState.keySet().contains(LAST_UPDATED_TIME_STRING_KEY)) {
-                mLastUpdateTime = savedInstanceState.getString(LAST_UPDATED_TIME_STRING_KEY);
-            }
-            updateUI();
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    System.out.println("Connection Failure!");
+                }
+            });
+        }
+        catch (MqttException e) {
+            e.printStackTrace();
         }
     }
 
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(LocationServices.API).build();
-        createLocationRequest();
-    }
-
-    protected void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
-        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    }
-
-    public void startUpdatesButtonHandler(View view) {
-        if (!mRequestingLocationUpdates) {
-            mRequestingLocationUpdates = true;
-            setButtonsEnabledState();
-            startLocationUpdates();
+    private void resubscribe() {
+        try {
+            for (String topic : mqttSubToken.getTopics()) {
+                mqttAndroidClient.unsubscribe(topic);
+            }
+            mqttSubToken = mqttAndroidClient.subscribe(subTopic, 0);
+        }
+        catch (MqttException e) {
+            e.printStackTrace();
         }
     }
 
-    public void stopUpdatesButtonHandler(View view) {
-        if (mRequestingLocationUpdates) {
-            mRequestingLocationUpdates = false;
-            setButtonsEnabledState();
-            stopLocationUpdates();
+    private class SubscribeCallback implements MqttCallback {
+
+        @Override
+        public void connectionLost(Throwable cause) {
+            System.out.println("Connection was lost!");
+        }
+
+        @Override
+        public void messageArrived(String topic, MqttMessage message) throws Exception {
+            System.out.println("Message Arrived!: " + topic + ": " + new String(message.getPayload()));
+            mTextViewOutput.append("\n" + topic + ": " + new String(message.getPayload()));
+
+            // Auto scroll to bottom
+            mScrollViewOutput.post(new Runnable() {
+                @Override
+                public void run() {
+                    mScrollViewOutput.fullScroll(ScrollView.FOCUS_DOWN);
+                }
+            });
+        }
+
+        @Override
+        public void deliveryComplete(IMqttDeliveryToken token) {
+            System.out.println("Delivery Complete!");
         }
     }
 
-    public void getLocationButtonHandler(View view) {
-        mRequestingLocationUpdates = false;
-        setButtonsEnabledState();
-        stopLocationUpdates();
-
+    public void publishButtonHandler(View view) {
         // Dismiss keyboard
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mIdEditText.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(mEditTextId.getWindowToken(), 0);
 
-        // This anonymous class is here just to slow down the update time by 500ms after tapping 'Get Location' button.
-        //  Otherwise, it's hard to tell the location was updated.
-        new CountDownTimer(500, 100) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-            }
-            @Override
-            public void onFinish() {
-                String id = mIdEditText.getText().toString().toUpperCase();
-                Location loc = MockData.getData().get(id);
-                if (loc != null) {
-                    mLastLocationName = id;
-                    mIdEditText.setText(null);
-                    onLocationChanged(loc);
-                }
-                else {
-                    Toast.makeText(MainActivity.this, getResources().getString(R.string.id_not_found_message), Toast.LENGTH_SHORT).show();
-                }
-            }
-        }.start();
-    }
+        // Get text field and clear it
+        String idString = mEditTextId.getText().toString();
+        //mEditTextId.setText(null);
 
-    protected void startLocationUpdates() {
-        boolean fineLocationPermissionOk = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-        boolean coarseLocationPermissionOk = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-        if (!fineLocationPermissionOk || !coarseLocationPermissionOk) {
-            // Ask for permissions
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_LOCATION);
+        // Just return if nothing entered
+        if (idString == null || idString.isEmpty()) {
             return;
         }
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-    }
 
-    protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-    }
+        // Parse the non-null number-only string
+        int id = Integer.parseInt(idString);
 
-    private void setButtonsEnabledState() {
-        if (mRequestingLocationUpdates) {
-            mStartUpdatesButton.setEnabled(false);
-            mStopUpdatesButton.setEnabled(true);
+        // Create JSON string to publish, e.g. {"id":123}
+        Map<String, Object> returnMap = new HashMap<>();
+        returnMap.put("id", id);
+        String returnJsonString = null;
+        try {
+            returnJsonString = new ObjectMapper().writeValueAsString(returnMap);
         }
-        else {
-            mStartUpdatesButton.setEnabled(true);
-            mStopUpdatesButton.setEnabled(false);
+        catch (IOException e) {
+            e.printStackTrace();
         }
-    }
 
-    private void updateUI() {
-        if (mCurrentLocation != null) {
-            mLocationNameTextView.setText(String.format(Locale.US, "%s: %s", mLocationNameLabel, mLastLocationName));
-            mLatitudeTextView.setText(String.format(Locale.US, "%s: %f", mLatitudeLabel, mCurrentLocation.getLatitude()));
-            mLongitudeTextView.setText(String.format(Locale.US, "%s: %f", mLongitudeLabel, mCurrentLocation.getLongitude()));
-            mLastUpdateTimeTextView.setText(String.format("%s: %s", mLastUpdateTimeLabel, mLastUpdateTime));
-            myMapFragment.updateMap(mCurrentLocation);
+        System.out.println("Publishing message..");
+        try {
+            mqttAndroidClient.publish(pubTopic, new MqttMessage(returnJsonString.getBytes()));
+        }
+        catch (MqttException e) {
+            e.printStackTrace();
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mGoogleApiClient.connect();
+    public void ResubscribeButtonHandler(View view) {
+        setConnectionInfoStrings();
+        resubscribe();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
-            startLocationUpdates();
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (mGoogleApiClient.isConnected()) {
-            stopLocationUpdates();
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        mGoogleApiClient.disconnect();
-        super.onStop();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_LOCATION: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission granted
-                }
-                else {
-                    // Permission denied
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates);
-        savedInstanceState.putString(LAST_LOCATION_NAME_KEY, mLastLocationName);
-        savedInstanceState.putParcelable(LOCATION_KEY, mCurrentLocation);
-        savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY, mLastUpdateTime);
-        super.onSaveInstanceState(savedInstanceState);
-    }
-
-    @Override
-    public void onConnected(Bundle connectionHint) {
-
-        if (mCurrentLocation == null) {
-            boolean fineLocationPermissionOk = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-            boolean coarseLocationPermissionOk = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-            if (!fineLocationPermissionOk || !coarseLocationPermissionOk) {
-                // Ask for permissions
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_LOCATION);
-                return;
-            }
-            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-            updateUI();
-        }
-
-        if (mRequestingLocationUpdates) {
-            startLocationUpdates();
-        }
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        mCurrentLocation = location;
-        mLastLocationName = location.getProvider().equals(MockData.MOCK_DATA_PROVIDER) ? mLastLocationName : "GPS";
-        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-        updateUI();
-        Toast.makeText(this, getResources().getString(R.string.location_updated_message), Toast.LENGTH_SHORT).show();
+    public void ClearLogButtonHandler(View view) {
+        mTextViewOutput.setText(null);
     }
 }
