@@ -108,7 +108,7 @@
                 android:layout_weight="1"
                 android:hint="Enter ID"
                 android:completionThreshold="1"
-                android:inputType="textPhonetic"
+                android:inputType="number"
                 />
 
     </LinearLayout>

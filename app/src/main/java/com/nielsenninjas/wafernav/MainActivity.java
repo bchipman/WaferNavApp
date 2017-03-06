@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         mEditTextBrokerUrl = (EditText) findViewById(R.id.editTextBrokerUrl);
         mEditTextBrokerUrl.setEnabled(false);
         mEditTextPubTopic = (EditText) findViewById(R.id.editTextPubTopic);
+        mEditTextPubTopic.setEnabled(false);
 
         mTextViewOutputLog = (TextView) findViewById(R.id.textViewOutputLog);
         mScrollViewOutputLog = (ScrollView) findViewById(R.id.scrollViewOutputLog);
@@ -141,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.w(TAG, "I WOULD HAVE CRASHED BECAUSE NOTHING IS FOCUSED!!");
         }
+        findViewById(R.id.parent).clearFocus();
     }
 
     private void setConnectionInfoStrings() {
