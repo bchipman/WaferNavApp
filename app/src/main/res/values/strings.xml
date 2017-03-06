@@ -20,4 +20,10 @@
         <item>subs/bbcnews</item>
     </string-array>
 
+    <string-array name="ids">
+        <item>123</item>
+        <item>456</item>
+        <item>12345</item>
+    </string-array>
+
 </resources>

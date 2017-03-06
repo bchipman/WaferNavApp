@@ -2,6 +2,7 @@
   <dictionary name="brian">
     <words>
       <w>mqtt</w>
+      <w>unsubscribe</w>
       <w>wafernav</w>
     </words>
   </dictionary>

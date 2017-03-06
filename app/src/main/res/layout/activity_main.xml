@@ -1,6 +1,7 @@
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/parent"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -55,6 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="Enter Pub Topic"
+                android:inputType="textFilter"
                 />
 
     </LinearLayout>
@@ -80,6 +82,7 @@
                 android:layout_weight="1"
                 android:hint="Enter Sub Topic"
                 android:completionThreshold="1"
+                android:inputType="textPhonetic"
                 />
 
     </LinearLayout>
@@ -98,25 +101,18 @@
                 android:text="ID"
                 />
 
-        <EditText
-                android:id="@+id/editTextId"
+        <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextViewId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:inputType="number"
                 android:hint="Enter ID"
+                android:completionThreshold="1"
+                android:inputType="textPhonetic"
                 />
 
     </LinearLayout>
 
-
-    <Button
-            android:id="@+id/buttonResubscribe"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Resubscribe"
-            android:onClick="ResubscribeButtonHandler"
-            />
 
     <Button
             android:id="@+id/buttonPublish"

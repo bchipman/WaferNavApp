@@ -1,11 +1,13 @@
 package com.nielsenninjas.wafernav;
 
-import android.content.Context;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
@@ -36,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     protected EditText mEditTextBrokerUrl;
     protected EditText mEditTextPubTopic;
     protected AutoCompleteTextView mAutoCompleteTextViewSubTopic;
-    protected EditText mEditTextId;
+    protected AutoCompleteTextView mAutoCompleteTextViewId;
     protected ScrollView mScrollViewOutputLog;
     protected TextView mTextViewOutputLog;
 
@@ -48,13 +50,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Hide keyboard when (1) click non-EditText object, or (2) press enter in EditText object
+        setupHideKeyboardListeners(findViewById(R.id.parent));
         Log.i(TAG, "onCreate()");
 
         // Set the UI elements
         mEditTextBrokerUrl = (EditText) findViewById(R.id.editTextBrokerUrl);
         mEditTextBrokerUrl.setEnabled(false);
         mEditTextPubTopic = (EditText) findViewById(R.id.editTextPubTopic);
-        mEditTextId = (EditText) findViewById(R.id.editTextId);
+
         mTextViewOutputLog = (TextView) findViewById(R.id.textViewOutputLog);
         mScrollViewOutputLog = (ScrollView) findViewById(R.id.scrollViewOutputLog);
 
@@ -63,23 +68,79 @@ public class MainActivity extends AppCompatActivity {
         mAutoCompleteTextViewSubTopic = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextViewSubTopic);
         mAutoCompleteTextViewSubTopic.setAdapter(adapter);
 
+        // AutoCompleteTextView for IDs
+        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this, R.array.ids, android.R.layout.simple_dropdown_item_1line);
+        mAutoCompleteTextViewId = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextViewId);
+        mAutoCompleteTextViewId.setAdapter(adapter2);
+
+        // Auto resubscribe when sub topic loses focus
+        mAutoCompleteTextViewSubTopic.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    Log.i(TAG, "mAutoCompleteTextViewSubTopic does not have focus!");
+                    setConnectionInfoStrings();
+                    resubscribe();
+                }
+            }
+        });
+
+
         // Set default data
         mEditTextBrokerUrl.setText(DEFAULT_BROKER_URL);
         mEditTextPubTopic.setText(DEFAULT_PUB_TOPIC);
         mAutoCompleteTextViewSubTopic.setText(DEFAULT_SUB_TOPIC);
 
-        // Pressing enter on keyboard triggers 'Publish' button
-        mEditTextId.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    publishButtonHandler(mEditTextId);
-                }
-                return false;
-            }
-        });
-
         setConnectionInfoStrings();
         initMqtt();
+
+        // Focus publish button when start app
+        findViewById(R.id.buttonPublish).requestFocus();
+        hideKeyboard();
+    }
+
+    private void setupHideKeyboardListeners(final View view) {
+        // Set up touch listener for non-text box views to hide keyboard.
+        if (!(view instanceof EditText)) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    hideKeyboard();
+                    return false;
+                }
+            });
+        }
+        // Set up editor listener to hide keyboard when press enter in TextEdit object
+        else {
+            ((EditText) view).setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                        hideKeyboard();
+                        // if this is mEditTextId, also trigger the 'Publish' button when press enter
+                        if (view == mAutoCompleteTextViewId) {
+                            publishButtonHandler(mAutoCompleteTextViewId);
+                        }
+                    }
+                    return false;
+                }
+            });
+        }
+
+        // If a layout container, iterate over children and seed recursion.
+        if (view instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                View innerView = ((ViewGroup) view).getChildAt(i);
+                setupHideKeyboardListeners(innerView);
+            }
+        }
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager inm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        if (getCurrentFocus() != null) {
+            inm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } else {
+            Log.w(TAG, "I WOULD HAVE CRASHED BECAUSE NOTHING IS FOCUSED!!");
+        }
     }
 
     private void setConnectionInfoStrings() {
@@ -96,10 +157,9 @@ public class MainActivity extends AppCompatActivity {
             mqttAndroidClient.connect(null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    System.out.println("Connection Success!");
                     try {
                         mqttSubToken = mqttAndroidClient.subscribe(subTopic, 0);
-                        System.out.println("Subscribed to " + subTopic);
+                        Toast.makeText(getApplicationContext(), "Subscribed to " + subTopic, Toast.LENGTH_SHORT).show();
                     }
                     catch (MqttException ex) {
                         ex.printStackTrace();
@@ -108,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    System.out.println("Connection Failure!");
+                    Toast.makeText(getApplicationContext(), "Failed to connect to " + brokerUrl + "!", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -119,10 +179,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void resubscribe() {
         try {
+            // Unsubscribe from all topics
             for (String topic : mqttSubToken.getTopics()) {
                 mqttAndroidClient.unsubscribe(topic);
             }
+            // Subscribe to new topic
             mqttSubToken = mqttAndroidClient.subscribe(subTopic, 0);
+            Toast.makeText(getApplicationContext(), "Subscribed to " + subTopic, Toast.LENGTH_SHORT).show();
         }
         catch (MqttException e) {
             e.printStackTrace();
@@ -133,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void connectionLost(Throwable cause) {
-            System.out.println("Connection was lost!");
+            Toast.makeText(getApplicationContext(), "Lost connection!", Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -157,16 +220,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void publishButtonHandler(View view) {
-        // Dismiss keyboard
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mEditTextId.getWindowToken(), 0);
+        // Get text field
+        String idString = mAutoCompleteTextViewId.getText().toString();
 
-        // Get text field and clear it
-        String idString = mEditTextId.getText().toString();
-        //mEditTextId.setText(null);
-
-        // Just return if nothing entered
+        // Display toast message and return if nothing entered
         if (idString == null || idString.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "ID cannot be empty", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -191,11 +250,6 @@ public class MainActivity extends AppCompatActivity {
         catch (MqttException e) {
             e.printStackTrace();
         }
-    }
-
-    public void ResubscribeButtonHandler(View view) {
-        setConnectionInfoStrings();
-        resubscribe();
     }
 
     public void ClearOutputLogButtonHandler(View view) {
