@@ -12,6 +12,14 @@
         tools:context="com.nielsenninjas.wafernav.MainActivity"
         >
 
+    <Button
+            android:id="@+id/buttonToHomeActivity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="To Home Activity"
+            android:onClick="ToHomeActivityButtonHandler"
+            />
+
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
