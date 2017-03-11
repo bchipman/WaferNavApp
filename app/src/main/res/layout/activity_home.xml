@@ -13,7 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="To Main Activity"
-            tools:layout_editor_absoluteY="231dp"
+            tools:layout_editor_absoluteY="357dp"
             tools:layout_editor_absoluteX="119dp"
             android:onClick="ToMainActivityButtonHandler"
             />
