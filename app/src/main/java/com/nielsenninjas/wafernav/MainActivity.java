@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
+import com.google.android.gms.common.api.CommonStatusCodes;
+import com.nielsenninjas.wafernav.barcodereader.BarcodeCaptureActivity;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.*;
@@ -32,12 +34,15 @@ public class MainActivity extends AppCompatActivity {
 
     // Logging
     private static final String TAG = "MainActivity";
+    private static final String TAG_BARCODE = "BarcodeMain";
 
     // Connection info
     private static final String BROKER_URL = "tcp://iot.eclipse.org:1883";
     private static final String PUB_TOPIC = "wafernav/location_requests";
     private static final String SUB_TOPIC = "wafernav/location_data";
     private static final String CLIENT_ID = UUID.randomUUID().toString();
+
+    private static final int RC_BARCODE_CAPTURE = 9001;
 
     // UI elements
     protected AutoCompleteTextView mAutoCompleteTextViewId;
@@ -71,50 +76,6 @@ public class MainActivity extends AppCompatActivity {
         // Focus publish button when start app
         findViewById(R.id.buttonPublish).requestFocus();
         hideKeyboard();
-
-
-        // NEW QR CODE TEST STUFFS BELOW
-
-
-        // Load the Image
-        ImageView myImageView = (ImageView) findViewById(R.id.imageViewQr);
-        final Bitmap myBitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.puppy_qr_code);
-        myImageView.setImageBitmap(myBitmap);
-
-        final TextView myTextView = (TextView) findViewById(R.id.textViewQrTest);
-
-        // Setup the Barcode Detector
-        final BarcodeDetector detector = new BarcodeDetector.Builder(getApplicationContext()).setBarcodeFormats(Barcode.DATA_MATRIX | Barcode.QR_CODE).build();
-        if (!detector.isOperational()) {
-            myTextView.setText("Could not set up the detector!");
-            return;
-        }
-
-        // Wiring up the Button
-        Button btn = (Button) findViewById(R.id.buttonQrTest);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Clear text field
-                myTextView.setText(null);
-
-                // Add 500ms delay so you know something happened
-                final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Detect the Barcode
-                        Frame frame = new Frame.Builder().setBitmap(myBitmap).build();
-                        SparseArray<Barcode> barcodes = detector.detect(frame);
-
-                        // Decode the Barcode
-                        Barcode thisCode = barcodes.valueAt(0);
-                        myTextView.setText(thisCode.rawValue);
-                    }
-                }, 500);
-
-            }
-        });
     }
 
     private void setupHideKeyboardListeners(final View view) {
@@ -244,11 +205,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Parse the non-null number-only string
-        int id = Integer.parseInt(idString);
+        //int id = Integer.parseInt(idString);
 
         // Create JSON string to publish, e.g. {"id":123}
-        Map<String, Object> returnMap = new HashMap<>();
-        returnMap.put("id", id);
+        Map<String, String> returnMap = new HashMap<>();
+        returnMap.put("id", idString);
         String returnJsonString = null;
         try {
             returnJsonString = new ObjectMapper().writeValueAsString(returnMap);
@@ -273,5 +234,38 @@ public class MainActivity extends AppCompatActivity {
     public void ToHomeActivityButtonHandler(View view) {
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
+    }
+
+    public void ReadBarcodeButtonHandler(View view) {
+        // launch barcode activity.
+        Intent intent = new Intent(this, BarcodeCaptureActivity.class);
+        intent.putExtra(BarcodeCaptureActivity.AutoFocus, true);
+        intent.putExtra(BarcodeCaptureActivity.UseFlash, false);
+
+        startActivityForResult(intent, RC_BARCODE_CAPTURE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RC_BARCODE_CAPTURE) {
+            if (resultCode == CommonStatusCodes.SUCCESS) {
+                if (data != null) {
+                    Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
+                    mTextViewOutputLog.append(getResources().getString(R.string.barcode_success));
+                    mAutoCompleteTextViewId.setText(barcode.displayValue);
+                    Log.d(TAG_BARCODE, "Barcode read: " + barcode.displayValue);
+                }
+                else {
+                    mTextViewOutputLog.append(getResources().getString(R.string.barcode_failure));
+                    Log.d(TAG_BARCODE, "No barcode captured, intent data is null");
+                }
+            }
+            else {
+                mTextViewOutputLog.append(String.format(getString(R.string.barcode_error), CommonStatusCodes.getStatusCodeString(resultCode)));
+            }
+        }
+        else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

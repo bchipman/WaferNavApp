@@ -64,25 +64,12 @@
             android:onClick="ClearOutputLogButtonHandler"
             />
 
-    <TextView
-            android:id="@+id/textViewQrTest"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            />
-
     <Button
-            android:id="@+id/buttonQrTest"
+            android:id="@+id/buttonReadBarcode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button"
-            />
-
-    <ImageView
-            android:id="@+id/imageViewQr"
-            android:layout_width="match_parent"
-            android:layout_height="189dp"
-            app:srcCompat="@drawable/puppy_qr_code"
+            android:text="Read Barcode"
+            android:onClick="ReadBarcodeButtonHandler"
             />
 
     <ScrollView
