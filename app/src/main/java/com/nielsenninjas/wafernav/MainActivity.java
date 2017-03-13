@@ -2,9 +2,13 @@ package com.nielsenninjas.wafernav;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,6 +19,9 @@ import android.widget.*;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.*;
+import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.barcode.Barcode;
+import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -64,6 +71,50 @@ public class MainActivity extends AppCompatActivity {
         // Focus publish button when start app
         findViewById(R.id.buttonPublish).requestFocus();
         hideKeyboard();
+
+
+        // NEW QR CODE TEST STUFFS BELOW
+
+
+        // Load the Image
+        ImageView myImageView = (ImageView) findViewById(R.id.imageViewQr);
+        final Bitmap myBitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.puppy_qr_code);
+        myImageView.setImageBitmap(myBitmap);
+
+        final TextView myTextView = (TextView) findViewById(R.id.textViewQrTest);
+
+        // Setup the Barcode Detector
+        final BarcodeDetector detector = new BarcodeDetector.Builder(getApplicationContext()).setBarcodeFormats(Barcode.DATA_MATRIX | Barcode.QR_CODE).build();
+        if (!detector.isOperational()) {
+            myTextView.setText("Could not set up the detector!");
+            return;
+        }
+
+        // Wiring up the Button
+        Button btn = (Button) findViewById(R.id.buttonQrTest);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Clear text field
+                myTextView.setText(null);
+
+                // Add 500ms delay so you know something happened
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Detect the Barcode
+                        Frame frame = new Frame.Builder().setBitmap(myBitmap).build();
+                        SparseArray<Barcode> barcodes = detector.detect(frame);
+
+                        // Decode the Barcode
+                        Barcode thisCode = barcodes.valueAt(0);
+                        myTextView.setText(thisCode.rawValue);
+                    }
+                }, 500);
+
+            }
+        });
     }
 
     private void setupHideKeyboardListeners(final View view) {

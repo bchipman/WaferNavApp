@@ -40,7 +40,9 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.9'
-    compile 'com.android.support:appcompat-v7:25.1.1'
+    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'com.android.support:mediarouter-v7:25.2.0'
+    compile 'com.google.android.gms:play-services-vision:10.2.0'
     compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.0.3-SNAPSHOT'
     compile 'org.eclipse.paho:org.eclipse.paho.android.service:1.0.3-SNAPSHOT'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
