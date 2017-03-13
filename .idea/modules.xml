@@ -3,9 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/WaferNav.iml" filepath="$PROJECT_DIR$/WaferNav.iml" />
-      <module fileurl="file://$PROJECT_DIR$/WaferNavApp.iml" filepath="$PROJECT_DIR$/WaferNavApp.iml" />
-      <module fileurl="file://$PROJECT_DIR$/WaferNavApp.iml" filepath="$PROJECT_DIR$/WaferNavApp.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
