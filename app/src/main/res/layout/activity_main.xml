@@ -14,86 +14,11 @@
 
     <Button
             android:id="@+id/buttonToHomeActivity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="To Home Activity"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:onClick="ToHomeActivityButtonHandler"
+            android:background="?android:attr/homeAsUpIndicator"
             />
-
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-
-        <TextView
-                android:id="@+id/textViewBrokerUrl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:text="Broker URL"
-                />
-
-        <EditText
-                android:id="@+id/editTextBrokerUrl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="Enter Broker URL"
-                />
-
-    </LinearLayout>
-
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-
-        <TextView
-                android:id="@+id/textViewPubTopic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:text="Pub Topic"
-                />
-
-        <EditText
-                android:id="@+id/editTextPubTopic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="Enter Pub Topic"
-                android:inputType="textFilter"
-                />
-
-    </LinearLayout>
-
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-
-        <TextView
-                android:id="@+id/textViewSubTopic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:text="Sub Topic"
-                />
-
-        <AutoCompleteTextView
-                android:id="@+id/autoCompleteTextViewSubTopic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="Enter Sub Topic"
-                android:completionThreshold="1"
-                android:inputType="textPhonetic"
-                />
-
-    </LinearLayout>
 
     <LinearLayout
             android:orientation="horizontal"

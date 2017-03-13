@@ -27,18 +27,12 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     // Connection info
-    private static final String DEFAULT_BROKER_URL = "tcp://iot.eclipse.org:1883";
-    private static final String DEFAULT_PUB_TOPIC = "wafernav/location_requests";
-    private static final String DEFAULT_SUB_TOPIC = "wafernav/location_data";
+    private static final String BROKER_URL = "tcp://iot.eclipse.org:1883";
+    private static final String PUB_TOPIC = "wafernav/location_requests";
+    private static final String SUB_TOPIC = "wafernav/location_data";
     private static final String CLIENT_ID = UUID.randomUUID().toString();
-    private String brokerUrl;
-    private String pubTopic;
-    private String subTopic;
 
     // UI elements
-    protected EditText mEditTextBrokerUrl;
-    protected EditText mEditTextPubTopic;
-    protected AutoCompleteTextView mAutoCompleteTextViewSubTopic;
     protected AutoCompleteTextView mAutoCompleteTextViewId;
     protected ScrollView mScrollViewOutputLog;
     protected TextView mTextViewOutputLog;
@@ -57,43 +51,14 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "onCreate()");
 
         // Set the UI elements
-        mEditTextBrokerUrl = (EditText) findViewById(R.id.editTextBrokerUrl);
-        mEditTextBrokerUrl.setEnabled(false);
-        mEditTextPubTopic = (EditText) findViewById(R.id.editTextPubTopic);
-        mEditTextPubTopic.setEnabled(false);
-
         mTextViewOutputLog = (TextView) findViewById(R.id.textViewOutputLog);
         mScrollViewOutputLog = (ScrollView) findViewById(R.id.scrollViewOutputLog);
 
-        // AutoCompleteTextView for sub topic
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sub_topics, android.R.layout.simple_dropdown_item_1line);
-        mAutoCompleteTextViewSubTopic = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextViewSubTopic);
-        mAutoCompleteTextViewSubTopic.setAdapter(adapter);
-
         // AutoCompleteTextView for IDs
-        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this, R.array.ids, android.R.layout.simple_dropdown_item_1line);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.ids, android.R.layout.simple_dropdown_item_1line);
         mAutoCompleteTextViewId = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextViewId);
-        mAutoCompleteTextViewId.setAdapter(adapter2);
+        mAutoCompleteTextViewId.setAdapter(adapter);
 
-        // Auto resubscribe when sub topic loses focus
-        mAutoCompleteTextViewSubTopic.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    Log.i(TAG, "mAutoCompleteTextViewSubTopic does not have focus!");
-                    setConnectionInfoStrings();
-                    resubscribe();
-                }
-            }
-        });
-
-
-        // Set default data
-        mEditTextBrokerUrl.setText(DEFAULT_BROKER_URL);
-        mEditTextPubTopic.setText(DEFAULT_PUB_TOPIC);
-        mAutoCompleteTextViewSubTopic.setText(DEFAULT_SUB_TOPIC);
-
-        setConnectionInfoStrings();
         initMqtt();
 
         // Focus publish button when start app
@@ -140,20 +105,15 @@ public class MainActivity extends AppCompatActivity {
         InputMethodManager inm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         if (getCurrentFocus() != null) {
             inm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        } else {
+        }
+        else {
             Log.w(TAG, "I WOULD HAVE CRASHED BECAUSE NOTHING IS FOCUSED!!");
         }
         findViewById(R.id.parent).clearFocus();
     }
 
-    private void setConnectionInfoStrings() {
-        brokerUrl = mEditTextBrokerUrl.getText().toString();
-        pubTopic = mEditTextPubTopic.getText().toString();
-        subTopic = mAutoCompleteTextViewSubTopic.getText().toString();
-    }
-
     private void initMqtt() {
-        mqttAndroidClient = new MqttAndroidClient(this.getApplicationContext(), brokerUrl, CLIENT_ID);
+        mqttAndroidClient = new MqttAndroidClient(this.getApplicationContext(), BROKER_URL, CLIENT_ID);
         mqttAndroidClient.setCallback(new SubscribeCallback());
 
         try {
@@ -161,8 +121,8 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     try {
-                        mqttSubToken = mqttAndroidClient.subscribe(subTopic, 0);
-                        Toast.makeText(getApplicationContext(), "Subscribed to " + subTopic, Toast.LENGTH_SHORT).show();
+                        mqttSubToken = mqttAndroidClient.subscribe(SUB_TOPIC, 0);
+                        Toast.makeText(getApplicationContext(), "Subscribed to " + SUB_TOPIC, Toast.LENGTH_SHORT).show();
                     }
                     catch (MqttException ex) {
                         ex.printStackTrace();
@@ -171,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Toast.makeText(getApplicationContext(), "Failed to connect to " + brokerUrl + "!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Failed to connect to " + BROKER_URL + "!", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -187,8 +147,8 @@ public class MainActivity extends AppCompatActivity {
                 mqttAndroidClient.unsubscribe(topic);
             }
             // Subscribe to new topic
-            mqttSubToken = mqttAndroidClient.subscribe(subTopic, 0);
-            Toast.makeText(getApplicationContext(), "Subscribed to " + subTopic, Toast.LENGTH_SHORT).show();
+            mqttSubToken = mqttAndroidClient.subscribe(SUB_TOPIC, 0);
+            Toast.makeText(getApplicationContext(), "Subscribed to " + SUB_TOPIC, Toast.LENGTH_SHORT).show();
         }
         catch (MqttException e) {
             e.printStackTrace();
@@ -248,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
 
         System.out.println("Publishing message..");
         try {
-            mqttAndroidClient.publish(pubTopic, new MqttMessage(returnJsonString.getBytes()));
+            mqttAndroidClient.publish(PUB_TOPIC, new MqttMessage(returnJsonString.getBytes()));
         }
         catch (MqttException e) {
             e.printStackTrace();
