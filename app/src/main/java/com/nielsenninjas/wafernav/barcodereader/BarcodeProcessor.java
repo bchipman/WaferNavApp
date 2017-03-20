@@ -9,9 +9,14 @@ import com.google.android.gms.vision.barcode.Barcode;
  Created by brian on 3/19/2017.
  */
 
-public class MyBarcodeProcessor implements Detector.Processor<Barcode> {
+public class BarcodeProcessor implements Detector.Processor<Barcode> {
 
-    private static final String TAG = "Barcode-reader";
+    private static final String TAG = "BarcodeProcessor";
+    private BarcodeCaptureActivity barcodeCaptureActivity;
+
+    public BarcodeProcessor(BarcodeCaptureActivity barcodeCaptureActivity) {
+        this.barcodeCaptureActivity = barcodeCaptureActivity;
+    }
 
     @Override
     public void release() {
@@ -25,6 +30,7 @@ public class MyBarcodeProcessor implements Detector.Processor<Barcode> {
             final Barcode barcode = detectedItems.valueAt(i);
             if (barcode != null) {
                 Log.d(TAG, "Found barcode " + barcode.rawValue);
+                barcodeCaptureActivity.myReturnToPreviousActivity(barcode);
             }
         }
     }
