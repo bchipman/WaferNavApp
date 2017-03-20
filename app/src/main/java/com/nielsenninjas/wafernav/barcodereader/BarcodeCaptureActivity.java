@@ -41,6 +41,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.vision.Detector;
 import com.nielsenninjas.wafernav.R;
 import com.nielsenninjas.wafernav.barcodereader.ui.camera.CameraSource;
 import com.nielsenninjas.wafernav.barcodereader.ui.camera.CameraSourcePreview;
@@ -169,9 +170,13 @@ public final class BarcodeCaptureActivity extends AppCompatActivity {
         // graphics for each barcode on screen.  The factory is used by the multi-processor to
         // create a separate tracker instance for each barcode.
         BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(context).build();
-        BarcodeTrackerFactory barcodeFactory = new BarcodeTrackerFactory(mGraphicOverlay);
-        barcodeDetector.setProcessor(
-                new MultiProcessor.Builder<>(barcodeFactory).build());
+
+        Detector.Processor<Barcode> barcodeProcessor = new MyBarcodeProcessor();
+        barcodeDetector.setProcessor(barcodeProcessor);
+
+        //BarcodeTrackerFactory barcodeFactory = new BarcodeTrackerFactory(mGraphicOverlay);
+        //barcodeDetector.setProcessor(
+        //        new MultiProcessor.Builder<>(barcodeFactory).build());
 
         if (!barcodeDetector.isOperational()) {
             // Note: The first time that an app using the barcode or face API is installed on a
@@ -365,6 +370,13 @@ public final class BarcodeCaptureActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+    private void myReturnToPreviousActivity(Barcode barcode) {
+        Intent data = new Intent();
+        data.putExtra(BarcodeObject, barcode);
+        setResult(CommonStatusCodes.SUCCESS, data);
+        finish();
     }
 
     private class CaptureGestureListener extends GestureDetector.SimpleOnGestureListener {
