@@ -231,11 +231,6 @@ public class MainActivity extends AppCompatActivity {
         mTextViewOutputLog.setText(null);
     }
 
-    public void ToHomeActivityButtonHandler(View view) {
-        Intent intent = new Intent(this, HomeActivity.class);
-        startActivity(intent);
-    }
-
     public void ReadBarcodeButtonHandler(View view) {
         // launch barcode activity.
         Intent intent = new Intent(this, BarcodeCaptureActivity.class);
