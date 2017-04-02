@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/newDelivery"
+            android:layout_width="234dp"
+            android:layout_height="71dp"
+            android:background="#303F9F"
+            android:text="Start New Delivery"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            tools:layout_editor_absoluteX="91dp"
+            tools:layout_editor_absoluteY="381dp" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/checkbox"
+            tools:layout_editor_absoluteX="105dp"
+            tools:layout_editor_absoluteY="130dp" />
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:fontFamily="sans-serif"
+            android:inputType="textPersonName"
+            android:singleLine="false"
+            android:text="Delivery Complete!"
+            android:textAlignment="center"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            tools:background="@android:color/transparent"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="47dp" />
+
+        <Button
+            android:id="@+id/exit"
+            android:layout_width="234dp"
+            android:layout_height="71dp"
+            android:background="#303F9F"
+            android:text="Exit WaferNav"
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            tools:layout_editor_absoluteX="91dp"
+            tools:layout_editor_absoluteY="482dp" />
+
+    </android.support.constraint.ConstraintLayout>
+</LinearLayout>
