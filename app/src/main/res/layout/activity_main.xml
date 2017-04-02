@@ -14,52 +14,62 @@
         >
 
     <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
             >
 
-        <TextView
-                android:id="@+id/textViewId"
+        <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:text="ID"
+                >
+
+            <TextView
+                    android:id="@+id/textViewId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:text="ID"
+                    />
+
+            <AutoCompleteTextView
+                    android:id="@+id/autoCompleteTextViewId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Enter ID"
+                    android:completionThreshold="1"
+                    android:inputType="number"
+                    />
+
+        </LinearLayout>
+
+        <Button
+                android:id="@+id/buttonReadBarcode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Read Barcode"
+                android:onClick="ReadBarcodeButtonHandler"
                 />
 
-        <AutoCompleteTextView
-                android:id="@+id/autoCompleteTextViewId"
+        <Button
+                android:id="@+id/buttonPublish"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="Enter ID"
-                android:completionThreshold="1"
-                android:inputType="number"
+                android:text="Publish"
+                android:onClick="publishButtonHandler"
                 />
 
     </LinearLayout>
 
 
-    <Button
-            android:id="@+id/buttonReadBarcode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Read Barcode"
-            android:onClick="ReadBarcodeButtonHandler"
-            />
-
-    <Button
-            android:id="@+id/buttonPublish"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Publish"
-            android:onClick="publishButtonHandler"
-            />
-
     <RelativeLayout
             android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             >
 
         <ScrollView
@@ -71,7 +81,7 @@
             <TextView
                     android:id="@+id/textViewOutputLog"
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_height="wrap_content"
                     />
 
         </ScrollView>
