@@ -1,36 +1,28 @@
 package com.nielsenninjas.wafernav;
 
-import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.util.SparseArray;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.AutoCompleteTextView;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
 import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.vision.barcode.Barcode;
 import com.nielsenninjas.wafernav.barcodereader.BarcodeCaptureActivity;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.*;
-import com.google.android.gms.vision.Frame;
-import com.google.android.gms.vision.barcode.Barcode;
-import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements EnterIdFragment.OnFragmentInteractionListener {
 
     // Logging
     private static final String TAG = "MainActivity";
@@ -45,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int RC_BARCODE_CAPTURE = 9001;
 
     // UI elements
-    protected AutoCompleteTextView mAutoCompleteTextViewId;
+    protected AutoCompleteTextView mAutoCompleteTextViewId; // TODO I WILL BE NULL FIX ME
     protected ScrollView mScrollViewOutputLog;
     protected TextView mTextViewOutputLog;
 
@@ -58,70 +50,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Hide keyboard when (1) click non-EditText object, or (2) press enter in EditText object
-        setupHideKeyboardListeners(findViewById(R.id.parent));
+        Fragment fragment = EnterIdFragment.newInstance("param1", "param2");
+
+        getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
+
         Log.i(TAG, "onCreate()");
 
         // Set the UI elements
         mTextViewOutputLog = (TextView) findViewById(R.id.textViewOutputLog);
         mScrollViewOutputLog = (ScrollView) findViewById(R.id.scrollViewOutputLog);
 
-        // AutoCompleteTextView for IDs
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.ids, android.R.layout.simple_dropdown_item_1line);
-        mAutoCompleteTextViewId = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextViewId);
-        mAutoCompleteTextViewId.setAdapter(adapter);
-
         initMqtt();
-
-        // Focus publish button when start app
-        findViewById(R.id.buttonPublish).requestFocus();
-        hideKeyboard();
-    }
-
-    private void setupHideKeyboardListeners(final View view) {
-        // Set up touch listener for non-text box views to hide keyboard.
-        if (!(view instanceof EditText)) {
-            view.setOnTouchListener(new View.OnTouchListener() {
-                public boolean onTouch(View v, MotionEvent event) {
-                    hideKeyboard();
-                    return false;
-                }
-            });
-        }
-        // Set up editor listener to hide keyboard when press enter in TextEdit object
-        else {
-            ((EditText) view).setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                        hideKeyboard();
-                        // if this is mEditTextId, also trigger the 'Publish' button when press enter
-                        if (view == mAutoCompleteTextViewId) {
-                            publishButtonHandler(mAutoCompleteTextViewId);
-                        }
-                    }
-                    return false;
-                }
-            });
-        }
-
-        // If a layout container, iterate over children and seed recursion.
-        if (view instanceof ViewGroup) {
-            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
-                View innerView = ((ViewGroup) view).getChildAt(i);
-                setupHideKeyboardListeners(innerView);
-            }
-        }
-    }
-
-    private void hideKeyboard() {
-        InputMethodManager inm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        if (getCurrentFocus() != null) {
-            inm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        }
-        else {
-            Log.w(TAG, "I WOULD HAVE CRASHED BECAUSE NOTHING IS FOCUSED!!");
-        }
-        findViewById(R.id.parent).clearFocus();
     }
 
     private void initMqtt() {
@@ -194,7 +133,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
     public void publishButtonHandler(View view) {
+        mAutoCompleteTextViewId = (AutoCompleteTextView) view;
         // Get text field
         String idString = mAutoCompleteTextViewId.getText().toString();
 
@@ -203,9 +144,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "ID cannot be empty", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        // Parse the non-null number-only string
-        //int id = Integer.parseInt(idString);
 
         // Create JSON string to publish, e.g. {"id":123}
         Map<String, String> returnMap = new HashMap<>();
@@ -227,16 +165,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void ClearOutputLogButtonHandler(View view) {
-        mTextViewOutputLog.setText(null);
-    }
+    @Override
+    public void readBarcodeButtonHandler(View view) {
+        mAutoCompleteTextViewId = (AutoCompleteTextView) view;
 
-    public void ToHomeActivityButtonHandler(View view) {
-        Intent intent = new Intent(this, HomeActivity.class);
-        startActivity(intent);
-    }
-
-    public void ReadBarcodeButtonHandler(View view) {
         // launch barcode activity.
         Intent intent = new Intent(this, BarcodeCaptureActivity.class);
         intent.putExtra(BarcodeCaptureActivity.AutoFocus, true);
@@ -245,18 +177,22 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, RC_BARCODE_CAPTURE);
     }
 
+    public void clearOutputLogButtonHandler(View view) {
+        mTextViewOutputLog.setText(null);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_BARCODE_CAPTURE) {
             if (resultCode == CommonStatusCodes.SUCCESS) {
                 if (data != null) {
                     Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
-                    mTextViewOutputLog.append(getResources().getString(R.string.barcode_success));
+                    mTextViewOutputLog.append("\n" + getResources().getString(R.string.barcode_success) + ".");
                     mAutoCompleteTextViewId.setText(barcode.displayValue);
                     Log.d(TAG_BARCODE, "Barcode read: " + barcode.displayValue);
                 }
                 else {
-                    mTextViewOutputLog.append(getResources().getString(R.string.barcode_failure));
+                    mTextViewOutputLog.append("\n" + getResources().getString(R.string.barcode_failure));
                     Log.d(TAG_BARCODE, "No barcode captured, intent data is null");
                 }
             }

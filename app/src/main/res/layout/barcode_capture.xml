@@ -13,11 +13,6 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent">
 
-    <com.nielsenninjas.wafernav.barcodereader.ui.camera.GraphicOverlay
-        android:id="@+id/graphicOverlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
   </com.nielsenninjas.wafernav.barcodereader.ui.camera.CameraSourcePreview>
 
 </LinearLayout>

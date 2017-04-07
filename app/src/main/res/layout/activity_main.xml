@@ -13,77 +13,50 @@
         tools:context="com.nielsenninjas.wafernav.MainActivity"
         >
 
-    <Button
-            android:id="@+id/buttonToHomeActivity"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:onClick="ToHomeActivityButtonHandler"
-            android:background="?android:attr/homeAsUpIndicator"
-            />
-
     <LinearLayout
-            android:orientation="horizontal"
+            android:id="@+id/fragmentContainer"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
             >
-
-        <TextView
-                android:id="@+id/textViewId"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:text="ID"
-                />
-
-        <AutoCompleteTextView
-                android:id="@+id/autoCompleteTextViewId"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="Enter ID"
-                android:completionThreshold="1"
-                android:inputType="number"
-                />
-
     </LinearLayout>
 
 
-    <Button
-            android:id="@+id/buttonPublish"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Publish"
-            android:onClick="publishButtonHandler"
-            />
-
-    <Button
-            android:id="@+id/buttonClearOutputLog"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Clear Output Log"
-            android:onClick="ClearOutputLogButtonHandler"
-            />
-
-    <Button
-            android:id="@+id/buttonReadBarcode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Read Barcode"
-            android:onClick="ReadBarcodeButtonHandler"
-            />
-
-    <ScrollView
-            android:id="@+id/scrollViewOutputLog"
+    <RelativeLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             >
 
-        <TextView
-                android:id="@+id/textViewOutputLog"
-                android:layout_width="match_parent"
+        <ScrollView
+                android:id="@+id/scrollViewOutputLog"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:isScrollContainer="false"
+                >
+
+            <TextView
+                    android:id="@+id/textViewOutputLog"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    />
+
+        </ScrollView>
+
+        <Button
+                android:id="@+id/buttonClearOutputLog"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:layout_alignBottom="@id/scrollViewOutputLog"
+                android:layout_alignRight="@id/scrollViewOutputLog"
+                android:text="X"
+                android:onClick="clearOutputLogButtonHandler"
                 />
 
-    </ScrollView>
+    </RelativeLayout>
 
 </LinearLayout>
