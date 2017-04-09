@@ -124,7 +124,11 @@
         android:layout_width="384dp"
         android:layout_height="123dp"
         tools:layout_editor_absoluteX="13dp"
-        tools:layout_editor_absoluteY="367dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/buttonPublish"
+        app:layout_constraintVertical_bias="0.08">
 
         <ScrollView
             android:id="@+id/scrollViewBarcodes"
