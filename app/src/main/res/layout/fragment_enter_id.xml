@@ -23,43 +23,61 @@
             android:completionThreshold="1"
             android:hint="Enter ID"
             android:inputType="number"
-            tools:layout_editor_absoluteY="343dp"
-            tools:layout_editor_absoluteX="71dp" />
+            android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="28dp"
+            app:layout_constraintTop_toBottomOf="@+id/textViewId"
+            app:layout_constraintHorizontal_bias="0.496" />
 
         <Button
             android:id="@+id/buttonPublish"
-            android:layout_width="244dp"
-            android:layout_height="82dp"
+            android:layout_width="262dp"
+            android:layout_height="68dp"
             android:background="#303F9F"
             android:onClick="publishButtonHandler"
-            android:text="Submit"
+            android:text="Submit Barcode ID"
             android:textColor="#ffffff"
             android:textSize="24sp"
-            tools:layout_editor_absoluteX="67dp"
-            tools:layout_editor_absoluteY="440dp" />
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/startDelivery"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/autoCompleteTextViewId"
+            android:layout_marginRight="8dp"
+            app:layout_constraintVertical_bias="0.506"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent" />
 
         <Button
             android:id="@+id/buttonReadBarcode"
-            android:layout_width="231dp"
-            android:layout_height="60dp"
+            android:layout_width="165dp"
+            android:layout_height="70dp"
             android:background="#303F9F"
             android:clickable="false"
             android:onClick="ReadBarcodeButtonHandler"
             android:text="Scan"
             android:textColor="#ffffff"
             android:textSize="24sp"
-            tools:layout_editor_absoluteX="75dp"
-            tools:layout_editor_absoluteY="178dp" />
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/editText"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/textViewId"
+            android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent" />
 
         <TextView
             android:id="@+id/textViewId"
-            android:layout_width="257dp"
-            android:layout_height="36dp"
+            android:layout_width="126dp"
+            android:layout_height="32dp"
             android:layout_weight="3"
-            android:text="Your current location is"
+            android:text="Barcode ID"
             android:textSize="24sp"
-            tools:layout_editor_absoluteX="61dp"
-            tools:layout_editor_absoluteY="286dp" />
+            tools:layout_editor_absoluteX="126dp"
+            tools:layout_editor_absoluteY="200dp" />
 
         <EditText
             android:id="@+id/editText"
@@ -68,23 +86,32 @@
             android:background="@android:color/transparent"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Before proceeding, "
+            android:text="Scan all barcodes"
             android:textSize="24sp"
             android:textStyle="italic"
-            tools:layout_editor_absoluteX="91dp"
-            tools:layout_editor_absoluteY="54dp" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent" />
 
-        <EditText
-            android:id="@+id/editText2"
-            android:layout_width="238dp"
-            android:layout_height="27dp"
-            android:background="@android:color/transparent"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Scan Station Barcode"
+        <Button
+            android:id="@+id/startDelivery"
+            android:layout_width="262dp"
+            android:layout_height="74dp"
+            android:background="@android:color/holo_green_dark"
+            android:text="Start Delivery"
+            android:textColor="#ffffff"
             android:textSize="24sp"
-            tools:layout_editor_absoluteY="105dp"
-            tools:layout_editor_absoluteX="70dp" />
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="40dp"
+            android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
     </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>
