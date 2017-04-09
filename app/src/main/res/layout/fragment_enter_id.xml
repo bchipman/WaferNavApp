@@ -8,8 +8,8 @@
 
     <Button
         android:id="@+id/buttonPublish"
-        android:layout_width="252dp"
-        android:layout_height="79dp"
+        android:layout_width="253dp"
+        android:layout_height="65dp"
         android:background="#303F9F"
         android:onClick="publishButtonHandler"
         android:text="Submit Barcode ID"
@@ -25,27 +25,26 @@
         tools:layout_constraintLeft_creator="1"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="35dp"
-        app:layout_constraintTop_toBottomOf="@+id/autoCompleteTextViewId"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="274dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
         android:layout_marginBottom="8dp"
-        app:layout_constraintVertical_bias="0.077" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/startDelivery"
         android:layout_width="244dp"
-        android:layout_height="88dp"
+        android:layout_height="74dp"
         android:background="@android:color/holo_green_dark"
         android:text="Start Delivery"
         android:textColor="#ffffff"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
-        android:layout_marginBottom="37dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="165dp"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="8dp"
         app:layout_constraintVertical_bias="1.0" />
@@ -60,11 +59,11 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewId"
-        android:layout_marginTop="34dp"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="8dp"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintVertical_bias="0.369" />
 
     <Button
         android:id="@+id/buttonReadBarcode"
@@ -79,10 +78,10 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="54dp"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="8dp"
-        app:layout_constraintVertical_bias="0.179" />
+        app:layout_constraintVertical_bias="0.027" />
 
     <TextView
         android:id="@+id/textViewId"
@@ -94,9 +93,14 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="27dp"
-        app:layout_constraintTop_toBottomOf="@+id/buttonReadBarcode"
-        app:layout_constraintHorizontal_bias="0.498" />
+        app:layout_constraintHorizontal_bias="0.498"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintVertical_bias="0.263" />
 
     <TextView
         android:id="@+id/ScanAll"
@@ -106,8 +110,18 @@
         android:textColor="#000000"
         android:textSize="24sp"
         android:textStyle="italic"
-        tools:layout_editor_absoluteX="111dp"
-        tools:layout_editor_absoluteY="52dp" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintVertical_bias="0.014" />
 
 
 </android.support.constraint.ConstraintLayout>
