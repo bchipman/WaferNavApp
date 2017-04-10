@@ -45,10 +45,14 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
     private MqttAndroidClient mqttAndroidClient;
     private IMqttToken mqttSubToken;
 
+    // Reference to instance
+    private MainActivity mainActivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mainActivity = this;
 
         Fragment fragment = EnterIdFragment.newInstance("param1", "param2");
 
@@ -114,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
         }
 
         @Override
-        public void messageArrived(String topic, MqttMessage message) throws Exception {
+        public void messageArrived(String topic, final MqttMessage message) throws Exception {
             System.out.println("Message Arrived!: " + topic + ": " + new String(message.getPayload()));
             mTextViewOutputLog.append("\n" + topic + ": " + new String(message.getPayload()));
 
@@ -123,6 +127,9 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
                 @Override
                 public void run() {
                     mScrollViewOutputLog.fullScroll(ScrollView.FOCUS_DOWN);
+                    Intent intent = new Intent(mainActivity, assign_handler.class);
+                    intent.putExtra("MESSAGE", new String(message.getPayload()));
+                    startActivity(intent);
                 }
             });
         }
