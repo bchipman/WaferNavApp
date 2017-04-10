@@ -1,8 +1,10 @@
 package com.nielsenninjas.wafernav;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
@@ -10,9 +12,9 @@ import org.codehaus.jackson.type.TypeReference;
 import java.io.IOException;
 import java.util.Map;
 
-public class assign_handler extends AppCompatActivity {
+public class AssignHandlerActivity extends AppCompatActivity {
 
-    private static final String TAG = "assign_handler";
+    private static final String TAG = "AssignHandlerActivity";
     private TextView mTextViewHandler;
 
     @Override
@@ -29,7 +31,8 @@ public class assign_handler extends AppCompatActivity {
         String handlerId = null;
 
         try {
-            jsonMap = mapper.readValue(jsonMessage, new TypeReference<Map<String, String>>(){});
+            jsonMap = mapper.readValue(jsonMessage, new TypeReference<Map<String, String>>() {
+            });
             handlerId = jsonMap.get("id");
         }
         catch (IOException e) {
@@ -38,5 +41,10 @@ public class assign_handler extends AppCompatActivity {
 
         Log.i(TAG, "I got this message: " + jsonMessage);
         mTextViewHandler.append(": " + handlerId);
+    }
+
+    public void startDeliveryButtonHandler(View view) {
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
     }
 }

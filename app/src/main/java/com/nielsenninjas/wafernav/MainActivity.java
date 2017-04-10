@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
                 @Override
                 public void run() {
                     mScrollViewOutputLog.fullScroll(ScrollView.FOCUS_DOWN);
-                    Intent intent = new Intent(mainActivity, assign_handler.class);
+                    Intent intent = new Intent(mainActivity, AssignHandlerActivity.class);
                     intent.putExtra("MESSAGE", new String(message.getPayload()));
                     startActivity(intent);
                 }
