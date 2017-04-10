@@ -25,7 +25,7 @@
             android:value="barcode" />
 
         <!-- Mqtt Service -->
-        <service android:name="org.eclipse.paho.android.service.MqttService"></service>
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
 
         <activity android:name=".HomeActivity">
             <intent-filter>
@@ -44,7 +44,8 @@
         <activity
             android:name=".barcodereader.BarcodeCaptureActivity"
             android:label="Read Barcode" />
-        <activity android:name=".AssignHandlerActivity"></activity>
+        <activity android:name=".AssignHandlerActivity" />
+        <activity android:name=".delivering_to"></activity>
     </application>
 
 </manifest>
