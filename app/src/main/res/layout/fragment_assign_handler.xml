@@ -4,23 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.nielsenninjas.wafernav.AssignHandlerActivity">
+    tools:context="com.nielsenninjas.wafernav.AssignHandlerFragment">
 
     <TextView
-        android:id="@+id/textViewAssigned"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="You've been assigned:"
-        android:textColor="#000000"
-        android:textSize="35sp"
-        android:textStyle="bold"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="72dp"
-        app:layout_constraintHorizontal_bias="0.488" />
+            android:id="@+id/textViewAssigned"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="I AM FRAGMENT You've been assigned:"
+            android:textColor="#000000"
+            android:textSize="35sp"
+            android:textStyle="bold"
+            android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="72dp"
+            />
 
     <Button
             android:id="@+id/startDeliveryButton"
@@ -38,7 +36,6 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="8dp"
             app:layout_constraintVertical_bias="1.0"
-            android:onClick="startDeliveryButtonHandler"
             />
 
     <TextView

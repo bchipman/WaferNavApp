@@ -1,6 +1,7 @@
 package com.nielsenninjas.wafernav;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity implements EnterIdFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements EnterIdFragment.OnFragmentInteractionListener, AssignHandlerFragment.OnFragmentInteractionListener {
 
     // Logging
     private static final String TAG = "MainActivity";
@@ -77,7 +78,9 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
                 public void onSuccess(IMqttToken asyncActionToken) {
                     try {
                         mqttSubToken = mqttAndroidClient.subscribe(SUB_TOPIC, 0);
-                        Toast.makeText(getApplicationContext(), "Subscribed to " + SUB_TOPIC, Toast.LENGTH_SHORT).show();
+                        Toast
+                                .makeText(getApplicationContext(), "Subscribed to " + SUB_TOPIC, Toast.LENGTH_SHORT)
+                                .show();
                     }
                     catch (MqttException ex) {
                         ex.printStackTrace();
@@ -86,7 +89,9 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Toast.makeText(getApplicationContext(), "Failed to connect to " + BROKER_URL + "!", Toast.LENGTH_SHORT).show();
+                    Toast
+                            .makeText(getApplicationContext(), "Failed to connect to " + BROKER_URL + "!", Toast.LENGTH_SHORT)
+                            .show();
                 }
             });
         }
@@ -110,6 +115,17 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStackImmediate();
+            Log.i(TAG, "onBackPressed 1");
+        }
+        else {
+            Log.i(TAG, "onBackPressed 2");
+            super.onBackPressed();
+        }
+    }
     private class SubscribeCallback implements MqttCallback {
 
         @Override
@@ -122,14 +138,19 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
             System.out.println("Message Arrived!: " + topic + ": " + new String(message.getPayload()));
             mTextViewOutputLog.append("\n" + topic + ": " + new String(message.getPayload()));
 
+
+            Fragment fragment = AssignHandlerFragment.newInstance("param1", "param2");
+
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(R.id.fragmentContainer, fragment);
+            ft.addToBackStack(null);
+            ft.commit();
+
             // Auto scroll to bottom
             mScrollViewOutputLog.post(new Runnable() {
                 @Override
                 public void run() {
                     mScrollViewOutputLog.fullScroll(ScrollView.FOCUS_DOWN);
-                    Intent intent = new Intent(mainActivity, AssignHandlerActivity.class);
-                    intent.putExtra("MESSAGE", new String(message.getPayload()));
-                    startActivity(intent);
                 }
             });
         }
@@ -170,6 +191,11 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
         catch (MqttException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void startDeliveryButtonHandler() {
+        Log.i(TAG, "startDeliveryButtonHandler");
     }
 
     @Override

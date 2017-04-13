@@ -44,7 +44,6 @@
         <activity
             android:name=".barcodereader.BarcodeCaptureActivity"
             android:label="Read Barcode" />
-        <activity android:name=".AssignHandlerActivity" />
         <activity android:name=".delivering_to"></activity>
     </application>
 
