@@ -15,6 +15,7 @@ import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.nielsenninjas.wafernav.barcodereader.BarcodeCaptureActivity;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.*;
 
@@ -23,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity implements EnterIdFragment.OnFragmentInteractionListener, AssignHandlerFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements EnterIdFragment.OnFragmentInteractionListener, AssignHandlerFragment.OnFragmentInteractionListener, DeliveringToFragment.OnFragmentInteractionListener {
 
     // Logging
     private static final String TAG = "MainActivity";
@@ -135,16 +136,35 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
 
         @Override
         public void messageArrived(String topic, final MqttMessage message) throws Exception {
-            System.out.println("Message Arrived!: " + topic + ": " + new String(message.getPayload()));
-            mTextViewOutputLog.append("\n" + topic + ": " + new String(message.getPayload()));
+            String jsonMessage = new String(message.getPayload());
+            System.out.println("Message Arrived!: " + topic + ": " + jsonMessage);
+            mTextViewOutputLog.append("\n" + topic + ": " + jsonMessage);
 
 
-            Fragment fragment = AssignHandlerFragment.newInstance("param1", "param2");
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, String> jsonMap;
+            String handlerId = null;
+            String handlerLocation = null;
+
+            try {
+                jsonMap = mapper.readValue(jsonMessage, new TypeReference<Map<String, String>>() {
+                });
+                handlerId = jsonMap.get("id");
+                handlerLocation = jsonMap.get("location");
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+            Fragment fragment = AssignHandlerFragment.newInstance(handlerId, handlerLocation);
 
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.fragmentContainer, fragment);
             ft.addToBackStack(null);
             ft.commit();
+
+
 
             // Auto scroll to bottom
             mScrollViewOutputLog.post(new Runnable() {
@@ -194,8 +214,19 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
     }
 
     @Override
-    public void startDeliveryButtonHandler() {
+    public void startDeliveryButtonHandler(String id, String loc) {
         Log.i(TAG, "startDeliveryButtonHandler");
+        Fragment fragment = DeliveringToFragment.newInstance(id, loc);
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.fragmentContainer, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+
+    @Override
+    public void confirmDeliveryButtonHandler() {
+        Log.i(TAG, "confirmDeliveryButtonHandler");
     }
 
     @Override
