@@ -10,42 +10,27 @@
         android:id="@+id/buttonPublish"
         android:layout_width="253dp"
         android:layout_height="65dp"
-        android:background="#303F9F"
-        android:onClick="publishButtonHandler"
-        android:text="Submit Barcode ID"
-        android:textColor="#ffffff"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        tools:layout_constraintLeft_creator="1"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="274dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintVertical_bias="0.05" />
-
-    <Button
-        android:id="@+id/startDelivery"
-        android:layout_width="244dp"
-        android:layout_height="74dp"
         android:background="@android:color/holo_green_dark"
-        android:text="Start Delivery"
+        android:onClick="publishButtonHandler"
+        android:text="Submit Lot ID"
         android:textColor="#ffffff"
         android:textSize="24sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="25dp" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.05"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
 
     <AutoCompleteTextView
             android:id="@+id/autoCompleteTextViewLotId"
@@ -84,81 +69,43 @@
         app:layout_constraintVertical_bias="0.065" />
 
     <TextView
-            android:id="@+id/textViewLotId"
-            android:layout_width="126dp"
-            android:layout_height="32dp"
-            android:text="Barcode ID"
-            android:textSize="24sp"
-            android:layout_marginRight="8dp"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginLeft="8dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="8dp"
-            app:layout_constraintVertical_bias="0.299"
-            />
+        android:id="@+id/textViewLotId"
+        android:layout_width="68dp"
+        android:layout_height="34dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Lot ID"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.296" />
 
     <TextView
         android:id="@+id/ScanAll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Scan All Barcodes"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Scan Lot ID"
         android:textColor="#000000"
         android:textSize="24sp"
         android:textStyle="italic"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintVertical_bias="0.05" />
-
-    <RelativeLayout
-        android:layout_width="384dp"
-        android:layout_height="123dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.756"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp">
-
-        <ScrollView
-            android:id="@+id/scrollViewBarcodes"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="24dp"
-            android:layout_marginRight="24dp"
-            android:layout_marginTop="132dp">
-
-            <TextView
-                android:id="@+id/textViewBarcodes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:layout_editor_absoluteX="8dp"
-                tools:layout_editor_absoluteY="117dp" />
-        </ScrollView>
-
-    </RelativeLayout>
+        app:layout_constraintVertical_bias="0.05" />
 
 </android.support.constraint.ConstraintLayout>
