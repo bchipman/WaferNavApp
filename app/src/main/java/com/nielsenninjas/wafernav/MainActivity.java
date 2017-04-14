@@ -39,34 +39,23 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
     private static final int ID_BARCODE_CAPTURE = 9001;
     private static final int STATION_BARCODE_CAPTURE = 9002;
 
-
     // UI elements
     protected AutoCompleteTextView mAutoCompleteTextViewId; // TODO I WILL BE NULL FIX ME
-    protected ScrollView mScrollViewOutputLog;
-    protected TextView mTextViewOutputLog;
 
     // MQTT
     private MqttAndroidClient mqttAndroidClient;
     private IMqttToken mqttSubToken;
 
-    // Reference to instance
-    private MainActivity mainActivity;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mainActivity = this;
 
         Fragment fragment = EnterIdFragment.newInstance("param1", "param2");
 
         getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
 
         Log.i(TAG, "onCreate()");
-
-        // Set the UI elements
-        mTextViewOutputLog = (TextView) findViewById(R.id.textViewOutputLog);
-        mScrollViewOutputLog = (ScrollView) findViewById(R.id.scrollViewOutputLog);
 
         initMqtt();
     }
@@ -160,9 +149,7 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
         @Override
         public void messageArrived(String topic, final MqttMessage message) throws Exception {
             String jsonMessage = new String(message.getPayload());
-            System.out.println("Message Arrived!: " + topic + ": " + jsonMessage);
-            mTextViewOutputLog.append("\n" + topic + ": " + jsonMessage);
-
+            Log.i(TAG, "Message Arrived!: " + topic + ": " + jsonMessage);
 
             ObjectMapper mapper = new ObjectMapper();
             Map<String, String> jsonMap = null;
@@ -210,14 +197,6 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
             ft.replace(R.id.fragmentContainer, fragment);
             ft.addToBackStack(null);
             ft.commit();
-
-            // Auto scroll to bottom
-            mScrollViewOutputLog.post(new Runnable() {
-                @Override
-                public void run() {
-                    mScrollViewOutputLog.fullScroll(ScrollView.FOCUS_DOWN);
-                }
-            });
         }
 
         @Override
@@ -318,17 +297,12 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
         startActivityForResult(intent, ID_BARCODE_CAPTURE);
     }
 
-    public void clearOutputLogButtonHandler(View view) {
-        mTextViewOutputLog.setText(null);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ID_BARCODE_CAPTURE || requestCode == STATION_BARCODE_CAPTURE) {
             if (resultCode == CommonStatusCodes.SUCCESS) {
                 if (data != null) {
                     Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
-                    mTextViewOutputLog.append("\n" + getResources().getString(R.string.barcode_success) + ".");
                     mAutoCompleteTextViewId.setText(barcode.displayValue);
                     Log.d(TAG_BARCODE, "Barcode read: " + barcode.displayValue);
 
@@ -338,12 +312,11 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
                     }
                 }
                 else {
-                    mTextViewOutputLog.append("\n" + getResources().getString(R.string.barcode_failure));
                     Log.d(TAG_BARCODE, "No barcode captured, intent data is null");
                 }
             }
             else {
-                mTextViewOutputLog.append(String.format(getString(R.string.barcode_error), CommonStatusCodes.getStatusCodeString(resultCode)));
+                Log.d(TAG_BARCODE, String.format(getString(R.string.barcode_error), CommonStatusCodes.getStatusCodeString(resultCode)));
             }
         }
         else {

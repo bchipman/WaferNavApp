@@ -68,10 +68,6 @@ public class EnterIdFragment extends Fragment {
         setupHideKeyboardListeners(view);
         Log.i(TAG, "onCreate()");
 
-        // Set the UI elements
-        mTextViewOutputLog = (TextView) getActivity().findViewById(R.id.textViewOutputLog);
-        mScrollViewOutputLog = (ScrollView) getActivity().findViewById(R.id.scrollViewOutputLog);
-
         // AutoCompleteTextView for IDs
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.ids, android.R.layout.simple_dropdown_item_1line);
         mAutoCompleteTextViewId = (AutoCompleteTextView) view.findViewById(R.id.autoCompleteTextViewId);

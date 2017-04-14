@@ -23,40 +23,4 @@
     </LinearLayout>
 
 
-    <RelativeLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            >
-
-        <ScrollView
-                android:id="@+id/scrollViewOutputLog"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:isScrollContainer="false"
-                >
-
-            <TextView
-                    android:id="@+id/textViewOutputLog"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    />
-
-        </ScrollView>
-
-        <Button
-                android:id="@+id/buttonClearOutputLog"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:layout_alignBottom="@id/scrollViewOutputLog"
-                android:layout_alignRight="@id/scrollViewOutputLog"
-                android:text="X"
-                android:onClick="clearOutputLogButtonHandler"
-                />
-
-    </RelativeLayout>
-
 </LinearLayout>
