@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity implements EnterIdFragment.OnFragmentInteractionListener, AssignHandlerFragment.OnFragmentInteractionListener, DeliveringToFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements EnterIdFragment.OnFragmentInteractionListener, AssignHandlerFragment.OnFragmentInteractionListener, DeliveringToFragment.OnFragmentInteractionListener, EnterStationIdFragment.OnFragmentInteractionListener {
 
     // Logging
     private static final String TAG = "MainActivity";
@@ -36,7 +36,9 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
     private static final String SUB_TOPIC = "wafernav/location_data";
     private static final String CLIENT_ID = UUID.randomUUID().toString();
 
-    private static final int RC_BARCODE_CAPTURE = 9001;
+    private static final int ID_BARCODE_CAPTURE = 9001;
+    private static final int STATION_BARCODE_CAPTURE = 9002;
+
 
     // UI elements
     protected AutoCompleteTextView mAutoCompleteTextViewId; // TODO I WILL BE NULL FIX ME
@@ -195,7 +197,8 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
 
         // Create JSON string to publish, e.g. {"id":123}
         Map<String, String> returnMap = new HashMap<>();
-        returnMap.put("id", idString);
+        returnMap.put("directive", "GET_NEW_BLU");
+        returnMap.put("lotId", idString);
         String returnJsonString = null;
         try {
             returnJsonString = new ObjectMapper().writeValueAsString(returnMap);
@@ -225,9 +228,53 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
     }
 
     @Override
-    public void confirmDeliveryButtonHandler() {
+    public void confirmDeliveryButtonHandler(String id, String loc) {
         Log.i(TAG, "confirmDeliveryButtonHandler");
+        Fragment fragment = EnterStationIdFragment.newInstance(id, loc);
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.fragmentContainer, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
     }
+
+    @Override
+    public void readStationBarcodeButtonHandler(String id, String loc) {
+        Log.i(TAG, "readStationBarcodeButtonHandler");
+
+        // launch barcode activity.
+        Intent intent = new Intent(this, BarcodeCaptureActivity.class);
+        intent.putExtra(BarcodeCaptureActivity.AutoFocus, true);
+        intent.putExtra(BarcodeCaptureActivity.UseFlash, false);
+
+        startActivityForResult(intent, STATION_BARCODE_CAPTURE);
+    }
+
+    @Override
+    public void publishStationIdButtonHandler(String stationId) {
+        Log.i(TAG, "publishStationIdButtonHandler");
+
+        // Create JSON string to publish, e.g. {"id":123}
+        Map<String, String> returnMap = new HashMap<>();
+        returnMap.put("id", stationId);
+        String returnJsonString = null;
+        try {
+            returnJsonString = new ObjectMapper().writeValueAsString(returnMap);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Publishing message..");
+        try {
+            mqttAndroidClient.publish(PUB_TOPIC, new MqttMessage(returnJsonString.getBytes()));
+        }
+        catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     @Override
     public void readBarcodeButtonHandler(View view) {
@@ -238,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
         intent.putExtra(BarcodeCaptureActivity.AutoFocus, true);
         intent.putExtra(BarcodeCaptureActivity.UseFlash, false);
 
-        startActivityForResult(intent, RC_BARCODE_CAPTURE);
+        startActivityForResult(intent, ID_BARCODE_CAPTURE);
     }
 
     public void clearOutputLogButtonHandler(View view) {
@@ -247,13 +294,18 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RC_BARCODE_CAPTURE) {
+        if (requestCode == ID_BARCODE_CAPTURE || requestCode == STATION_BARCODE_CAPTURE) {
             if (resultCode == CommonStatusCodes.SUCCESS) {
                 if (data != null) {
                     Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
                     mTextViewOutputLog.append("\n" + getResources().getString(R.string.barcode_success) + ".");
                     mAutoCompleteTextViewId.setText(barcode.displayValue);
                     Log.d(TAG_BARCODE, "Barcode read: " + barcode.displayValue);
+
+                    if (requestCode == STATION_BARCODE_CAPTURE) {
+                        EnterStationIdFragment enterStationIdFragment = (EnterStationIdFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer);
+                        enterStationIdFragment.setStationIdText(barcode.displayValue);
+                    }
                 }
                 else {
                     mTextViewOutputLog.append("\n" + getResources().getString(R.string.barcode_failure));

@@ -71,7 +71,7 @@ public class DeliveringToFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (mListener != null) {
-                    mListener.confirmDeliveryButtonHandler();
+                    mListener.confirmDeliveryButtonHandler(mHandlerId, mHandlerLocation);
                 }
             }
         });
@@ -106,6 +106,6 @@ public class DeliveringToFragment extends Fragment {
      >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void confirmDeliveryButtonHandler();
+        void confirmDeliveryButtonHandler(String id, String loc);
     }
 }
