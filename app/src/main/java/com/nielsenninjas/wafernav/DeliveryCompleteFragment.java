@@ -24,12 +24,6 @@ public class DeliveryCompleteFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     Use this factory method to create a new instance of
-     this fragment using the provided parameters.
-
-     @return A new instance of fragment DeliveryCompleteFragment.
-     */
     public static DeliveryCompleteFragment newInstance() {
         return new DeliveryCompleteFragment();
     }
@@ -43,6 +37,7 @@ public class DeliveryCompleteFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_delivery_complete, container, false);
 
+        // Set button handlers
         Button newDeliveryButton = (Button) view.findViewById(R.id.buttonNewDelivery);
         newDeliveryButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +57,6 @@ public class DeliveryCompleteFragment extends Fragment {
                 }
             }
         });
-
 
         return view;
     }

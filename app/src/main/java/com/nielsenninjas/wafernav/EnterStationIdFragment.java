@@ -29,16 +29,7 @@ public class EnterStationIdFragment extends Fragment {
     public EnterStationIdFragment() {
         // Required empty public constructor
     }
-    /**
-     Use this factory method to create a new instance of
-     this fragment using the provided parameters.
 
-     @param param1 Parameter 1.
-     @param param2 Parameter 2.
-
-     @return A new instance of fragment EnterStationIdFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static EnterStationIdFragment newInstance(String param1, String param2) {
         EnterStationIdFragment fragment = new EnterStationIdFragment();
         Bundle args = new Bundle();
@@ -120,7 +111,6 @@ public class EnterStationIdFragment extends Fragment {
         void readStationBarcodeButtonHandler(String id, String loc);
         void publishStationIdButtonHandler(String stationId);
     }
-
 
     public void setStationIdText(String stationId) {
         mTextViewStationId.setText(stationId);
