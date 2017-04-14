@@ -39,23 +39,18 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
     private static final int ID_BARCODE_CAPTURE = 9001;
     private static final int STATION_BARCODE_CAPTURE = 9002;
 
-    // UI elements
-    protected AutoCompleteTextView mAutoCompleteTextViewId; // TODO I WILL BE NULL FIX ME
-
     // MQTT
     private MqttAndroidClient mqttAndroidClient;
     private IMqttToken mqttSubToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG, "onCreate()");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Fragment fragment = EnterIdFragment.newInstance("param1", "param2");
-
+        Fragment fragment = EnterIdFragment.newInstance();
         getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
-
-        Log.i(TAG, "onCreate()");
 
         initMqtt();
     }
@@ -206,13 +201,9 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
     }
 
     @Override
-    public void publishButtonHandler(View view) {
-        mAutoCompleteTextViewId = (AutoCompleteTextView) view;
-        // Get text field
-        String idString = mAutoCompleteTextViewId.getText().toString();
-
+    public void publishButtonHandler(String lotId) {
         // Display toast message and return if nothing entered
-        if (idString == null || idString.isEmpty()) {
+        if (lotId == null || lotId.isEmpty()) {
             Toast.makeText(getApplicationContext(), "ID cannot be empty", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -220,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
         // Create JSON string to publish, e.g. {"id":123}
         Map<String, String> returnMap = new HashMap<>();
         returnMap.put("directive", "GET_NEW_BLU");
-        returnMap.put("lotId", idString);
+        returnMap.put("lotId", lotId);
 
         publishMapAsJson(returnMap);
     }
@@ -286,9 +277,7 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
     }
 
     @Override
-    public void readBarcodeButtonHandler(View view) {
-        mAutoCompleteTextViewId = (AutoCompleteTextView) view;
-
+    public void readBarcodeButtonHandler() {
         // launch barcode activity.
         Intent intent = new Intent(this, BarcodeCaptureActivity.class);
         intent.putExtra(BarcodeCaptureActivity.AutoFocus, true);
@@ -303,10 +292,14 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
             if (resultCode == CommonStatusCodes.SUCCESS) {
                 if (data != null) {
                     Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
-                    mAutoCompleteTextViewId.setText(barcode.displayValue);
                     Log.d(TAG_BARCODE, "Barcode read: " + barcode.displayValue);
 
-                    if (requestCode == STATION_BARCODE_CAPTURE) {
+                    if (requestCode == ID_BARCODE_CAPTURE) {
+                        EnterIdFragment enterIdFragment = (EnterIdFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer);
+                        enterIdFragment.setLotIdText(barcode.displayValue);
+                    }
+
+                    else if (requestCode == STATION_BARCODE_CAPTURE) {
                         EnterStationIdFragment enterStationIdFragment = (EnterStationIdFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer);
                         enterStationIdFragment.setStationIdText(barcode.displayValue);
                     }

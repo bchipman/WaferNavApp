@@ -22,41 +22,21 @@ public class EnterIdFragment extends Fragment {
 
     private static final String TAG = "EnterIdFragment";
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     private OnFragmentInteractionListener mListener;
 
     // UI elements
     protected AutoCompleteTextView mAutoCompleteTextViewId;
-    protected ScrollView mScrollViewOutputLog;
-    protected TextView mTextViewOutputLog;
 
     public EnterIdFragment() {
         // Required empty public constructor
     }
 
-    public static EnterIdFragment newInstance(String param1, String param2) {
-        EnterIdFragment fragment = new EnterIdFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public static EnterIdFragment newInstance() {
+        return new EnterIdFragment();
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -66,7 +46,6 @@ public class EnterIdFragment extends Fragment {
 
         // Hide keyboard when (1) click non-EditText object, or (2) press enter in EditText object
         setupHideKeyboardListeners(view);
-        Log.i(TAG, "onCreate()");
 
         // AutoCompleteTextView for IDs
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.ids, android.R.layout.simple_dropdown_item_1line);
@@ -84,7 +63,7 @@ public class EnterIdFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (mListener != null) {
-                    mListener.publishButtonHandler(mAutoCompleteTextViewId);
+                    mListener.publishButtonHandler(mAutoCompleteTextViewId.getText().toString());
                 }
             }
         });
@@ -94,7 +73,7 @@ public class EnterIdFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (mListener != null) {
-                    mListener.readBarcodeButtonHandler(mAutoCompleteTextViewId);
+                    mListener.readBarcodeButtonHandler();
                 }
             }
         });
@@ -131,7 +110,7 @@ public class EnterIdFragment extends Fragment {
                         hideKeyboard();
                         // if this is mEditTextId, also trigger the 'Publish' button when press enter
                         if (view == mAutoCompleteTextViewId) {
-                            mListener.publishButtonHandler(mAutoCompleteTextViewId);
+                            mListener.publishButtonHandler(mAutoCompleteTextViewId.getText().toString());
                         }
                     }
                     return false;
@@ -175,8 +154,11 @@ public class EnterIdFragment extends Fragment {
      >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void publishButtonHandler(View view);
-        void readBarcodeButtonHandler(View view);
+        void publishButtonHandler(String lotId);
+        void readBarcodeButtonHandler();
     }
 
+    public void setLotIdText(String lotId) {
+        mAutoCompleteTextViewId.setText(lotId);
+    }
 }
