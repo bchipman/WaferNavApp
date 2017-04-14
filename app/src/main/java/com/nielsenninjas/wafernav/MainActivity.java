@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity implements EnterIdFragment.OnFragmentInteractionListener, AssignHandlerFragment.OnFragmentInteractionListener, DeliveringToFragment.OnFragmentInteractionListener, EnterStationIdFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements EnterIdFragment.OnFragmentInteractionListener, AssignHandlerFragment.OnFragmentInteractionListener, DeliveringToFragment.OnFragmentInteractionListener, EnterStationIdFragment.OnFragmentInteractionListener, DeliveryCompleteFragment.OnFragmentInteractionListener {
 
     // Logging
     private static final String TAG = "MainActivity";
@@ -118,6 +118,26 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
         }
     }
 
+    private void publishMapAsJson(Map<String, String> map) {
+        Log.i(TAG, "publishMapAsJson");
+
+        String returnJsonString = null;
+        try {
+            returnJsonString = new ObjectMapper().writeValueAsString(map);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Publishing message..");
+        try {
+            mqttAndroidClient.publish(PUB_TOPIC, new MqttMessage(returnJsonString.getBytes()));
+        }
+        catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
@@ -129,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
             super.onBackPressed();
         }
     }
+
     private class SubscribeCallback implements MqttCallback {
 
         @Override
@@ -144,29 +165,51 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
 
 
             ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> jsonMap;
-            String handlerId = null;
-            String handlerLocation = null;
+            Map<String, String> jsonMap = null;
 
             try {
                 jsonMap = mapper.readValue(jsonMessage, new TypeReference<Map<String, String>>() {
                 });
-                handlerId = jsonMap.get("id");
-                handlerLocation = jsonMap.get("location");
             }
             catch (IOException e) {
                 e.printStackTrace();
+                Log.e(TAG, "Error reading JSON message");
             }
 
+            if (jsonMap == null) {
+                Log.e(TAG, "jsonMap is null, returning");
+                return;
+            }
 
-            Fragment fragment = AssignHandlerFragment.newInstance(handlerId, handlerLocation);
+            Fragment fragment = null;
 
+            String directive = jsonMap.get("directive");
+            switch(directive) {
+                case("GET_NEW_BLU_RETURN"):
+                    Log.i(TAG, "GET_NEW_BLU_RETURN");
+                    String handlerId = jsonMap.get("id");
+                    String handlerLocation = jsonMap.get("location");
+                    fragment = AssignHandlerFragment.newInstance(handlerId, handlerLocation);
+                    break;
+                case("COMPLETE_NEW_BLU_RETURN"):
+                    Log.i(TAG, "COMPLETE_NEW_BLU_RETURN");
+                    String confirmed = jsonMap.get("confirm");
+                    if (!confirmed.equals("true")) {
+                        Log.e(TAG, "Confirmed was not true.");
+                        return;
+                    }
+                    fragment = DeliveryCompleteFragment.newInstance();
+                    break;
+                default:
+                    Log.i(TAG, "unknown directive, returning");
+                    return;
+            }
+
+            // Replace current fragment and add to back stack so back button works properly
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.fragmentContainer, fragment);
             ft.addToBackStack(null);
             ft.commit();
-
-
 
             // Auto scroll to bottom
             mScrollViewOutputLog.post(new Runnable() {
@@ -199,21 +242,8 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
         Map<String, String> returnMap = new HashMap<>();
         returnMap.put("directive", "GET_NEW_BLU");
         returnMap.put("lotId", idString);
-        String returnJsonString = null;
-        try {
-            returnJsonString = new ObjectMapper().writeValueAsString(returnMap);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        System.out.println("Publishing message..");
-        try {
-            mqttAndroidClient.publish(PUB_TOPIC, new MqttMessage(returnJsonString.getBytes()));
-        }
-        catch (MqttException e) {
-            e.printStackTrace();
-        }
+        publishMapAsJson(returnMap);
     }
 
     @Override
@@ -256,25 +286,25 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
 
         // Create JSON string to publish, e.g. {"id":123}
         Map<String, String> returnMap = new HashMap<>();
+        returnMap.put("directive", "COMPLETE_NEW_BLU");
         returnMap.put("id", stationId);
-        String returnJsonString = null;
-        try {
-            returnJsonString = new ObjectMapper().writeValueAsString(returnMap);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        System.out.println("Publishing message..");
-        try {
-            mqttAndroidClient.publish(PUB_TOPIC, new MqttMessage(returnJsonString.getBytes()));
-        }
-        catch (MqttException e) {
-            e.printStackTrace();
-        }
+        publishMapAsJson(returnMap);
     }
 
+    @Override
+    public void newDeliveryButtonHandler() {
+        Log.i(TAG, "newDeliveryButtonHandler");
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
+    }
 
+    @Override
+    public void exitAppButtonHandler() {
+        Log.i(TAG, "exitAppButtonHandler");
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     public void readBarcodeButtonHandler(View view) {
