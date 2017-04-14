@@ -13,12 +13,12 @@ import android.widget.*;
 /**
  A simple {@link Fragment} subclass.
  Activities that contain this fragment must implement the
- {@link EnterIdFragment.OnFragmentInteractionListener} interface
+ {@link EnterLotIdFragment.OnFragmentInteractionListener} interface
  to handle interaction events.
- Use the {@link EnterIdFragment#newInstance} factory method to
+ Use the {@link EnterLotIdFragment#newInstance} factory method to
  create an instance of this fragment.
  */
-public class EnterIdFragment extends Fragment {
+public class EnterLotIdFragment extends Fragment {
 
     private static final String TAG = "EnterIdFragment";
 
@@ -27,12 +27,12 @@ public class EnterIdFragment extends Fragment {
     // UI elements
     protected AutoCompleteTextView mAutoCompleteTextViewId;
 
-    public EnterIdFragment() {
+    public EnterLotIdFragment() {
         // Required empty public constructor
     }
 
-    public static EnterIdFragment newInstance() {
-        return new EnterIdFragment();
+    public static EnterLotIdFragment newInstance() {
+        return new EnterLotIdFragment();
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,14 +42,14 @@ public class EnterIdFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_enter_id, container, false);
+        View view = inflater.inflate(R.layout.fragment_enter_lot_id, container, false);
 
         // Hide keyboard when (1) click non-EditText object, or (2) press enter in EditText object
         setupHideKeyboardListeners(view);
 
         // AutoCompleteTextView for IDs
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.ids, android.R.layout.simple_dropdown_item_1line);
-        mAutoCompleteTextViewId = (AutoCompleteTextView) view.findViewById(R.id.autoCompleteTextViewId);
+        mAutoCompleteTextViewId = (AutoCompleteTextView) view.findViewById(R.id.autoCompleteTextViewLotId);
         mAutoCompleteTextViewId.setAdapter(adapter);
 
         // Focus publish button when start app

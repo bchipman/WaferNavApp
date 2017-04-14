@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity implements EnterIdFragment.OnFragmentInteractionListener,
+public class MainActivity extends AppCompatActivity implements EnterLotIdFragment.OnFragmentInteractionListener,
         AssignHandlerFragment.OnFragmentInteractionListener, DeliveringToFragment.OnFragmentInteractionListener,
         EnterStationIdFragment.OnFragmentInteractionListener, DeliveryCompleteFragment.OnFragmentInteractionListener {
 
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Fragment fragment = EnterIdFragment.newInstance();
+        Fragment fragment = EnterLotIdFragment.newInstance();
         getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
 
         initMqtt();
@@ -293,8 +293,8 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
                     Log.d(TAG_BARCODE, "Barcode read: " + barcode.displayValue);
 
                     if (requestCode == ID_BARCODE_CAPTURE) {
-                        EnterIdFragment enterIdFragment = (EnterIdFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer);
-                        enterIdFragment.setLotIdText(barcode.displayValue);
+                        EnterLotIdFragment enterLotIdFragment = (EnterLotIdFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer);
+                        enterLotIdFragment.setLotIdText(barcode.displayValue);
                     }
 
                     else if (requestCode == STATION_BARCODE_CAPTURE) {
