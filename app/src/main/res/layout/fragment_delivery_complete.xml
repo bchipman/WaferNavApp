@@ -17,7 +17,8 @@
             android:background="#303F9F"
             android:text="Start New Delivery"
             android:textColor="#ffffff"
-            android:textSize="18sp"
+            android:textSize="20sp"
+            android:textStyle="bold"
             android:layout_marginRight="8dp"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginLeft="8dp"
@@ -37,8 +38,12 @@
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginLeft="8dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            tools:layout_editor_absoluteY="139dp"
-            app:layout_constraintHorizontal_bias="0.502" />
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintVertical_bias="0.291" />
 
         <Button
             android:id="@+id/buttonExitApp"
@@ -48,6 +53,7 @@
             android:text="Exit WaferNav"
             android:textColor="#ffffff"
             android:textSize="20sp"
+            android:textStyle="bold"
             android:layout_marginRight="8dp"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginLeft="8dp"
