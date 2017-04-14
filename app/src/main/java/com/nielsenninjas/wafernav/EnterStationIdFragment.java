@@ -25,7 +25,6 @@ public class EnterStationIdFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private TextView mTextViewStationId;
 
-
     public EnterStationIdFragment() {
         // Required empty public constructor
     }
@@ -38,6 +37,7 @@ public class EnterStationIdFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +74,6 @@ public class EnterStationIdFragment extends Fragment {
                     }
                     // TODO - Create toast message if stationId is null or empty
                 }
-
             }
         });
 

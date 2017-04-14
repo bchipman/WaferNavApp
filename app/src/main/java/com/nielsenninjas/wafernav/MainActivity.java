@@ -20,7 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity implements EnterIdFragment.OnFragmentInteractionListener, AssignHandlerFragment.OnFragmentInteractionListener, DeliveringToFragment.OnFragmentInteractionListener, EnterStationIdFragment.OnFragmentInteractionListener, DeliveryCompleteFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements EnterIdFragment.OnFragmentInteractionListener,
+        AssignHandlerFragment.OnFragmentInteractionListener, DeliveringToFragment.OnFragmentInteractionListener,
+        EnterStationIdFragment.OnFragmentInteractionListener, DeliveryCompleteFragment.OnFragmentInteractionListener {
 
     // Logging
     private static final String TAG = "MainActivity";
@@ -163,13 +165,13 @@ public class MainActivity extends AppCompatActivity implements EnterIdFragment.O
 
             String directive = jsonMap.get("directive");
             switch(directive) {
-                case("GET_NEW_BLU_RETURN"):
+                case ("GET_NEW_BLU_RETURN"):
                     Log.i(TAG, "GET_NEW_BLU_RETURN");
                     String handlerId = jsonMap.get("id");
                     String handlerLocation = jsonMap.get("location");
                     fragment = AssignHandlerFragment.newInstance(handlerId, handlerLocation);
                     break;
-                case("COMPLETE_NEW_BLU_RETURN"):
+                case ("COMPLETE_NEW_BLU_RETURN"):
                     Log.i(TAG, "COMPLETE_NEW_BLU_RETURN");
                     String confirmed = jsonMap.get("confirm");
                     if (!confirmed.equals("true")) {

@@ -97,5 +97,4 @@ public class AssignHandlerFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         void startDeliveryButtonHandler(String id, String loc);
     }
-
 }
