@@ -167,8 +167,8 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
             switch(directive) {
                 case ("GET_NEW_BLU_RETURN"):
                     Log.i(TAG, "GET_NEW_BLU_RETURN");
-                    String handlerId = jsonMap.get("id");
-                    String handlerLocation = jsonMap.get("location");
+                    String handlerId = jsonMap.get("bluId");
+                    String handlerLocation = jsonMap.get("bluInfo");
                     fragment = AssignHandlerFragment.newInstance(handlerId, handlerLocation);
                     break;
                 case ("COMPLETE_NEW_BLU_RETURN"):
@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         // Create JSON string to publish, e.g. {"id":123}
         Map<String, String> returnMap = new HashMap<>();
         returnMap.put("directive", "COMPLETE_NEW_BLU");
-        returnMap.put("id", stationId);
+        returnMap.put("bluId", stationId);
 
         publishMapAsJson(returnMap);
     }
