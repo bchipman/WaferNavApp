@@ -25,7 +25,7 @@ public class EnterLotIdFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     // UI elements
-    protected AutoCompleteTextView mAutoCompleteTextViewId;
+    private AutoCompleteTextView mAutoCompleteTextViewId;
 
     public EnterLotIdFragment() {
         // Required empty public constructor

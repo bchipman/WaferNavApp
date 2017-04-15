@@ -6,8 +6,8 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.TextView;
 
 /**
  A simple {@link Fragment} subclass.
@@ -23,7 +23,7 @@ public class EnterStationIdFragment extends Fragment {
     private String mHandlerId;
     private String mHandlerLocation;
     private OnFragmentInteractionListener mListener;
-    private TextView mTextViewStationId;
+    private AutoCompleteTextView mAutoCompleteTextViewStationId;
 
     public EnterStationIdFragment() {
         // Required empty public constructor
@@ -51,7 +51,7 @@ public class EnterStationIdFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_enter_station_id, container, false);
 
-        mTextViewStationId = (TextView) view.findViewById(R.id.textViewStationId);
+        mAutoCompleteTextViewStationId = (AutoCompleteTextView) view.findViewById(R.id.autoCompleteTextViewStationId);
 
         Button readBarcodeButton = (Button) view.findViewById(R.id.buttonReadBarcode);
         readBarcodeButton.setOnClickListener(new View.OnClickListener() {
@@ -67,8 +67,8 @@ public class EnterStationIdFragment extends Fragment {
         publishStationIdButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mListener != null && mTextViewStationId != null) {
-                    String stationId = mTextViewStationId.getText().toString();
+                if (mListener != null && mAutoCompleteTextViewStationId != null) {
+                    String stationId = mAutoCompleteTextViewStationId.getText().toString();
                     if (stationId != null && !stationId.isEmpty()) {
                         mListener.publishStationIdButtonHandler(stationId);
                     }
@@ -112,6 +112,6 @@ public class EnterStationIdFragment extends Fragment {
     }
 
     public void setStationIdText(String stationId) {
-        mTextViewStationId.setText(stationId);
+        mAutoCompleteTextViewStationId.setText(stationId);
     }
 }

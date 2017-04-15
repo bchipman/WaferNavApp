@@ -45,7 +45,7 @@
         android:id="@+id/textViewStationId"
         android:layout_width="126dp"
         android:layout_height="32dp"
-        android:hint="Barcode ID"
+        android:hint="Station ID"
         android:textSize="24sp"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
