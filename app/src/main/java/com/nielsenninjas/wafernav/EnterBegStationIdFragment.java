@@ -6,31 +6,31 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.TextView;
 
 /**
  A simple {@link Fragment} subclass.
  Activities that contain this fragment must implement the
- {@link EnterBibIdsFragment.OnFragmentInteractionListener} interface
+ {@link EnterBegStationIdFragment.OnFragmentInteractionListener} interface
  to handle interaction events.
- Use the {@link EnterBibIdsFragment#newInstance} factory method to
+ Use the {@link EnterBegStationIdFragment#newInstance} factory method to
  create an instance of this fragment.
  */
-public class EnterBibIdsFragment extends Fragment {
+public class EnterBegStationIdFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private String mHandlerId;
     private String mHandlerLocation;
     private OnFragmentInteractionListener mListener;
-    private TextView mTextViewStationId;
+    private AutoCompleteTextView mAutoCompleteTextViewStationId;
 
-    public EnterBibIdsFragment() {
+    public EnterBegStationIdFragment() {
         // Required empty public constructor
     }
 
-    public static EnterBibIdsFragment newInstance(String param1, String param2) {
-        EnterBibIdsFragment fragment = new EnterBibIdsFragment();
+    public static EnterBegStationIdFragment newInstance(String param1, String param2) {
+        EnterBegStationIdFragment fragment = new EnterBegStationIdFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -49,9 +49,9 @@ public class EnterBibIdsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_enter_bib_ids, container, false);
+        View view = inflater.inflate(R.layout.fragment_enter_beg_station_id, container, false);
 
-        mTextViewStationId = (TextView) view.findViewById(R.id.textViewStationId);
+        mAutoCompleteTextViewStationId = (AutoCompleteTextView) view.findViewById(R.id.autoCompleteTextViewStationId);
 
         Button readBarcodeButton = (Button) view.findViewById(R.id.buttonReadBarcode);
         readBarcodeButton.setOnClickListener(new View.OnClickListener() {
@@ -67,22 +67,12 @@ public class EnterBibIdsFragment extends Fragment {
         publishStationIdButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mListener != null && mTextViewStationId != null) {
-                    String stationId = mTextViewStationId.getText().toString();
+                if (mListener != null && mAutoCompleteTextViewStationId != null) {
+                    String stationId = mAutoCompleteTextViewStationId.getText().toString();
                     if (stationId != null && !stationId.isEmpty()) {
                         mListener.publishStationIdButtonHandler(stationId);
                     }
                     // TODO - Create toast message if stationId is null or empty
-                }
-            }
-        });
-
-        Button startDeliveryButton = (Button) view.findViewById(R.id.startDeliveryButton);
-        startDeliveryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mListener != null) {
-                    mListener.startDeliveryButtonHandler(mHandlerId, mHandlerLocation);
                 }
             }
         });
@@ -119,10 +109,9 @@ public class EnterBibIdsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         void readStationBarcodeButtonHandler(String id, String loc);
         void publishStationIdButtonHandler(String stationId);
-        void startDeliveryButtonHandler(String id, String loc);
     }
 
     public void setStationIdText(String stationId) {
-        mTextViewStationId.setText(stationId);
+        mAutoCompleteTextViewStationId.setText(stationId);
     }
 }

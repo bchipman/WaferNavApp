@@ -3,29 +3,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.nielsenninjas.wafernav.EnterBibIdsFragment">
+    tools:context="com.nielsenninjas.wafernav.EnterBegStationIdFragment">
 
     <AutoCompleteTextView
-        android:id="@+id/autoCompleteTextViewBibIds"
+        android:id="@+id/autoCompleteTextViewStationId"
         android:layout_width="236dp"
         android:layout_height="51dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:completionThreshold="1"
-        android:hint="Enter Barcode ID"
+        android:hint="Enter Station ID"
         android:inputType="number"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.369" />
+        app:layout_constraintVertical_bias="0.4" />
+
+    <TextView
+        android:id="@+id/beforeProceeding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Before proceeding,"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textStyle="italic"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.03" />
 
     <TextView
         android:id="@+id/scanStation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Scan Barcode IDs"
+        android:text="Scan Station Barcode"
         android:textColor="#000000"
         android:textSize="24sp"
         android:textStyle="italic"
@@ -39,7 +59,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.05" />
+        app:layout_constraintVertical_bias="0.082" />
 
     <TextView
         android:id="@+id/textViewStationId"
@@ -57,7 +77,7 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintVertical_bias="0.296" />
+        app:layout_constraintVertical_bias="0.326" />
 
     <Button
         android:id="@+id/buttonPublishStationId"
@@ -69,7 +89,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="274dp"
-        android:background="#303F9F"
+        android:background="@android:color/holo_green_dark"
         android:text="Submit Barcode ID"
         android:textColor="#ffffff"
         android:textSize="24sp"
@@ -78,28 +98,11 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.04"
+        app:layout_constraintVertical_bias="0.105"
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintTop_creator="1" />
-
-    <TextView
-        android:id="@+id/textViewSubmissionHistory"
-        android:layout_width="253dp"
-        android:layout_height="121dp"
-        android:textSize="24sp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintVertical_bias="0.757" />
 
     <Button
         android:id="@+id/buttonReadBarcode"
@@ -108,7 +111,6 @@
         android:layout_marginBottom="8dp"
         android:layout_marginTop="54dp"
         android:background="#303F9F"
-        android:clickable="false"
         android:text="Scan"
         android:textColor="#ffffff"
         android:textSize="24sp"
@@ -117,24 +119,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.059" />
+        app:layout_constraintVertical_bias="0.1" />
 
-    <Button
-        android:id="@+id/startDeliveryButton"
-        android:layout_width="244dp"
-        android:layout_height="74dp"
-        android:layout_marginBottom="142dp"
-        android:background="@android:color/holo_green_dark"
-        android:text="Start Delivery"
-        android:textColor="#ffffff"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintVertical_bias="1.28"
-        app:layout_constraintHorizontal_bias="0.497" />
 
 </android.support.constraint.ConstraintLayout>
