@@ -47,7 +47,20 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Fragment fragment = EnterLotIdFragment.newInstance();
+        Fragment fragment;
+        String firstFragment = getIntent().getStringExtra("INITIAL_FRAGMENT");
+        switch(firstFragment) {
+            case "EnterLotIdFragment":
+                fragment = EnterLotIdFragment.newInstance();
+                break;
+            case "EnterStationIdFragment":
+                fragment = EnterStationIdFragment.newInstance("thing1", "thing2");
+                break;
+            default:
+                Log.e(TAG, "INITIAL_FRAGMENT null!");
+                return;
+        }
+
         getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
 
         initMqtt();
