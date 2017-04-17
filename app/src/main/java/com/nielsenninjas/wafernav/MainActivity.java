@@ -12,7 +12,6 @@ import com.google.android.gms.vision.barcode.Barcode;
 import com.nielsenninjas.wafernav.Enums.Operation;
 import com.nielsenninjas.wafernav.barcodereader.BarcodeCaptureActivity;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.*;
 
@@ -72,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
 
     private void initMqtt() {
         mqttAndroidClient = new MqttAndroidClient(this.getApplicationContext(), BROKER_URL, CLIENT_ID);
-        mqttAndroidClient.setCallback(new SubscribeCallback());
+        mqttAndroidClient.setCallback(new MqttSubscriberCallback(this));
 
         try {
             mqttAndroidClient.connect(null, new IMqttActionListener() {
@@ -149,74 +148,16 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         }
     }
 
-    private class SubscribeCallback implements MqttCallback {
+    public void changeFragment(Fragment fragment) {
+        // Replace current fragment and add to back stack so back button works properly
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.fragmentContainer, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
 
-        @Override
-        public void connectionLost(Throwable cause) {
-            Toast.makeText(getApplicationContext(), "Lost connection!", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void messageArrived(String topic, final MqttMessage message) throws Exception {
-            String jsonMessage = new String(message.getPayload());
-            Log.i(TAG, "Message Arrived!: " + topic + ": " + jsonMessage);
-
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> jsonMap = null;
-
-            try {
-                jsonMap = mapper.readValue(jsonMessage, new TypeReference<Map<String, String>>() {
-                });
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-                Log.e(TAG, "Error reading JSON message");
-            }
-
-            if (jsonMap == null) {
-                Log.e(TAG, "jsonMap is null, returning");
-                return;
-            }
-
-            Fragment fragment = null;
-
-            String directive = jsonMap.get("directive");
-            switch(directive) {
-                case ("GET_NEW_BLU_RETURN"):
-                    Log.i(TAG, "GET_NEW_BLU_RETURN");
-                    String handlerId = jsonMap.get("bluId");
-                    String handlerLocation = jsonMap.get("bluInfo");
-                    fragment = AssignHandlerFragment.newInstance(handlerId, handlerLocation);
-                    break;
-                case ("COMPLETE_NEW_BLU_RETURN"):
-                    Log.i(TAG, "COMPLETE_NEW_BLU_RETURN");
-                    String confirmed = jsonMap.get("confirm");
-                    if (!confirmed.equals("true")) {
-                        Log.e(TAG, "Confirmed was not true.");
-                        return;
-                    }
-                    fragment = DeliveryCompleteFragment.newInstance();
-                    break;
-                case ("GET_NEW_SLT_RETURN"):
-                    Log.i(TAG, "GET_NEW_SLT_RETURN");
-                    //TODO parse return json, pass to new fragment
-                    break;
-                default:
-                    Log.i(TAG, "unknown directive, returning");
-                    return;
-            }
-
-            // Replace current fragment and add to back stack so back button works properly
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            ft.replace(R.id.fragmentContainer, fragment);
-            ft.addToBackStack(null);
-            ft.commit();
-        }
-
-        @Override
-        public void deliveryComplete(IMqttDeliveryToken token) {
-            System.out.println("Delivery Complete!");
-        }
+    public void makeShortToast(String toastMessage) {
+        Toast.makeText(getApplicationContext(), toastMessage, Toast.LENGTH_SHORT).show();
     }
 
     @Override
