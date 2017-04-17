@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
+import com.nielsenninjas.wafernav.Enums.Operation;
 import com.nielsenninjas.wafernav.barcodereader.BarcodeCaptureActivity;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
@@ -16,9 +17,7 @@ import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.*;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class MainActivity extends AppCompatActivity implements EnterLotIdFragment.OnFragmentInteractionListener,
         AssignHandlerFragment.OnFragmentInteractionListener, DeliveringToFragment.OnFragmentInteractionListener,
@@ -38,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
     private static final int ID_BARCODE_CAPTURE = 9001;
     private static final int STATION_BARCODE_CAPTURE = 9002;
 
+    private Operation currentOperation;
+
     // MQTT
     private MqttAndroidClient mqttAndroidClient;
     private IMqttToken mqttSubToken;
@@ -48,8 +49,10 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        currentOperation = (Operation) getIntent().getSerializableExtra(HomeActivity.CURRENT_OPERATION);
+
         Fragment fragment;
-        String firstFragment = getIntent().getStringExtra("INITIAL_FRAGMENT");
+        String firstFragment = getIntent().getStringExtra(HomeActivity.INITIAL_FRAGMENT);
         switch(firstFragment) {
             case "EnterLotIdFragment":
                 fragment = EnterLotIdFragment.newInstance();
@@ -114,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         }
     }
 
-    private void publishMapAsJson(Map<String, String> map) {
+    private void publishMapAsJson(Map<String, Object> map) {
         Log.i(TAG, "publishMapAsJson");
 
         String returnJsonString = null;
@@ -194,6 +197,10 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
                     }
                     fragment = DeliveryCompleteFragment.newInstance();
                     break;
+                case ("GET_NEW_SLT_RETURN"):
+                    Log.i(TAG, "GET_NEW_SLT_RETURN");
+                    //TODO parse return json, pass to new fragment
+                    break;
                 default:
                     Log.i(TAG, "unknown directive, returning");
                     return;
@@ -221,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         }
 
         // Create JSON string to publish, e.g. {"id":123}
-        Map<String, String> returnMap = new HashMap<>();
+        Map<String, Object> returnMap = new HashMap<>();
         returnMap.put("directive", "GET_NEW_BLU");
         returnMap.put("lotId", lotId);
 
@@ -230,13 +237,33 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
 
     @Override
     public void startDeliveryButtonHandler(String id, String loc) {
-        Log.i(TAG, "startDeliveryButtonHandler");
+        Log.i(TAG, "startDeliveryButtonHandler: " + currentOperation);
         Fragment fragment = DeliveringToFragment.newInstance(id, loc);
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.fragmentContainer, fragment);
         ft.addToBackStack(null);
         ft.commit();
+    }
+
+
+    @Override
+    public void addBibIdButtonHandler(String bibId) {
+        Log.i(TAG, "addBibIdButtonHandler: " + currentOperation);
+        EnterBibIdsFragment enterBibIdsFragment = (EnterBibIdsFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer);
+        enterBibIdsFragment.addBibId(bibId);
+    }
+
+    @Override
+    public void startDeliveryButtonHandler(String bluId, Set<String> bibIds) {
+        Log.i(TAG, "startDeliveryButtonHandler: " + currentOperation);
+
+        // Create JSON string to publish, e.g. {"id":123}
+        Map<String, Object> returnMap = new HashMap<>();
+        returnMap.put("bluId", bluId);
+        returnMap.put("bibIds", bibIds.toArray());
+        returnMap.put("directive", "GET_NEW_SLT");
+        publishMapAsJson(returnMap);
     }
 
     @Override
@@ -251,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
     }
 
     @Override
-    public void readStationBarcodeButtonHandler(String id, String loc) {
+    public void readStationBarcodeButtonHandler() {
         Log.i(TAG, "readStationBarcodeButtonHandler");
 
         // launch barcode activity.
@@ -262,16 +289,35 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         startActivityForResult(intent, STATION_BARCODE_CAPTURE);
     }
 
+
     @Override
-    public void publishStationIdButtonHandler(String stationId) {
-        Log.i(TAG, "publishStationIdButtonHandler");
+    public void publishStationIdButtonHandler(String bluId) {
+        Log.i(TAG, "publishStationIdButtonHandler: " + currentOperation);
 
-        // Create JSON string to publish, e.g. {"id":123}
-        Map<String, String> returnMap = new HashMap<>();
-        returnMap.put("directive", "COMPLETE_NEW_BLU");
-        returnMap.put("bluId", stationId);
+        switch(currentOperation) {
 
-        publishMapAsJson(returnMap);
+            case LOAD:
+                // Create JSON string to publish, e.g. {"id":123}
+                Map<String, Object> returnMap = new HashMap<>();
+                returnMap.put("bluId", bluId);
+                returnMap.put("directive", "COMPLETE_NEW_BLU");
+                publishMapAsJson(returnMap);
+                break;
+
+            case TEST:
+                // Just pass bluId to new EnterBibIdsFragment
+                Fragment fragment = EnterBibIdsFragment.newInstance(bluId);
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.fragmentContainer, fragment);
+                ft.addToBackStack(null);
+                ft.commit();
+                break;
+
+            default:
+                Log.i(TAG, "Unrecognized operation!");
+                return;
+        }
+
     }
 
     @Override

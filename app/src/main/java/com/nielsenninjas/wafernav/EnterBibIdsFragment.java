@@ -3,11 +3,16 @@ package com.nielsenninjas.wafernav;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  A simple {@link Fragment} subclass.
@@ -18,22 +23,23 @@ import android.widget.TextView;
  create an instance of this fragment.
  */
 public class EnterBibIdsFragment extends Fragment {
+
+    private static final String TAG = "EnterBibIdsFragment";
+
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private String mHandlerId;
-    private String mHandlerLocation;
     private OnFragmentInteractionListener mListener;
-    private TextView mTextViewStationId;
+    private AutoCompleteTextView mAutoCompleteTextViewBibIds;
+    private Set<String> mBibIds;
 
     public EnterBibIdsFragment() {
         // Required empty public constructor
     }
 
-    public static EnterBibIdsFragment newInstance(String param1, String param2) {
+    public static EnterBibIdsFragment newInstance(String param1) {
         EnterBibIdsFragment fragment = new EnterBibIdsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -43,7 +49,6 @@ public class EnterBibIdsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mHandlerId = getArguments().getString(ARG_PARAM1);
-            mHandlerLocation = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -51,26 +56,27 @@ public class EnterBibIdsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_enter_bib_ids, container, false);
 
-        mTextViewStationId = (TextView) view.findViewById(R.id.textViewStationId);
+        mAutoCompleteTextViewBibIds = (AutoCompleteTextView) view.findViewById(R.id.autoCompleteTextViewBibIds);
+        mBibIds = new HashSet<>();
 
         Button readBarcodeButton = (Button) view.findViewById(R.id.buttonReadBarcode);
         readBarcodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mListener != null) {
-                    mListener.readStationBarcodeButtonHandler(mHandlerId, mHandlerLocation);
+                    mListener.readStationBarcodeButtonHandler();
                 }
             }
         });
 
-        Button publishStationIdButton = (Button) view.findViewById(R.id.buttonPublishStationId);
-        publishStationIdButton.setOnClickListener(new View.OnClickListener() {
+        Button addBibIdButton = (Button) view.findViewById(R.id.buttonAddBibId);
+        addBibIdButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mListener != null && mTextViewStationId != null) {
-                    String stationId = mTextViewStationId.getText().toString();
-                    if (stationId != null && !stationId.isEmpty()) {
-                        mListener.publishStationIdButtonHandler(stationId);
+                if (mListener != null && mAutoCompleteTextViewBibIds != null) {
+                    String bibId = mAutoCompleteTextViewBibIds.getText().toString();
+                    if (bibId != null && !bibId.isEmpty()) {
+                        mListener.addBibIdButtonHandler(bibId);
                     }
                     // TODO - Create toast message if stationId is null or empty
                 }
@@ -81,9 +87,10 @@ public class EnterBibIdsFragment extends Fragment {
         startDeliveryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mListener != null) {
-                    mListener.startDeliveryButtonHandler(mHandlerId, mHandlerLocation);
+                if (mListener != null && !mBibIds.isEmpty()) {
+                    mListener.startDeliveryButtonHandler(mHandlerId, mBibIds);
                 }
+                // TODO - Create toast message if no BIB ids
             }
         });
 
@@ -117,12 +124,13 @@ public class EnterBibIdsFragment extends Fragment {
      >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void readStationBarcodeButtonHandler(String id, String loc);
-        void publishStationIdButtonHandler(String stationId);
-        void startDeliveryButtonHandler(String id, String loc);
+        void readStationBarcodeButtonHandler();
+        void addBibIdButtonHandler(String bibId);
+        void startDeliveryButtonHandler(String bluId, Set<String> bibIds);
     }
 
-    public void setStationIdText(String stationId) {
-        mTextViewStationId.setText(stationId);
+    public void addBibId(String bibId) {
+        Log.i(TAG, "addBibId");
+        mBibIds.add(bibId);
     }
 }
