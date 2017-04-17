@@ -27,14 +27,14 @@ public class HomeActivity extends AppCompatActivity {
     public void TestButtonHandler(View view) {
         Log.i(TAG, "TestButtonHandler()");
         Intent intent = new Intent(getBaseContext(), MainActivity.class);
-        intent.putExtra("INITIAL_FRAGMENT", "EnterBegStationIdFragment");
+        intent.putExtra("INITIAL_FRAGMENT", "EnterStationIdFragment");
         startActivity(intent);
     }
 
     public void UnloadButtonHandler(View view) {
         Log.i(TAG, "UnloadButtonHandler()");
         Intent intent = new Intent(getBaseContext(), MainActivity.class);
-        intent.putExtra("INITIAL_FRAGMENT", "EnterBegStationIdFragment");
+        intent.putExtra("INITIAL_FRAGMENT", "EnterStationIdFragment");
         startActivity(intent);
     }
 }

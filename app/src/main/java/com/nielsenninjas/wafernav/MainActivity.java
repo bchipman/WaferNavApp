@@ -22,8 +22,8 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements EnterLotIdFragment.OnFragmentInteractionListener,
         AssignHandlerFragment.OnFragmentInteractionListener, DeliveringToFragment.OnFragmentInteractionListener,
-        EnterBegStationIdFragment.OnFragmentInteractionListener, EnterBibIdsFragment.OnFragmentInteractionListener,
-        EnterStationIdFragment.OnFragmentInteractionListener, DeliveryCompleteFragment.OnFragmentInteractionListener {
+        EnterBibIdsFragment.OnFragmentInteractionListener, EnterStationIdFragment.OnFragmentInteractionListener,
+        DeliveryCompleteFragment.OnFragmentInteractionListener {
 
     // Logging
     private static final String TAG = "MainActivity";
@@ -54,8 +54,8 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
             case "EnterLotIdFragment":
                 fragment = EnterLotIdFragment.newInstance();
                 break;
-            case "EnterBegStationIdFragment":
-                fragment = EnterBegStationIdFragment.newInstance("thing1", "thing2");
+            case "EnterStationIdFragment":
+                fragment = EnterStationIdFragment.newInstance("thing1", "thing2");
                 break;
             default:
                 Log.e(TAG, "INITIAL_FRAGMENT null!");
