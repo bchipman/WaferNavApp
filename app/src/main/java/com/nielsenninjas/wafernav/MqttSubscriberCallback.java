@@ -2,6 +2,7 @@ package com.nielsenninjas.wafernav;
 
 import android.app.Fragment;
 import android.util.Log;
+import com.nielsenninjas.wafernav.enums.Directive;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -9,6 +10,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.io.IOException;
+import java.util.IllegalFormatException;
 import java.util.Map;
 
 /**
@@ -52,18 +54,23 @@ public class MqttSubscriberCallback implements MqttCallback {
         }
 
         Fragment fragment = null;
+        Directive directive;
+        try {
+            directive = Directive.valueOf(jsonMap.get("directive"));
+        }
+        catch (IllegalFormatException e) {
+            directive = Directive.NULL;
+        }
 
-        String directive = jsonMap.get("directive");
-        directive = directive == null ? "NO_DIRECTIVE" : directive;
         switch(directive) {
-            case ("GET_NEW_BLU_RETURN"):
-                Log.i(TAG, "GET_NEW_BLU_RETURN");
+            case GET_NEW_BLU_RETURN:
+                Log.i(TAG, Directive.GET_NEW_BLU_RETURN.toString());
                 String handlerId = jsonMap.get("bluId");
                 String handlerLocation = jsonMap.get("bluInfo");
                 fragment = AssignHandlerFragment.newInstance(handlerId, handlerLocation);
                 break;
-            case ("COMPLETE_NEW_BLU_RETURN"):
-                Log.i(TAG, "COMPLETE_NEW_BLU_RETURN");
+            case COMPLETE_NEW_BLU_RETURN:
+                Log.i(TAG, Directive.COMPLETE_NEW_BLU_RETURN.toString());
                 String confirmed = jsonMap.get("confirm");
                 if (!confirmed.equals("true")) {
                     Log.e(TAG, "Confirmed was not true.");
@@ -71,16 +78,16 @@ public class MqttSubscriberCallback implements MqttCallback {
                 }
                 fragment = DeliveryCompleteFragment.newInstance();
                 break;
-            case ("GET_NEW_SLT_RETURN"):
-                Log.i(TAG, "GET_NEW_SLT_RETURN");
+            case GET_NEW_SLT_RETURN:
+                Log.i(TAG, Directive.GET_NEW_SLT_RETURN.toString());
                 //TODO parse return json, pass to new fragment
                 break;
-            case ("NO_DIRECTIVE"):
-                Log.i(TAG, "No directive, returning");
+            case NULL:
+                Log.i(TAG, Directive.NULL.toString());
                 mMainActivity.makeShortToast("No directive received!");
                 return;
             default:
-                Log.i(TAG, "unknown directive, returning");
+                Log.i(TAG, Directive.UNKNOWN.toString());
                 mMainActivity.makeShortToast("Unknown directive received!");
                 return;
         }

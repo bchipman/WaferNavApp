@@ -1,4 +1,4 @@
-package com.nielsenninjas.wafernav.Enums;
+package com.nielsenninjas.wafernav.enums;
 
 /**
  Created by Brian on 4/16/2017.

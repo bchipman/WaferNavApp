@@ -9,7 +9,8 @@ import android.util.Log;
 import android.widget.Toast;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
-import com.nielsenninjas.wafernav.Enums.Operation;
+import com.nielsenninjas.wafernav.enums.Directive;
+import com.nielsenninjas.wafernav.enums.Operation;
 import com.nielsenninjas.wafernav.barcodereader.BarcodeCaptureActivity;
 
 import java.util.HashMap;
@@ -96,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
 
         // Create JSON string to publish, e.g. {"id":123}
         Map<String, Object> returnMap = new HashMap<>();
-        returnMap.put("directive", "GET_NEW_BLU");
+        returnMap.put("directive", Directive.GET_NEW_BLU);
         returnMap.put("lotId", lotId);
 
         mqttClient.publishMapAsJson(returnMap);
@@ -129,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         Map<String, Object> returnMap = new HashMap<>();
         returnMap.put("bluId", bluId);
         returnMap.put("bibIds", bibIds.toArray());
-        returnMap.put("directive", "GET_NEW_SLT");
+        returnMap.put("directive", Directive.GET_NEW_SLT);
         mqttClient.publishMapAsJson(returnMap);
     }
 
@@ -167,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
                 // Create JSON string to publish, e.g. {"id":123}
                 Map<String, Object> returnMap = new HashMap<>();
                 returnMap.put("bluId", bluId);
-                returnMap.put("directive", "COMPLETE_NEW_BLU");
+                returnMap.put("directive", Directive.COMPLETE_NEW_BLU);
                 mqttClient.publishMapAsJson(returnMap);
                 break;
 

@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import com.nielsenninjas.wafernav.Enums.Operation;
+import com.nielsenninjas.wafernav.enums.Operation;
 
 public class HomeActivity extends AppCompatActivity {
 
