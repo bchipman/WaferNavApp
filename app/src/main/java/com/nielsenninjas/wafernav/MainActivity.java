@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.nielsenninjas.wafernav.enums.Directive;
+import com.nielsenninjas.wafernav.enums.Fields;
 import com.nielsenninjas.wafernav.enums.Operation;
 import com.nielsenninjas.wafernav.barcodereader.BarcodeCaptureActivity;
 
@@ -97,8 +98,8 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
 
         // Create JSON string to publish, e.g. {"id":123}
         Map<String, Object> returnMap = new HashMap<>();
-        returnMap.put("directive", Directive.GET_NEW_BLU);
-        returnMap.put("lotId", lotId);
+        returnMap.put(Fields.DIRECTIVE.field(), Directive.GET_NEW_BLU);
+        returnMap.put(Fields.LOT_ID.field(), lotId);
 
         mqttClient.publishMapAsJson(returnMap);
     }
@@ -128,9 +129,9 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
 
         // Create JSON string to publish, e.g. {"id":123}
         Map<String, Object> returnMap = new HashMap<>();
-        returnMap.put("bluId", bluId);
-        returnMap.put("bibIds", bibIds.toArray());
-        returnMap.put("directive", Directive.GET_NEW_SLT);
+        returnMap.put(Fields.BLU_ID.field(), bluId);
+        returnMap.put(Fields.BIB_IDS.field(), bibIds.toArray());
+        returnMap.put(Fields.DIRECTIVE.field(), Directive.GET_NEW_SLT);
         mqttClient.publishMapAsJson(returnMap);
     }
 
@@ -167,8 +168,8 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
             case LOAD:
                 // Create JSON string to publish, e.g. {"id":123}
                 Map<String, Object> returnMap = new HashMap<>();
-                returnMap.put("bluId", bluId);
-                returnMap.put("directive", Directive.COMPLETE_NEW_BLU);
+                returnMap.put(Fields.BLU_ID.field(), bluId);
+                returnMap.put(Fields.DIRECTIVE.field(), Directive.COMPLETE_NEW_BLU);
                 mqttClient.publishMapAsJson(returnMap);
                 break;
 
