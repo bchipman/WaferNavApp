@@ -11,12 +11,10 @@ import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.nielsenninjas.wafernav.Enums.Operation;
 import com.nielsenninjas.wafernav.barcodereader.BarcodeCaptureActivity;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.*;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements EnterLotIdFragment.OnFragmentInteractionListener,
         AssignHandlerFragment.OnFragmentInteractionListener, DeliveringToFragment.OnFragmentInteractionListener,
@@ -27,20 +25,15 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
     private static final String TAG = "MainActivity";
     private static final String TAG_BARCODE = "BarcodeMain";
 
-    // Connection info
-    private static final String BROKER_URL = "tcp://iot.eclipse.org:1883";
-    private static final String PUB_TOPIC = "wafernav/location_requests";
-    private static final String SUB_TOPIC = "wafernav/location_data";
-    private static final String CLIENT_ID = UUID.randomUUID().toString();
-
+    // Barcode reader
     private static final int ID_BARCODE_CAPTURE = 9001;
     private static final int STATION_BARCODE_CAPTURE = 9002;
 
+    // State
     private Operation currentOperation;
 
     // MQTT
-    private MqttAndroidClient mqttAndroidClient;
-    private IMqttToken mqttSubToken;
+    private MqttClient mqttClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,74 +59,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
 
         getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
 
-        initMqtt();
-    }
-
-    private void initMqtt() {
-        mqttAndroidClient = new MqttAndroidClient(this.getApplicationContext(), BROKER_URL, CLIENT_ID);
-        mqttAndroidClient.setCallback(new MqttSubscriberCallback(this));
-
-        try {
-            mqttAndroidClient.connect(null, new IMqttActionListener() {
-                @Override
-                public void onSuccess(IMqttToken asyncActionToken) {
-                    try {
-                        mqttSubToken = mqttAndroidClient.subscribe(SUB_TOPIC, 0);
-                        Toast
-                                .makeText(getApplicationContext(), "Subscribed to " + SUB_TOPIC, Toast.LENGTH_SHORT)
-                                .show();
-                    }
-                    catch (MqttException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Toast
-                            .makeText(getApplicationContext(), "Failed to connect to " + BROKER_URL + "!", Toast.LENGTH_SHORT)
-                            .show();
-                }
-            });
-        }
-        catch (MqttException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void resubscribe() {
-        try {
-            // Unsubscribe from all topics
-            for (String topic : mqttSubToken.getTopics()) {
-                mqttAndroidClient.unsubscribe(topic);
-            }
-            // Subscribe to new topic
-            mqttSubToken = mqttAndroidClient.subscribe(SUB_TOPIC, 0);
-            Toast.makeText(getApplicationContext(), "Subscribed to " + SUB_TOPIC, Toast.LENGTH_SHORT).show();
-        }
-        catch (MqttException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void publishMapAsJson(Map<String, Object> map) {
-        Log.i(TAG, "publishMapAsJson");
-
-        String returnJsonString = null;
-        try {
-            returnJsonString = new ObjectMapper().writeValueAsString(map);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("Publishing message..");
-        try {
-            mqttAndroidClient.publish(PUB_TOPIC, new MqttMessage(returnJsonString.getBytes()));
-        }
-        catch (MqttException e) {
-            e.printStackTrace();
-        }
+        mqttClient = new MqttClient(this);
     }
 
     @Override
@@ -173,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         returnMap.put("directive", "GET_NEW_BLU");
         returnMap.put("lotId", lotId);
 
-        publishMapAsJson(returnMap);
+        mqttClient.publishMapAsJson(returnMap);
     }
 
     @Override
@@ -204,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         returnMap.put("bluId", bluId);
         returnMap.put("bibIds", bibIds.toArray());
         returnMap.put("directive", "GET_NEW_SLT");
-        publishMapAsJson(returnMap);
+        mqttClient.publishMapAsJson(returnMap);
     }
 
     @Override
@@ -242,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
                 Map<String, Object> returnMap = new HashMap<>();
                 returnMap.put("bluId", bluId);
                 returnMap.put("directive", "COMPLETE_NEW_BLU");
-                publishMapAsJson(returnMap);
+                mqttClient.publishMapAsJson(returnMap);
                 break;
 
             case TEST:
