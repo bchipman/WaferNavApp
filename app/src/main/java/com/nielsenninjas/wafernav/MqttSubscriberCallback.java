@@ -54,6 +54,7 @@ public class MqttSubscriberCallback implements MqttCallback {
         Fragment fragment = null;
 
         String directive = jsonMap.get("directive");
+        directive = directive == null ? "NO_DIRECTIVE" : directive;
         switch(directive) {
             case ("GET_NEW_BLU_RETURN"):
                 Log.i(TAG, "GET_NEW_BLU_RETURN");
@@ -74,8 +75,13 @@ public class MqttSubscriberCallback implements MqttCallback {
                 Log.i(TAG, "GET_NEW_SLT_RETURN");
                 //TODO parse return json, pass to new fragment
                 break;
+            case ("NO_DIRECTIVE"):
+                Log.i(TAG, "No directive, returning");
+                mMainActivity.makeShortToast("No directive received!");
+                return;
             default:
                 Log.i(TAG, "unknown directive, returning");
+                mMainActivity.makeShortToast("Unknown directive received!");
                 return;
         }
 

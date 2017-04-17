@@ -131,6 +131,7 @@ public class EnterBibIdsFragment extends Fragment {
 
     public void addBibId(String bibId) {
         Log.i(TAG, "addBibId");
+        mAutoCompleteTextViewBibIds.setText(null);
         mBibIds.add(bibId);
     }
 }
