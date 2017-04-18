@@ -58,7 +58,7 @@ public class MqttSubscriberCallback implements MqttCallback {
         try {
             directive = Directive.valueOf(jsonMap.get("directive"));
         }
-        catch (IllegalFormatException e) {
+        catch (Exception e) {
             directive = Directive.NULL;
         }
 
