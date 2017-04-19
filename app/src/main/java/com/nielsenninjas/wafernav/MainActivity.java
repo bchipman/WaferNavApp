@@ -174,8 +174,16 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
                 break;
 
             case TEST:
-                // Just pass bluId to new EnterBibIdsFragment
-                Fragment fragment = EnterBibIdsFragment.newInstance(currentOperation, bluId);
+                int backStackCount = getFragmentManager().getBackStackEntryCount();
+                Log.i(TAG, "Number on back stack: " + backStackCount);
+                Fragment fragment;
+                if (backStackCount == 0) {
+                    // On first page so just pass bluId to new EnterBibIdsFragment
+                    fragment = EnterBibIdsFragment.newInstance(currentOperation, bluId);
+                } else {
+                    // Not on first page, so next page is delivery complete page
+                    fragment = DeliveryCompleteFragment.newInstance(currentOperation);
+                }
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.fragmentContainer, fragment);
                 ft.addToBackStack(null);
