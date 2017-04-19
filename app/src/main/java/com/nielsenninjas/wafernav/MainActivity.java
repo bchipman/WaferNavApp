@@ -49,10 +49,10 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         String firstFragment = getIntent().getStringExtra(HomeActivity.INITIAL_FRAGMENT);
         switch(firstFragment) {
             case "EnterLotIdFragment":
-                fragment = EnterLotIdFragment.newInstance();
+                fragment = EnterLotIdFragment.newInstance(currentOperation);
                 break;
             case "EnterStationIdFragment":
-                fragment = EnterStationIdFragment.newInstance("thing1", "thing2");
+                fragment = EnterStationIdFragment.newInstance(currentOperation, "thing1", "thing2");
                 break;
             default:
                 Log.e(TAG, "INITIAL_FRAGMENT null!");
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
     @Override
     public void startDeliveryButtonHandler(String id, String loc) {
         Log.i(TAG, "startDeliveryButtonHandler: " + currentOperation);
-        Fragment fragment = DeliveringToFragment.newInstance(id, loc);
+        Fragment fragment = DeliveringToFragment.newInstance(currentOperation, id, loc);
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.fragmentContainer, fragment);
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
     @Override
     public void confirmDeliveryButtonHandler(String id, String loc) {
         Log.i(TAG, "confirmDeliveryButtonHandler");
-        Fragment fragment = EnterStationIdFragment.newInstance(id, loc);
+        Fragment fragment = EnterStationIdFragment.newInstance(currentOperation, id, loc);
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.fragmentContainer, fragment);
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
 
             case TEST:
                 // Just pass bluId to new EnterBibIdsFragment
-                Fragment fragment = EnterBibIdsFragment.newInstance(bluId);
+                Fragment fragment = EnterBibIdsFragment.newInstance(currentOperation, bluId);
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.fragmentContainer, fragment);
                 ft.addToBackStack(null);
@@ -242,5 +242,9 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    public Operation getCurrentOperation() {
+        return currentOperation;
     }
 }

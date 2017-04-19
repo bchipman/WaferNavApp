@@ -9,6 +9,7 @@ import android.view.*;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
+import com.nielsenninjas.wafernav.enums.Operation;
 
 /**
  A simple {@link Fragment} subclass.
@@ -22,6 +23,8 @@ public class EnterLotIdFragment extends Fragment {
 
     private static final String TAG = "EnterIdFragment";
 
+    private static final String ARG_PARAM0 = "param0";
+    private Operation mOperation;
     private OnFragmentInteractionListener mListener;
 
     // UI elements
@@ -31,12 +34,19 @@ public class EnterLotIdFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static EnterLotIdFragment newInstance() {
-        return new EnterLotIdFragment();
+    public static EnterLotIdFragment newInstance(Operation operation) {
+        EnterLotIdFragment fragment = new EnterLotIdFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_PARAM0, operation);
+        fragment.setArguments(args);
+        return fragment;
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mOperation = (Operation) getArguments().get(ARG_PARAM0);
+        }
     }
 
     @Override

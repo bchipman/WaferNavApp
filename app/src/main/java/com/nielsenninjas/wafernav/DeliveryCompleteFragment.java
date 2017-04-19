@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import com.nielsenninjas.wafernav.enums.Operation;
 
 /**
  A simple {@link Fragment} subclass.
@@ -18,14 +19,20 @@ import android.widget.Button;
  */
 public class DeliveryCompleteFragment extends Fragment {
 
+    private static final String ARG_PARAM0 = "param0";
+    private Operation mOperation;
     private OnFragmentInteractionListener mListener;
 
     public DeliveryCompleteFragment() {
         // Required empty public constructor
     }
 
-    public static DeliveryCompleteFragment newInstance() {
-        return new DeliveryCompleteFragment();
+    public static DeliveryCompleteFragment newInstance(Operation operation) {
+        DeliveryCompleteFragment fragment = new DeliveryCompleteFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_PARAM0, operation);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -43,6 +50,7 @@ public class DeliveryCompleteFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (mListener != null) {
+                    mOperation = (Operation) getArguments().get(ARG_PARAM0);
                     mListener.newDeliveryButtonHandler();
                 }
             }

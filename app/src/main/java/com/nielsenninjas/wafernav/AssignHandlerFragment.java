@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import com.nielsenninjas.wafernav.enums.Operation;
 
 /**
  A simple {@link Fragment} subclass.
@@ -18,9 +19,10 @@ import android.widget.TextView;
  create an instance of this fragment.
  */
 public class AssignHandlerFragment extends Fragment {
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM0 = "param0";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private Operation mOperation;
     private String mHandlerId;
     private String mHandlerLocation;
     private OnFragmentInteractionListener mListener;
@@ -29,9 +31,10 @@ public class AssignHandlerFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static AssignHandlerFragment newInstance(String param1, String param2) {
+    public static AssignHandlerFragment newInstance(Operation operation, String param1, String param2) {
         AssignHandlerFragment fragment = new AssignHandlerFragment();
         Bundle args = new Bundle();
+        args.putSerializable(ARG_PARAM0, operation);
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
@@ -42,6 +45,7 @@ public class AssignHandlerFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            mOperation = (Operation) getArguments().get(ARG_PARAM0);
             mHandlerId = getArguments().getString(ARG_PARAM1);
             mHandlerLocation = getArguments().getString(ARG_PARAM2);
         }

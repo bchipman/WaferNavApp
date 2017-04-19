@@ -67,7 +67,7 @@ public class MqttSubscriberCallback implements MqttCallback {
                 Log.i(TAG, Directive.GET_NEW_BLU_RETURN.toString());
                 String handlerId = jsonMap.get("bluId");
                 String handlerLocation = jsonMap.get("bluInfo");
-                fragment = AssignHandlerFragment.newInstance(handlerId, handlerLocation);
+                fragment = AssignHandlerFragment.newInstance(mMainActivity.getCurrentOperation(), handlerId, handlerLocation);
                 break;
             case COMPLETE_NEW_BLU_RETURN:
                 Log.i(TAG, Directive.COMPLETE_NEW_BLU_RETURN.toString());
@@ -76,11 +76,13 @@ public class MqttSubscriberCallback implements MqttCallback {
                     Log.e(TAG, "Confirmed was not true.");
                     return;
                 }
-                fragment = DeliveryCompleteFragment.newInstance();
+                fragment = DeliveryCompleteFragment.newInstance(mMainActivity.getCurrentOperation());
                 break;
             case GET_NEW_SLT_RETURN:
                 Log.i(TAG, Directive.GET_NEW_SLT_RETURN.toString());
-                //TODO parse return json, pass to new fragment
+                String sltId = jsonMap.get("sltId");
+                String sltLocation = jsonMap.get("sltInfo");
+                fragment = DeliveringToFragment.newInstance(mMainActivity.getCurrentOperation(), sltId, sltLocation);
                 break;
             case NULL:
                 Log.i(TAG, Directive.NULL.toString());
