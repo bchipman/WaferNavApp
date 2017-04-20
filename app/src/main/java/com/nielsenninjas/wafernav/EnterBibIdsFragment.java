@@ -69,7 +69,7 @@ public class EnterBibIdsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (mListener != null) {
-                    mListener.readStationBarcodeButtonHandler();
+                    mListener.readBarcodeButtonHandler(MainActivity.ENTER_BIB_IDS_BARCODE_CAPTURE);
                 }
             }
         });
@@ -129,7 +129,7 @@ public class EnterBibIdsFragment extends Fragment {
      >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void readStationBarcodeButtonHandler();
+        void readBarcodeButtonHandler(int barcodeCaptureId);
         void addBibIdButtonHandler(String bibId);
         void startDeliveryButtonHandler(String bluId, Set<String> bibIds);
     }
@@ -138,5 +138,9 @@ public class EnterBibIdsFragment extends Fragment {
         Log.i(TAG, "addBibId");
         mAutoCompleteTextViewBibIds.setText(null);
         mBibIds.add(bibId);
+    }
+
+    public void setBibIdText(String bibId) {
+        mAutoCompleteTextViewBibIds.setText(bibId);
     }
 }

@@ -28,8 +28,9 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
     private static final String TAG_BARCODE = "BarcodeMain";
 
     // Barcode reader
-    private static final int ID_BARCODE_CAPTURE = 9001;
-    private static final int STATION_BARCODE_CAPTURE = 9002;
+    public static final int ENTER_LOT_ID_BARCODE_CAPTURE = 9001;
+    public static final int ENTER_STATION_BARCODE_CAPTURE = 9002;
+    public static final int ENTER_BIB_IDS_BARCODE_CAPTURE = 9003;
 
     // State
     private Operation currentOperation;
@@ -147,19 +148,6 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
     }
 
     @Override
-    public void readStationBarcodeButtonHandler() {
-        Log.i(TAG, "readStationBarcodeButtonHandler");
-
-        // launch barcode activity.
-        Intent intent = new Intent(this, BarcodeCaptureActivity.class);
-        intent.putExtra(BarcodeCaptureActivity.AutoFocus, true);
-        intent.putExtra(BarcodeCaptureActivity.UseFlash, false);
-
-        startActivityForResult(intent, STATION_BARCODE_CAPTURE);
-    }
-
-
-    @Override
     public void publishStationIdButtonHandler(String bluId) {
         Log.i(TAG, "publishStationIdButtonHandler: " + currentOperation);
 
@@ -212,31 +200,36 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
     }
 
     @Override
-    public void readBarcodeButtonHandler() {
-        // launch barcode activity.
+    public void readBarcodeButtonHandler(int barcodeCaptureId) {
+        Log.i(TAG, "readBarcodeButtonHandler " + barcodeCaptureId);
         Intent intent = new Intent(this, BarcodeCaptureActivity.class);
         intent.putExtra(BarcodeCaptureActivity.AutoFocus, true);
         intent.putExtra(BarcodeCaptureActivity.UseFlash, false);
 
-        startActivityForResult(intent, ID_BARCODE_CAPTURE);
+        startActivityForResult(intent, barcodeCaptureId);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ID_BARCODE_CAPTURE || requestCode == STATION_BARCODE_CAPTURE) {
+        if (requestCode == ENTER_LOT_ID_BARCODE_CAPTURE || requestCode == ENTER_STATION_BARCODE_CAPTURE || requestCode == ENTER_BIB_IDS_BARCODE_CAPTURE) {
             if (resultCode == CommonStatusCodes.SUCCESS) {
                 if (data != null) {
                     Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
                     Log.d(TAG_BARCODE, "Barcode read: " + barcode.displayValue);
 
-                    if (requestCode == ID_BARCODE_CAPTURE) {
+                    if (requestCode == ENTER_LOT_ID_BARCODE_CAPTURE) {
                         EnterLotIdFragment enterLotIdFragment = (EnterLotIdFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer);
                         enterLotIdFragment.setLotIdText(barcode.displayValue);
                     }
 
-                    else if (requestCode == STATION_BARCODE_CAPTURE) {
+                    else if (requestCode == ENTER_STATION_BARCODE_CAPTURE) {
                         EnterStationIdFragment enterStationIdFragment = (EnterStationIdFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer);
                         enterStationIdFragment.setStationIdText(barcode.displayValue);
+                    }
+
+                    else if (requestCode == ENTER_BIB_IDS_BARCODE_CAPTURE) {
+                        EnterBibIdsFragment enterBibIdsFragment = (EnterBibIdsFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer);
+                        enterBibIdsFragment.setBibIdText(barcode.displayValue);
                     }
                 }
                 else {

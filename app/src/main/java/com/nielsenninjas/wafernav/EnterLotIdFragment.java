@@ -83,7 +83,7 @@ public class EnterLotIdFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (mListener != null) {
-                    mListener.readBarcodeButtonHandler();
+                    mListener.readBarcodeButtonHandler(MainActivity.ENTER_LOT_ID_BARCODE_CAPTURE);
                 }
             }
         });
@@ -164,8 +164,8 @@ public class EnterLotIdFragment extends Fragment {
      >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
+        void readBarcodeButtonHandler(int barcodeCaptureId);
         void publishButtonHandler(String lotId);
-        void readBarcodeButtonHandler();
     }
 
     public void setLotIdText(String lotId) {

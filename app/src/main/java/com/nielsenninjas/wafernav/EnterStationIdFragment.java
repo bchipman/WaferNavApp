@@ -63,7 +63,7 @@ public class EnterStationIdFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (mListener != null) {
-                    mListener.readStationBarcodeButtonHandler();
+                    mListener.readBarcodeButtonHandler(MainActivity.ENTER_STATION_BARCODE_CAPTURE);
                 }
             }
         });
@@ -112,7 +112,7 @@ public class EnterStationIdFragment extends Fragment {
      >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void readStationBarcodeButtonHandler();
+        void readBarcodeButtonHandler(int barcodeCaptureId);
         void publishStationIdButtonHandler(String stationId);
     }
 
