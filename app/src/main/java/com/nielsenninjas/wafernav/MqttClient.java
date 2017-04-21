@@ -98,7 +98,7 @@ public class MqttClient {
             e.printStackTrace();
         }
 
-        System.out.println("Publishing message..");
+        Log.w(TAG, "Publishing message: " + PUB_TOPIC + ": " + returnJsonString);
         try {
             mqttAndroidClient.publish(PUB_TOPIC, new MqttMessage(returnJsonString.getBytes()));
         }

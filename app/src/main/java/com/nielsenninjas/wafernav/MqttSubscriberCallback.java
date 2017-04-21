@@ -34,7 +34,7 @@ public class MqttSubscriberCallback implements MqttCallback {
     @Override
     public void messageArrived(String topic, final MqttMessage message) throws Exception {
         String jsonMessage = new String(message.getPayload());
-        Log.i(TAG, "Message Arrived!: " + topic + ": " + jsonMessage);
+        Log.w(TAG, "Message Arrived!: " + topic + ": " + jsonMessage);
 
         ObjectMapper mapper = new ObjectMapper();
         Map<String, String> jsonMap = null;
@@ -62,32 +62,51 @@ public class MqttSubscriberCallback implements MqttCallback {
             directive = Directive.NULL;
         }
 
+        String id;
+        String location;
+        String confirmed;
+
         switch(directive) {
+
             case GET_NEW_BLU_RETURN:
                 Log.i(TAG, Directive.GET_NEW_BLU_RETURN.toString());
-                String handlerId = jsonMap.get("bluId");
-                String handlerLocation = jsonMap.get("bluInfo");
-                fragment = AssignHandlerFragment.newInstance(mMainActivity.getCurrentOperation(), handlerId, handlerLocation);
+                id = jsonMap.get("bluId");
+                location = jsonMap.get("bluInfo");
+                fragment = AssignHandlerFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
                 break;
+
             case COMPLETE_NEW_BLU_RETURN:
                 Log.i(TAG, Directive.COMPLETE_NEW_BLU_RETURN.toString());
-                String confirmed = jsonMap.get("confirm");
+                confirmed = jsonMap.get("confirm");
                 if (!confirmed.equals("true")) {
                     Log.e(TAG, "Confirmed was not true.");
                     return;
                 }
                 fragment = DeliveryCompleteFragment.newInstance(mMainActivity.getCurrentOperation());
                 break;
+
             case GET_NEW_SLT_RETURN:
                 Log.i(TAG, Directive.GET_NEW_SLT_RETURN.toString());
-                String sltId = jsonMap.get("sltId");
-                String sltLocation = jsonMap.get("sltInfo");
-                fragment = DeliveringToFragment.newInstance(mMainActivity.getCurrentOperation(), sltId, sltLocation);
+                id = jsonMap.get("sltId");
+                location = jsonMap.get("sltInfo");
+                fragment = DeliveringToFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
                 break;
+
+            case COMPLETE_NEW_SLT_RETURN:
+                Log.i(TAG, Directive.COMPLETE_NEW_SLT_RETURN.toString());
+                confirmed = jsonMap.get("confirm");
+                if (!confirmed.equals("true")) {
+                    Log.e(TAG, "Confirmed was not true.");
+                    return;
+                }
+                fragment = DeliveryCompleteFragment.newInstance(mMainActivity.getCurrentOperation());
+                break;
+
             case NULL:
                 Log.i(TAG, Directive.NULL.toString());
                 mMainActivity.makeShortToast("No directive received!");
                 return;
+
             default:
                 Log.i(TAG, Directive.UNKNOWN.toString());
                 mMainActivity.makeShortToast("Unknown directive received!");

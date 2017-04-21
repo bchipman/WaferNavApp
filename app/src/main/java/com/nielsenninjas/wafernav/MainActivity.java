@@ -148,15 +148,17 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
     }
 
     @Override
-    public void publishStationIdButtonHandler(String bluId) {
+    public void publishStationIdButtonHandler(String id) {
         Log.i(TAG, "publishStationIdButtonHandler: " + currentOperation);
+
+        Map<String, Object> returnMap;
 
         switch(currentOperation) {
 
             case LOAD:
                 // Create JSON string to publish, e.g. {"id":123}
-                Map<String, Object> returnMap = new HashMap<>();
-                returnMap.put(Fields.BLU_ID.field(), bluId);
+                returnMap = new HashMap<>();
+                returnMap.put(Fields.BLU_ID.field(), id);
                 returnMap.put(Fields.DIRECTIVE.field(), Directive.COMPLETE_NEW_BLU);
                 mqttClient.publishMapAsJson(returnMap);
                 break;
@@ -164,18 +166,20 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
             case TEST:
                 int backStackCount = getFragmentManager().getBackStackEntryCount();
                 Log.i(TAG, "Number on back stack: " + backStackCount);
-                Fragment fragment;
                 if (backStackCount == 0) {
-                    // On first page so just pass bluId to new EnterBibIdsFragment
-                    fragment = EnterBibIdsFragment.newInstance(currentOperation, bluId);
+                    // On first page so just pass id to new EnterBibIdsFragment
+                    Fragment fragment = EnterBibIdsFragment.newInstance(currentOperation, id);
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.replace(R.id.fragmentContainer, fragment);
+                    ft.addToBackStack(null);
+                    ft.commit();
                 } else {
                     // Not on first page, so next page is delivery complete page
-                    fragment = DeliveryCompleteFragment.newInstance(currentOperation);
+                    returnMap = new HashMap<>();
+                    returnMap.put(Fields.SLT_ID.field(), id);
+                    returnMap.put(Fields.DIRECTIVE.field(), Directive.COMPLETE_NEW_SLT);
+                    mqttClient.publishMapAsJson(returnMap);
                 }
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.fragmentContainer, fragment);
-                ft.addToBackStack(null);
-                ft.commit();
                 break;
 
             default:
