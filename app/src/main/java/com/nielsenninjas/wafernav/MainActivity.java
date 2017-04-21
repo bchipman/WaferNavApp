@@ -182,6 +182,14 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
                 }
                 break;
 
+            case UNLOAD:
+                // Create JSON string to publish, e.g. {"id":123}
+                returnMap = new HashMap<>();
+                returnMap.put(Fields.SLT_ID.field(), id);
+                returnMap.put(Fields.DIRECTIVE.field(), Directive.GET_DONE_BLU);
+                mqttClient.publishMapAsJson(returnMap);
+                break;
+
             default:
                 Log.i(TAG, "Unrecognized operation!");
                 return;
