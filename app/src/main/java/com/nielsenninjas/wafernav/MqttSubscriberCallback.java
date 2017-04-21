@@ -110,6 +110,17 @@ public class MqttSubscriberCallback implements MqttCallback {
                 fragment = AssignHandlerFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
                 break;
 
+            case COMPLETE_DONE_BLU_RETURN:
+                // same as COMPLETE_NEW_SLT_RETURN above
+                Log.i(TAG, Directive.COMPLETE_DONE_BLU_RETURN.toString());
+                confirmed = jsonMap.get(Fields.CONFIRM.field());
+                if (!confirmed.equals(Fields.TRUE.field())) {
+                    Log.e(TAG, "Confirmed was not true.");
+                    return;
+                }
+                fragment = DeliveryCompleteFragment.newInstance(mMainActivity.getCurrentOperation());
+                break;
+
             case NULL:
                 Log.i(TAG, Directive.NULL.toString());
                 mMainActivity.makeShortToast("No directive received!");

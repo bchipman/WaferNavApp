@@ -152,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         Log.i(TAG, "publishStationIdButtonHandler: " + currentOperation);
 
         Map<String, Object> returnMap;
+        int backStackCount;
 
         switch(currentOperation) {
 
@@ -164,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
                 break;
 
             case TEST:
-                int backStackCount = getFragmentManager().getBackStackEntryCount();
+                backStackCount = getFragmentManager().getBackStackEntryCount();
                 Log.i(TAG, "Number on back stack: " + backStackCount);
                 if (backStackCount == 0) {
                     // On first page so just pass id to new EnterBibIdsFragment
@@ -183,11 +184,22 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
                 break;
 
             case UNLOAD:
-                // Create JSON string to publish, e.g. {"id":123}
-                returnMap = new HashMap<>();
-                returnMap.put(Fields.SLT_ID.field(), id);
-                returnMap.put(Fields.DIRECTIVE.field(), Directive.GET_DONE_BLU);
-                mqttClient.publishMapAsJson(returnMap);
+                backStackCount = getFragmentManager().getBackStackEntryCount();
+                Log.i(TAG, "Number on back stack: " + backStackCount);
+                if (backStackCount == 0) {
+                    // On first page so send mqtt message with slt id
+                    returnMap = new HashMap<>();
+                    returnMap.put(Fields.SLT_ID.field(), id);
+                    returnMap.put(Fields.DIRECTIVE.field(), Directive.GET_DONE_BLU);
+                    mqttClient.publishMapAsJson(returnMap);
+                } else {
+                    Log.i(TAG, "!!!!!!!!!!!!!!!!");
+                    // Not on first page, so next page is delivery complete page
+                    returnMap = new HashMap<>();
+                    returnMap.put(Fields.BLU_ID.field(), id);
+                    returnMap.put(Fields.DIRECTIVE.field(), Directive.COMPLETE_DONE_BLU);
+                    mqttClient.publishMapAsJson(returnMap);
+                }
                 break;
 
             default:
