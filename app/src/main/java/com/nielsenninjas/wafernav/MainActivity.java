@@ -10,7 +10,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.nielsenninjas.wafernav.enums.Directive;
-import com.nielsenninjas.wafernav.enums.Fields;
+import com.nielsenninjas.wafernav.enums.Field;
 import com.nielsenninjas.wafernav.enums.Operation;
 import com.nielsenninjas.wafernav.barcodereader.BarcodeCaptureActivity;
 
@@ -99,8 +99,8 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
 
         // Create JSON string to publish, e.g. {"id":123}
         Map<String, Object> returnMap = new HashMap<>();
-        returnMap.put(Fields.DIRECTIVE.field(), Directive.GET_NEW_BLU);
-        returnMap.put(Fields.LOT_ID.field(), lotId);
+        returnMap.put(Field.DIRECTIVE.field(), Directive.GET_NEW_BLU);
+        returnMap.put(Field.LOT_ID.field(), lotId);
 
         mqttClient.publishMapAsJson(returnMap);
     }
@@ -130,9 +130,9 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
 
         // Create JSON string to publish, e.g. {"id":123}
         Map<String, Object> returnMap = new HashMap<>();
-        returnMap.put(Fields.BLU_ID.field(), bluId);
-        returnMap.put(Fields.BIB_IDS.field(), bibIds.toArray());
-        returnMap.put(Fields.DIRECTIVE.field(), Directive.GET_NEW_SLT);
+        returnMap.put(Field.BLU_ID.field(), bluId);
+        returnMap.put(Field.BIB_IDS.field(), bibIds.toArray());
+        returnMap.put(Field.DIRECTIVE.field(), Directive.GET_NEW_SLT);
         mqttClient.publishMapAsJson(returnMap);
     }
 
@@ -159,8 +159,8 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
             case LOAD:
                 // Create JSON string to publish, e.g. {"id":123}
                 returnMap = new HashMap<>();
-                returnMap.put(Fields.BLU_ID.field(), id);
-                returnMap.put(Fields.DIRECTIVE.field(), Directive.COMPLETE_NEW_BLU);
+                returnMap.put(Field.BLU_ID.field(), id);
+                returnMap.put(Field.DIRECTIVE.field(), Directive.COMPLETE_NEW_BLU);
                 mqttClient.publishMapAsJson(returnMap);
                 break;
 
@@ -177,8 +177,8 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
                 } else {
                     // Not on first page, so next page is delivery complete page
                     returnMap = new HashMap<>();
-                    returnMap.put(Fields.SLT_ID.field(), id);
-                    returnMap.put(Fields.DIRECTIVE.field(), Directive.COMPLETE_NEW_SLT);
+                    returnMap.put(Field.SLT_ID.field(), id);
+                    returnMap.put(Field.DIRECTIVE.field(), Directive.COMPLETE_NEW_SLT);
                     mqttClient.publishMapAsJson(returnMap);
                 }
                 break;
@@ -189,15 +189,15 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
                 if (backStackCount == 0) {
                     // On first page so send mqtt message with slt id
                     returnMap = new HashMap<>();
-                    returnMap.put(Fields.SLT_ID.field(), id);
-                    returnMap.put(Fields.DIRECTIVE.field(), Directive.GET_DONE_BLU);
+                    returnMap.put(Field.SLT_ID.field(), id);
+                    returnMap.put(Field.DIRECTIVE.field(), Directive.GET_DONE_BLU);
                     mqttClient.publishMapAsJson(returnMap);
                 } else {
                     Log.i(TAG, "!!!!!!!!!!!!!!!!");
                     // Not on first page, so next page is delivery complete page
                     returnMap = new HashMap<>();
-                    returnMap.put(Fields.BLU_ID.field(), id);
-                    returnMap.put(Fields.DIRECTIVE.field(), Directive.COMPLETE_DONE_BLU);
+                    returnMap.put(Field.BLU_ID.field(), id);
+                    returnMap.put(Field.DIRECTIVE.field(), Directive.COMPLETE_DONE_BLU);
                     mqttClient.publishMapAsJson(returnMap);
                 }
                 break;

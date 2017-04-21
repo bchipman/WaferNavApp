@@ -3,7 +3,7 @@ package com.nielsenninjas.wafernav;
 import android.app.Fragment;
 import android.util.Log;
 import com.nielsenninjas.wafernav.enums.Directive;
-import com.nielsenninjas.wafernav.enums.Fields;
+import com.nielsenninjas.wafernav.enums.Field;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -56,7 +56,7 @@ public class MqttSubscriberCallback implements MqttCallback {
         Fragment fragment;
         Directive directive;
         try {
-            directive = Directive.valueOf(jsonMap.get(Fields.DIRECTIVE.field()));
+            directive = Directive.valueOf(jsonMap.get(Field.DIRECTIVE.field()));
         }
         catch (Exception e) {
             directive = Directive.NULL;
@@ -70,15 +70,15 @@ public class MqttSubscriberCallback implements MqttCallback {
 
             case GET_NEW_BLU_RETURN:
                 Log.i(TAG, Directive.GET_NEW_BLU_RETURN.toString());
-                id = jsonMap.get(Fields.BLU_ID.field());
-                location = jsonMap.get(Fields.BLU_INFO.field());
+                id = jsonMap.get(Field.BLU_ID.field());
+                location = jsonMap.get(Field.BLU_INFO.field());
                 fragment = AssignHandlerFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
                 break;
 
             case COMPLETE_NEW_BLU_RETURN:
                 Log.i(TAG, Directive.COMPLETE_NEW_BLU_RETURN.toString());
-                confirmed = jsonMap.get(Fields.CONFIRM.field());
-                if (!confirmed.equals(Fields.TRUE.field())) {
+                confirmed = jsonMap.get(Field.CONFIRM.field());
+                if (!confirmed.equals(Field.TRUE.field())) {
                     Log.e(TAG, "Confirmed was not true.");
                     return;
                 }
@@ -87,15 +87,15 @@ public class MqttSubscriberCallback implements MqttCallback {
 
             case GET_NEW_SLT_RETURN:
                 Log.i(TAG, Directive.GET_NEW_SLT_RETURN.toString());
-                id = jsonMap.get(Fields.SLT_ID.field());
-                location = jsonMap.get(Fields.SLT_INFO.field());
+                id = jsonMap.get(Field.SLT_ID.field());
+                location = jsonMap.get(Field.SLT_INFO.field());
                 fragment = DeliveringToFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
                 break;
 
             case COMPLETE_NEW_SLT_RETURN:
                 Log.i(TAG, Directive.COMPLETE_NEW_SLT_RETURN.toString());
-                confirmed = jsonMap.get(Fields.CONFIRM.field());
-                if (!confirmed.equals(Fields.TRUE.field())) {
+                confirmed = jsonMap.get(Field.CONFIRM.field());
+                if (!confirmed.equals(Field.TRUE.field())) {
                     Log.e(TAG, "Confirmed was not true.");
                     return;
                 }
@@ -105,16 +105,16 @@ public class MqttSubscriberCallback implements MqttCallback {
             case GET_DONE_BLU_RETURN:
                 // same as GET_NEW_BLU_RETURN above
                 Log.i(TAG, Directive.GET_DONE_BLU_RETURN.toString());
-                id = jsonMap.get(Fields.BLU_ID.field());
-                location = jsonMap.get(Fields.BLU_INFO.field());
+                id = jsonMap.get(Field.BLU_ID.field());
+                location = jsonMap.get(Field.BLU_INFO.field());
                 fragment = AssignHandlerFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
                 break;
 
             case COMPLETE_DONE_BLU_RETURN:
                 // same as COMPLETE_NEW_SLT_RETURN above
                 Log.i(TAG, Directive.COMPLETE_DONE_BLU_RETURN.toString());
-                confirmed = jsonMap.get(Fields.CONFIRM.field());
-                if (!confirmed.equals(Fields.TRUE.field())) {
+                confirmed = jsonMap.get(Field.CONFIRM.field());
+                if (!confirmed.equals(Field.TRUE.field())) {
                     Log.e(TAG, "Confirmed was not true.");
                     return;
                 }

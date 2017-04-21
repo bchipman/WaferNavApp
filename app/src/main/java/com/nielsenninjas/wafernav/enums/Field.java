@@ -4,7 +4,7 @@ package com.nielsenninjas.wafernav.enums;
  Created by Brian on 4/17/2017.
  */
 
-public enum Fields {
+public enum Field {
     DIRECTIVE("directive"),
     LOT_ID("lotId"),
     SLT_ID("sltId"),
@@ -17,7 +17,7 @@ public enum Fields {
 
     private String field;
 
-    Fields(String field) {
+    Field(String field) {
         this.field = field;
     }
 
