@@ -24,8 +24,8 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         DeliveryCompleteFragment.OnFragmentInteractionListener {
 
     // Logging
-    private static final String TAG = "MainActivity";
-    private static final String TAG_BARCODE = "BarcodeMain";
+    private static final String TAG = "WNAV-MainActivity";
+    private static final String TAG_BARCODE = "WNAV-BarcodeMain";
 
     // Barcode reader
     public static final int ENTER_LOT_ID_BARCODE_CAPTURE = 9001;
@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
 
     @Override
     public void confirmDeliveryButtonHandler(String id, String loc) {
-        Log.i(TAG, "confirmDeliveryButtonHandler");
+        Log.i(TAG, "confirmDeliveryButtonHandler: " + currentOperation);
 
         // Create JSON string to publish, e.g. {"id":123}
         Map<String, Object> returnMap = new HashMap<>();
@@ -232,21 +232,21 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
 
     @Override
     public void newDeliveryButtonHandler() {
-        Log.i(TAG, "newDeliveryButtonHandler");
+        Log.i(TAG, "newDeliveryButtonHandler: " + currentOperation);
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
     }
 
     @Override
     public void exitAppButtonHandler() {
-        Log.i(TAG, "exitAppButtonHandler");
+        Log.i(TAG, "exitAppButtonHandler: " + currentOperation);
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
     }
 
     @Override
     public void readBarcodeButtonHandler(int barcodeCaptureId) {
-        Log.i(TAG, "readBarcodeButtonHandler " + barcodeCaptureId);
+        Log.i(TAG, "readBarcodeButtonHandler: " + currentOperation + " " + barcodeCaptureId);
         Intent intent = new Intent(this, BarcodeCaptureActivity.class);
         intent.putExtra(BarcodeCaptureActivity.AutoFocus, true);
         intent.putExtra(BarcodeCaptureActivity.UseFlash, false);

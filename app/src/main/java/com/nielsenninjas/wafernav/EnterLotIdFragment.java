@@ -21,7 +21,7 @@ import com.nielsenninjas.wafernav.enums.Operation;
  */
 public class EnterLotIdFragment extends Fragment {
 
-    private static final String TAG = "EnterIdFragment";
+    private static final String TAG = "WNAV-EnterIdFragment";
 
     private static final String ARG_PARAM0 = "param0";
     private Operation mOperation;

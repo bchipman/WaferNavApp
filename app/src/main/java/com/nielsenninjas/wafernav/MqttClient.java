@@ -20,7 +20,7 @@ import java.util.UUID;
 public class MqttClient {
 
     // Logging
-    private static final String TAG = "MqttClient";
+    private static final String TAG = "WNAV-MqttClient";
 
     // Parent activity
     private MainActivity mMainActivity;

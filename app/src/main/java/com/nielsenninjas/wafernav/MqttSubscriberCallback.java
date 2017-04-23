@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class MqttSubscriberCallback implements MqttCallback {
 
-    private static final String TAG = "MqttSubscriberCallback";
+    private static final String TAG = "WNAV-MqttSubCallback";
     private MainActivity mMainActivity;
 
     public MqttSubscriberCallback(MainActivity mainActivity) {

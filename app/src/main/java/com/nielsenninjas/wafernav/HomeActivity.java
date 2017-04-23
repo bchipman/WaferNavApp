@@ -10,7 +10,7 @@ import com.nielsenninjas.wafernav.enums.Operation;
 public class HomeActivity extends AppCompatActivity {
 
     // Logging
-    private static final String TAG = "HomeActivity";
+    private static final String TAG = "WNAV-HomeActivity";
 
     public static final String INITIAL_FRAGMENT = "INITIAL_FRAGMENT";
     public static final String CURRENT_OPERATION = "CURRENT_OPERATION";

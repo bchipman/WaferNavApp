@@ -25,7 +25,7 @@ import java.util.Set;
  */
 public class EnterBibIdsFragment extends Fragment {
 
-    private static final String TAG = "EnterBibIdsFragment";
+    private static final String TAG = "WNAV-EnterBibIdsFrag";
 
     private static final String ARG_PARAM0 = "param0";
     private static final String ARG_PARAM1 = "param1";
