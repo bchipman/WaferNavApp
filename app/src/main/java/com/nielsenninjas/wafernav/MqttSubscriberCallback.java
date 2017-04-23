@@ -53,30 +53,42 @@ public class MqttSubscriberCallback implements MqttCallback {
             return;
         }
 
-        Fragment fragment;
-        Directive directive;
-        try {
-            directive = Directive.valueOf(jsonMap.get(Field.DIRECTIVE.field()));
+        if (!validateReceivedMessage(jsonMap)) {
+            Log.e(TAG, "Failed to validate received message!");
+            return;
         }
-        catch (Exception e) {
-            directive = Directive.NULL;
-        }
+
+        Fragment fragment = null;
+        Directive directive = Directive.valueOf(jsonMap.get(Field.DIRECTIVE.field()));
 
         String id;
         String location;
         String confirmed;
 
+        Log.i(TAG, directive.toString());
+
         switch(directive) {
 
             case GET_NEW_BLU_RETURN:
-                Log.i(TAG, Directive.GET_NEW_BLU_RETURN.toString());
                 id = jsonMap.get(Field.BLU_ID.field());
                 location = jsonMap.get(Field.BLU_INFO.field());
+                mMainActivity.addDataToCurrentDataMap(Field.BLU_ID, id);
+                mMainActivity.addDataToCurrentDataMap(Field.BLU_INFO, location);
                 fragment = AssignHandlerFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
                 break;
 
+            case ACCEPT_NEW_BLU_RETURN:
+                confirmed = jsonMap.get(Field.CONFIRM.field());
+                if (!confirmed.equals(Field.TRUE.field())) {
+                    Log.e(TAG, "Confirmed was not true.");
+                    return;
+                }
+                id = (String) mMainActivity.getCurrentDataMap().get(Field.BLU_ID.field());
+                location = (String) mMainActivity.getCurrentDataMap().get(Field.BLU_INFO.field());
+                fragment = DeliveringToFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
+                break;
+
             case COMPLETE_NEW_BLU_RETURN:
-                Log.i(TAG, Directive.COMPLETE_NEW_BLU_RETURN.toString());
                 confirmed = jsonMap.get(Field.CONFIRM.field());
                 if (!confirmed.equals(Field.TRUE.field())) {
                     Log.e(TAG, "Confirmed was not true.");
@@ -86,14 +98,25 @@ public class MqttSubscriberCallback implements MqttCallback {
                 break;
 
             case GET_NEW_SLT_RETURN:
-                Log.i(TAG, Directive.GET_NEW_SLT_RETURN.toString());
                 id = jsonMap.get(Field.SLT_ID.field());
                 location = jsonMap.get(Field.SLT_INFO.field());
+                mMainActivity.addDataToCurrentDataMap(Field.SLT_ID, id);
+                mMainActivity.addDataToCurrentDataMap(Field.SLT_INFO, location);
+                fragment = EnterStationIdFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
+                break;
+
+            case ACCEPT_NEW_SLT_RETURN:
+                confirmed = jsonMap.get(Field.CONFIRM.field());
+                if (!confirmed.equals(Field.TRUE.field())) {
+                    Log.e(TAG, "Confirmed was not true.");
+                    return;
+                }
+                id = (String) mMainActivity.getCurrentDataMap().get(Field.SLT_ID.field());
+                location = (String) mMainActivity.getCurrentDataMap().get(Field.SLT_INFO.field());
                 fragment = DeliveringToFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
                 break;
 
             case COMPLETE_NEW_SLT_RETURN:
-                Log.i(TAG, Directive.COMPLETE_NEW_SLT_RETURN.toString());
                 confirmed = jsonMap.get(Field.CONFIRM.field());
                 if (!confirmed.equals(Field.TRUE.field())) {
                     Log.e(TAG, "Confirmed was not true.");
@@ -104,15 +127,15 @@ public class MqttSubscriberCallback implements MqttCallback {
 
             case GET_DONE_BLU_RETURN:
                 // same as GET_NEW_BLU_RETURN above
-                Log.i(TAG, Directive.GET_DONE_BLU_RETURN.toString());
                 id = jsonMap.get(Field.BLU_ID.field());
                 location = jsonMap.get(Field.BLU_INFO.field());
+                mMainActivity.addDataToCurrentDataMap(Field.BLU_ID, id);
+                mMainActivity.addDataToCurrentDataMap(Field.BLU_INFO, location);
                 fragment = AssignHandlerFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
                 break;
 
             case COMPLETE_DONE_BLU_RETURN:
                 // same as COMPLETE_NEW_SLT_RETURN above
-                Log.i(TAG, Directive.COMPLETE_DONE_BLU_RETURN.toString());
                 confirmed = jsonMap.get(Field.CONFIRM.field());
                 if (!confirmed.equals(Field.TRUE.field())) {
                     Log.e(TAG, "Confirmed was not true.");
@@ -121,18 +144,46 @@ public class MqttSubscriberCallback implements MqttCallback {
                 fragment = DeliveryCompleteFragment.newInstance(mMainActivity.getCurrentOperation());
                 break;
 
-            case NULL:
-                Log.i(TAG, Directive.NULL.toString());
-                mMainActivity.makeShortToast("No directive received!");
-                return;
-
-            default:
-                Log.i(TAG, Directive.UNKNOWN.toString());
-                mMainActivity.makeShortToast("Unknown directive received!");
-                return;
         }
 
         mMainActivity.changeFragment(fragment);
+    }
+
+    private boolean validateReceivedMessage(Map<String, String> jsonMap) {
+        Directive directive;
+        try {
+            directive = Directive.valueOf(jsonMap.get(Field.DIRECTIVE.field()));
+        }
+        catch (Exception e) {
+            directive = Directive.NULL;
+        }
+
+        switch(directive) {
+
+            case GET_NEW_BLU_RETURN:
+            case GET_DONE_BLU_RETURN:
+                return jsonMap.get(Field.BLU_ID.field()) != null && jsonMap.get(Field.BLU_INFO.field()) != null;
+
+            case GET_NEW_SLT_RETURN:
+                return jsonMap.get(Field.SLT_ID.field()) != null && jsonMap.get(Field.SLT_INFO.field()) != null;
+
+            case ACCEPT_NEW_BLU_RETURN:
+            case COMPLETE_NEW_BLU_RETURN:
+            case ACCEPT_NEW_SLT_RETURN:
+            case COMPLETE_NEW_SLT_RETURN:
+            case ACCEPT_DONE_BLU_RETURN:
+            case COMPLETE_DONE_BLU_RETURN:
+                return jsonMap.get(Field.CONFIRM.field()) != null;
+
+            case NULL:
+                mMainActivity.makeShortToast("No directive received!");
+                return false;
+
+            default:
+                mMainActivity.makeShortToast("Unknown directive received!");
+                return false;
+        }
+
     }
 
     @Override
