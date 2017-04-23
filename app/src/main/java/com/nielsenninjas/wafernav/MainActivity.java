@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
 
     // State
     private Operation currentOperation;
-    private Map<String, Object> currentData;
 
     // MQTT
     private MqttClient mqttClient;
@@ -64,7 +63,6 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
 
         mqttClient = new MqttClient(this);
-        currentData = new HashMap<>();
     }
 
     @Override
@@ -108,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         returnMap.put(Field.LOT_ID.field(), lotId);
 
         // Add lotId to current data map (current state)
-        addDataToCurrentDataMap(Field.LOT_ID, lotId);
+        StateDto.getInstance().setLotId(lotId);
 
         mqttClient.publishMapAsJson(returnMap);
     }
@@ -120,8 +118,8 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         // Create JSON string to publish, e.g. {"id":123}
         Map<String, Object> returnMap = new HashMap<>();
         returnMap.put(Field.DIRECTIVE.field(), Directive.ACCEPT_NEW_BLU);
-        returnMap.put(Field.LOT_ID.field(), currentData.get(Field.LOT_ID.field()));
-        returnMap.put(Field.BLU_ID.field(), currentData.get(Field.BLU_ID.field()));
+        returnMap.put(Field.LOT_ID.field(), StateDto.getInstance().getLotId());
+        returnMap.put(Field.BLU_ID.field(), StateDto.getInstance().getBluId());
 
         mqttClient.publishMapAsJson(returnMap);
     }
@@ -145,8 +143,8 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         returnMap.put(Field.DIRECTIVE.field(), Directive.GET_NEW_SLT);
 
         // Add bluId, bibIds to current data map (current state)
-        addDataToCurrentDataMap(Field.BLU_ID, bluId);
-        addDataToCurrentDataMap(Field.BIB_IDS, bibIds.toArray());
+        StateDto.getInstance().setBluId(bluId);
+        StateDto.getInstance().setBibIds(bibIds.toArray(new String[bibIds.size()]));
 
         mqttClient.publishMapAsJson(returnMap);
     }
@@ -158,8 +156,8 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         // Create JSON string to publish, e.g. {"id":123}
         Map<String, Object> returnMap = new HashMap<>();
         returnMap.put(Field.DIRECTIVE.field(), Directive.ACCEPT_NEW_SLT);
-        returnMap.put(Field.BIB_IDS.field(), currentData.get(Field.BIB_IDS.field()));
-        returnMap.put(Field.SLT_ID.field(), currentData.get(Field.SLT_ID.field()));
+        returnMap.put(Field.BIB_IDS.field(), StateDto.getInstance().getBibIds());
+        returnMap.put(Field.SLT_ID.field(), StateDto.getInstance().getSltId());
 
         mqttClient.publishMapAsJson(returnMap);
     }
@@ -210,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
                     returnMap.put(Field.DIRECTIVE.field(), Directive.GET_DONE_BLU);
 
                     // Add sltId to current data map (current state)
-                    addDataToCurrentDataMap(Field.SLT_ID, id);
+                    StateDto.getInstance().setSltId(id);
 
                     mqttClient.publishMapAsJson(returnMap);
                 } else {
@@ -294,12 +292,4 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         return currentOperation;
     }
 
-    public Map<String, Object> getCurrentDataMap() {
-        return currentData;
-    }
-
-    public void addDataToCurrentDataMap(Field key, Object value) {
-        // TODO add null check
-        currentData.put(key.field(), value);
-    }
 }

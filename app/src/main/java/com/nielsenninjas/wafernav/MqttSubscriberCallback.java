@@ -72,8 +72,8 @@ public class MqttSubscriberCallback implements MqttCallback {
             case GET_NEW_BLU_RETURN:
                 id = jsonMap.get(Field.BLU_ID.field());
                 location = jsonMap.get(Field.BLU_INFO.field());
-                mMainActivity.addDataToCurrentDataMap(Field.BLU_ID, id);
-                mMainActivity.addDataToCurrentDataMap(Field.BLU_INFO, location);
+                StateDto.getInstance().setBluId(id);
+                StateDto.getInstance().setBluLocation(location);
                 fragment = AssignHandlerFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
                 break;
 
@@ -83,8 +83,8 @@ public class MqttSubscriberCallback implements MqttCallback {
                     Log.e(TAG, "Confirmed was not true.");
                     return;
                 }
-                id = (String) mMainActivity.getCurrentDataMap().get(Field.BLU_ID.field());
-                location = (String) mMainActivity.getCurrentDataMap().get(Field.BLU_INFO.field());
+                id = StateDto.getInstance().getBluId();
+                location = StateDto.getInstance().getBluLocation();
                 fragment = DeliveringToFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
                 break;
 
@@ -100,8 +100,8 @@ public class MqttSubscriberCallback implements MqttCallback {
             case GET_NEW_SLT_RETURN:
                 id = jsonMap.get(Field.SLT_ID.field());
                 location = jsonMap.get(Field.SLT_INFO.field());
-                mMainActivity.addDataToCurrentDataMap(Field.SLT_ID, id);
-                mMainActivity.addDataToCurrentDataMap(Field.SLT_INFO, location);
+                StateDto.getInstance().setSltId(id);
+                StateDto.getInstance().setSltLocation(location);
                 fragment = EnterStationIdFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
                 break;
 
@@ -111,8 +111,8 @@ public class MqttSubscriberCallback implements MqttCallback {
                     Log.e(TAG, "Confirmed was not true.");
                     return;
                 }
-                id = (String) mMainActivity.getCurrentDataMap().get(Field.SLT_ID.field());
-                location = (String) mMainActivity.getCurrentDataMap().get(Field.SLT_INFO.field());
+                id = StateDto.getInstance().getSltId();
+                location = StateDto.getInstance().getSltLocation();
                 fragment = DeliveringToFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
                 break;
 
@@ -129,8 +129,8 @@ public class MqttSubscriberCallback implements MqttCallback {
                 // same as GET_NEW_BLU_RETURN above
                 id = jsonMap.get(Field.BLU_ID.field());
                 location = jsonMap.get(Field.BLU_INFO.field());
-                mMainActivity.addDataToCurrentDataMap(Field.BLU_ID, id);
-                mMainActivity.addDataToCurrentDataMap(Field.BLU_INFO, location);
+                StateDto.getInstance().setBluId(id);
+                StateDto.getInstance().setBluLocation(location);
                 fragment = AssignHandlerFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
                 break;
 
