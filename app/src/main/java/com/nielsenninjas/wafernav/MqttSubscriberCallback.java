@@ -116,9 +116,7 @@ public class MqttSubscriberCallback implements MqttCallback {
                     Log.e(TAG, "Confirmed was not true.");
                     return;
                 }
-                id = StateDto.getInstance().getSltId();
-                location = StateDto.getInstance().getSltLocation();
-                fragment = EnterStationIdFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
+                fragment = EnterStationIdFragment.newInstance();
                 break;
 
             case COMPLETE_NEW_SLT_RETURN:
@@ -155,9 +153,7 @@ public class MqttSubscriberCallback implements MqttCallback {
                     Log.e(TAG, "Confirmed was not true.");
                     return;
                 }
-                id = StateDto.getInstance().getSltId();
-                location = StateDto.getInstance().getSltLocation();
-                fragment = EnterStationIdFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
+                fragment = EnterStationIdFragment.newInstance();
                 break;
         }
 

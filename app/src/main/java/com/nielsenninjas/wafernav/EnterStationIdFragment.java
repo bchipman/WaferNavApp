@@ -19,12 +19,6 @@ import com.nielsenninjas.wafernav.enums.Operation;
  create an instance of this fragment.
  */
 public class EnterStationIdFragment extends Fragment {
-    private static final String ARG_PARAM0 = "param0";
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private Operation mOperation;
-    private String mHandlerId;
-    private String mHandlerLocation;
     private OnFragmentInteractionListener mListener;
     private AutoCompleteTextView mAutoCompleteTextViewStationId;
 
@@ -32,24 +26,13 @@ public class EnterStationIdFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static EnterStationIdFragment newInstance(Operation operation, String param1, String param2) {
-        EnterStationIdFragment fragment = new EnterStationIdFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_PARAM0, operation);
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public static EnterStationIdFragment newInstance() {
+        return new EnterStationIdFragment();
     }
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mOperation = (Operation) getArguments().get(ARG_PARAM0);
-            mHandlerId = getArguments().getString(ARG_PARAM1);
-            mHandlerLocation = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override

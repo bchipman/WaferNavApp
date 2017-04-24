@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
                 fragment = EnterLotIdFragment.newInstance(currentOperation);
                 break;
             case "EnterStationIdFragment":
-                fragment = EnterStationIdFragment.newInstance(currentOperation, "thing1", "thing2");
+                fragment = EnterStationIdFragment.newInstance();
                 break;
             default:
                 Log.e(TAG, "INITIAL_FRAGMENT null!");
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
 
             case LOAD:
                 // Just transition to new EnterStationIdFragment
-                Fragment fragment = EnterStationIdFragment.newInstance(currentOperation, id, loc);
+                Fragment fragment = EnterStationIdFragment.newInstance();
                 changeFragment(fragment);
                 return;
 
