@@ -102,7 +102,7 @@ public class MqttSubscriberCallback implements MqttCallback {
                 location = jsonMap.get(Field.SLT_INFO.field());
                 StateDto.getInstance().setSltId(id);
                 StateDto.getInstance().setSltLocation(location);
-                fragment = EnterStationIdFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
+                fragment = DeliveringToFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
                 break;
 
             case ACCEPT_NEW_SLT_RETURN:
@@ -113,7 +113,7 @@ public class MqttSubscriberCallback implements MqttCallback {
                 }
                 id = StateDto.getInstance().getSltId();
                 location = StateDto.getInstance().getSltLocation();
-                fragment = DeliveringToFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
+                fragment = EnterStationIdFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
                 break;
 
             case COMPLETE_NEW_SLT_RETURN:
@@ -131,7 +131,7 @@ public class MqttSubscriberCallback implements MqttCallback {
                 location = jsonMap.get(Field.BLU_INFO.field());
                 StateDto.getInstance().setBluId(id);
                 StateDto.getInstance().setBluLocation(location);
-                fragment = AssignHandlerFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
+                fragment = DeliveringToFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
                 break;
 
             case COMPLETE_DONE_BLU_RETURN:
@@ -144,6 +144,16 @@ public class MqttSubscriberCallback implements MqttCallback {
                 fragment = DeliveryCompleteFragment.newInstance(mMainActivity.getCurrentOperation());
                 break;
 
+            case ACCEPT_DONE_BLU_RETURN:
+                confirmed = jsonMap.get(Field.CONFIRM.field());
+                if (!confirmed.equals(Field.TRUE.field())) {
+                    Log.e(TAG, "Confirmed was not true.");
+                    return;
+                }
+                id = StateDto.getInstance().getSltId();
+                location = StateDto.getInstance().getSltLocation();
+                fragment = EnterStationIdFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
+                break;
         }
 
         mMainActivity.changeFragment(fragment);

@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
 
     public void changeFragment(Fragment fragment) {
         if (fragment == null) {
+            Log.e(TAG, "Can't transition to null fragment!");
             return;
         }
         // Replace current fragment and add to back stack so back button works properly
@@ -155,9 +156,31 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
 
         // Create JSON string to publish, e.g. {"id":123}
         Map<String, Object> returnMap = new HashMap<>();
-        returnMap.put(Field.DIRECTIVE.field(), Directive.ACCEPT_NEW_SLT);
-        returnMap.put(Field.BIB_IDS.field(), StateDto.getInstance().getBibIds());
-        returnMap.put(Field.SLT_ID.field(), StateDto.getInstance().getSltId());
+        switch(currentOperation) {
+
+            case LOAD:
+                // just transition to ... scan station id
+                Fragment fragment = EnterStationIdFragment.newInstance(currentOperation, id, loc);
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.fragmentContainer, fragment);
+                ft.addToBackStack(null);
+                ft.commit();
+                return;
+
+            case TEST:
+                // do the accept new slt stuffs.
+                returnMap.put(Field.DIRECTIVE.field(), Directive.ACCEPT_NEW_SLT);
+                returnMap.put(Field.BIB_IDS.field(), StateDto.getInstance().getBibIds());
+                returnMap.put(Field.SLT_ID.field(), StateDto.getInstance().getSltId());
+                break;
+
+            case UNLOAD:
+                // do something similar to accept new slt stuffs, except do accept done blu
+                //  with bluid only
+                returnMap.put(Field.DIRECTIVE.field(), Directive.ACCEPT_DONE_BLU);
+                returnMap.put(Field.BLU_ID.field(), StateDto.getInstance().getBluId());
+                break;
+        }
 
         mqttClient.publishMapAsJson(returnMap);
     }
@@ -212,7 +235,6 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
 
                     mqttClient.publishMapAsJson(returnMap);
                 } else {
-                    Log.i(TAG, "!!!!!!!!!!!!!!!!");
                     // Not on first page, so next page is delivery complete page
                     returnMap = new HashMap<>();
                     returnMap.put(Field.BLU_ID.field(), id);
