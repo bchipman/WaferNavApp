@@ -1,7 +1,9 @@
 package com.nielsenninjas.wafernav;
 
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
+import com.nielsenninjas.wafernav.enums.Field;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -90,6 +92,9 @@ public class MqttClient {
 
     public void publishMapAsJson(Map<String, Object> map) {
         Log.i(TAG, "publishMapAsJson");
+
+        map.put(Field.CLIENT_ID.field(), getClientId());
+        map.put(Field.DEVICE_MODEL.field(), Build.MODEL);
 
         String returnJsonString = null;
         try {

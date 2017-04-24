@@ -7,6 +7,7 @@ package com.nielsenninjas.wafernav.enums;
 public enum Field {
     DIRECTIVE("directive"),
     CLIENT_ID("clientId"),
+    DEVICE_MODEL("deviceModel"),
     LOT_ID("lotId"),
     SLT_ID("sltId"),
     SLT_INFO("sltInfo"),
