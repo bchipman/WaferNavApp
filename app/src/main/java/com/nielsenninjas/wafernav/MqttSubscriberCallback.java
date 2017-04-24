@@ -58,6 +58,11 @@ public class MqttSubscriberCallback implements MqttCallback {
             return;
         }
 
+        if (!jsonMap.get(Field.CLIENT_ID.field()).equals(mMainActivity.getClientId())) {
+            Log.e(TAG, "Ignoring message because it is meant for a different client!");
+            return;
+        }
+
         Fragment fragment = null;
         Directive directive = Directive.valueOf(jsonMap.get(Field.DIRECTIVE.field()));
 
@@ -166,6 +171,10 @@ public class MqttSubscriberCallback implements MqttCallback {
         }
         catch (Exception e) {
             directive = Directive.NULL;
+        }
+
+        if (jsonMap.get(Field.CLIENT_ID.field()) == null) {
+            return false;
         }
 
         switch(directive) {

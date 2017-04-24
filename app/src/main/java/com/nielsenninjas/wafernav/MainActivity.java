@@ -316,4 +316,8 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         return currentOperation;
     }
 
+    public String getClientId() {
+        return mqttClient.getClientId();
+    }
+
 }
