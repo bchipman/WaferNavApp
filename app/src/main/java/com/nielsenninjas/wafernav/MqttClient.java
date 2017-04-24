@@ -29,7 +29,7 @@ public class MqttClient {
     private static final String BROKER_URL = "tcp://iot.eclipse.org:1883";
     private static final String PUB_TOPIC = "wafernav/location_requests";
     private static final String SUB_TOPIC = "wafernav/location_data";
-    private static final String CLIENT_ID = UUID.randomUUID().toString();
+    private String mClientId;
 
     // MQTT
     private MqttAndroidClient mqttAndroidClient;
@@ -37,11 +37,12 @@ public class MqttClient {
 
     public MqttClient(MainActivity mainActivity) {
         this.mMainActivity = mainActivity;
+        this.mClientId = UUID.randomUUID().toString();
         initMqtt();
     }
 
     private void initMqtt() {
-        mqttAndroidClient = new MqttAndroidClient(mMainActivity.getApplicationContext(), BROKER_URL, CLIENT_ID);
+        mqttAndroidClient = new MqttAndroidClient(mMainActivity.getApplicationContext(), BROKER_URL, mClientId);
         mqttAndroidClient.setCallback(new MqttSubscriberCallback(mMainActivity));
 
         try {
@@ -105,5 +106,9 @@ public class MqttClient {
         catch (MqttException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getClientId() {
+        return mClientId;
     }
 }
