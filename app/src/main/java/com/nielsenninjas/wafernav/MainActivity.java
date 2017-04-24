@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         Log.i(TAG, "addBibIdButtonHandler: " + currentOperation);
         EnterBibIdsFragment enterBibIdsFragment = (EnterBibIdsFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer);
         enterBibIdsFragment.addBibId(bibId);
+        makeShortToast("Added BIB ID " + bibId);
     }
 
     @Override
