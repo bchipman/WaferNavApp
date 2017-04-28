@@ -19,9 +19,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements EnterLotIdFragment.OnFragmentInteractionListener,
-        AssignHandlerFragment.OnFragmentInteractionListener, DeliveringToFragment.OnFragmentInteractionListener,
-        EnterBibIdsFragment.OnFragmentInteractionListener, EnterStationIdFragment.OnFragmentInteractionListener,
-        DeliveryCompleteFragment.OnFragmentInteractionListener {
+        DeliveringToFragment.OnFragmentInteractionListener, EnterBibIdsFragment.OnFragmentInteractionListener,
+        EnterStationIdFragment.OnFragmentInteractionListener, DeliveryCompleteFragment.OnFragmentInteractionListener {
 
     // Logging
     private static final String TAG = "WNAV-MainActivity";
@@ -113,20 +112,6 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
     }
 
     @Override
-    public void startDeliveryButtonHandler(String id, String loc) {
-        Log.i(TAG, "startDeliveryButtonHandler: " + currentOperation);
-
-        // Create JSON string to publish, e.g. {"id":123}
-        Map<String, Object> returnMap = new HashMap<>();
-        returnMap.put(Field.DIRECTIVE.field(), Directive.ACCEPT_NEW_BLU);
-        returnMap.put(Field.LOT_ID.field(), StateDto.getInstance().getLotId());
-        returnMap.put(Field.BLU_ID.field(), StateDto.getInstance().getBluId());
-
-        mqttClient.publishMapAsJson(returnMap);
-    }
-
-
-    @Override
     public void addBibIdButtonHandler(String bibId) {
         Log.i(TAG, "addBibIdButtonHandler: " + currentOperation);
         EnterBibIdsFragment enterBibIdsFragment = (EnterBibIdsFragment) getFragmentManager().findFragmentById(R.id.fragmentContainer);
@@ -155,31 +140,9 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
     public void confirmDeliveryButtonHandler(String id, String loc) {
         Log.i(TAG, "confirmDeliveryButtonHandler: " + currentOperation);
 
-        // Create JSON string to publish, e.g. {"id":123}
-        Map<String, Object> returnMap = new HashMap<>();
-        switch(currentOperation) {
-
-            case LOAD:
-                // Just transition to new EnterStationIdFragment
-                Fragment fragment = EnterStationIdFragment.newInstance();
-                changeFragment(fragment);
-                return;
-
-            case TEST:
-                // Send ACCEPT_NEW_SLT message
-                returnMap.put(Field.DIRECTIVE.field(), Directive.ACCEPT_NEW_SLT);
-                returnMap.put(Field.BIB_IDS.field(), StateDto.getInstance().getBibIds());
-                returnMap.put(Field.SLT_ID.field(), StateDto.getInstance().getSltId());
-                break;
-
-            case UNLOAD:
-                // Send ACCEPT_DONE_BLU
-                returnMap.put(Field.DIRECTIVE.field(), Directive.ACCEPT_DONE_BLU);
-                returnMap.put(Field.BLU_ID.field(), StateDto.getInstance().getBluId());
-                break;
-        }
-
-        mqttClient.publishMapAsJson(returnMap);
+        // Just transition to new EnterStationIdFragment
+        Fragment fragment = EnterStationIdFragment.newInstance();
+        changeFragment(fragment);
     }
 
     @Override

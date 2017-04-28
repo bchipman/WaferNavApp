@@ -79,17 +79,6 @@ public class MqttSubscriberCallback implements MqttCallback {
                 location = jsonMap.get(Field.BLU_INFO.field());
                 StateDto.getInstance().setBluId(id);
                 StateDto.getInstance().setBluLocation(location);
-                fragment = AssignHandlerFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
-                break;
-
-            case ACCEPT_NEW_BLU_RETURN:
-                confirmed = jsonMap.get(Field.CONFIRM.field());
-                if (!confirmed.equals(Field.TRUE.field())) {
-                    Log.e(TAG, "Confirmed was not true.");
-                    return;
-                }
-                id = StateDto.getInstance().getBluId();
-                location = StateDto.getInstance().getBluLocation();
                 fragment = DeliveringToFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
                 break;
 
@@ -108,15 +97,6 @@ public class MqttSubscriberCallback implements MqttCallback {
                 StateDto.getInstance().setSltId(id);
                 StateDto.getInstance().setSltLocation(location);
                 fragment = DeliveringToFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
-                break;
-
-            case ACCEPT_NEW_SLT_RETURN:
-                confirmed = jsonMap.get(Field.CONFIRM.field());
-                if (!confirmed.equals(Field.TRUE.field())) {
-                    Log.e(TAG, "Confirmed was not true.");
-                    return;
-                }
-                fragment = EnterStationIdFragment.newInstance();
                 break;
 
             case COMPLETE_NEW_SLT_RETURN:
@@ -146,15 +126,6 @@ public class MqttSubscriberCallback implements MqttCallback {
                 }
                 fragment = DeliveryCompleteFragment.newInstance(mMainActivity.getCurrentOperation());
                 break;
-
-            case ACCEPT_DONE_BLU_RETURN:
-                confirmed = jsonMap.get(Field.CONFIRM.field());
-                if (!confirmed.equals(Field.TRUE.field())) {
-                    Log.e(TAG, "Confirmed was not true.");
-                    return;
-                }
-                fragment = EnterStationIdFragment.newInstance();
-                break;
         }
 
         mMainActivity.changeFragment(fragment);
@@ -182,11 +153,8 @@ public class MqttSubscriberCallback implements MqttCallback {
             case GET_NEW_SLT_RETURN:
                 return jsonMap.get(Field.SLT_ID.field()) != null && jsonMap.get(Field.SLT_INFO.field()) != null;
 
-            case ACCEPT_NEW_BLU_RETURN:
             case COMPLETE_NEW_BLU_RETURN:
-            case ACCEPT_NEW_SLT_RETURN:
             case COMPLETE_NEW_SLT_RETURN:
-            case ACCEPT_DONE_BLU_RETURN:
             case COMPLETE_DONE_BLU_RETURN:
                 return jsonMap.get(Field.CONFIRM.field()) != null;
 
