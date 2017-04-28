@@ -1,14 +1,20 @@
 package com.nielsenninjas.wafernav;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.util.Log;
+import android.view.*;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import com.nielsenninjas.wafernav.enums.Operation;
+
+import static android.content.ContentValues.TAG;
 
 /**
  A simple {@link Fragment} subclass.
@@ -41,6 +47,9 @@ public class EnterStationIdFragment extends Fragment {
 
         mAutoCompleteTextViewStationId = (AutoCompleteTextView) view.findViewById(R.id.autoCompleteTextViewStationId);
 
+        // Hide keyboard when (1) click non-EditText object, or (2) press enter in EditText object
+        setupHideKeyboardListeners(view);
+
         Button readBarcodeButton = (Button) view.findViewById(R.id.buttonReadBarcode);
         readBarcodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +75,52 @@ public class EnterStationIdFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager inm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        if (getActivity().getCurrentFocus() != null) {
+            inm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+        }
+        else {
+            Log.w(TAG, "I WOULD HAVE CRASHED BECAUSE NOTHING IS FOCUSED!!");
+        }
+        getActivity().findViewById(R.id.parent).clearFocus();
+    }
+
+    private void setupHideKeyboardListeners(final View view) {
+        // Set up touch listener for non-text box views to hide keyboard.
+        if (!(view instanceof EditText)) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    hideKeyboard();
+                    return false;
+                }
+            });
+        }
+        // Set up editor listener to hide keyboard when press enter in TextEdit object
+        else {
+            ((EditText) view).setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                        hideKeyboard();
+                        // if this is mAutoCompleteTextViewStationId, also trigger the 'Submit Barcode ID' button when press enter
+                        if (view == mAutoCompleteTextViewStationId) {
+                            mListener.publishStationIdButtonHandler(mAutoCompleteTextViewStationId.getText().toString());
+                        }
+                    }
+                    return false;
+                }
+            });
+        }
+
+        // If a layout container, iterate over children and seed recursion.
+        if (view instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                View innerView = ((ViewGroup) view).getChildAt(i);
+                setupHideKeyboardListeners(innerView);
+            }
+        }
     }
 
     @Override
