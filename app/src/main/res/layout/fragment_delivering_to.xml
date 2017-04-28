@@ -38,53 +38,20 @@
         android:textColor="#000000"
         android:textSize="28sp"
         android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="@+id/textViewRoom"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintVertical_bias="0.611"
-        android:layout_marginLeft="0dp" />
-
-    <TextView
-        android:id="@+id/textViewRoom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:text="Room: "
-        android:textColor="#000000"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="@+id/textViewBuilding"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="0dp" />
-
-    <TextView
-        android:id="@+id/textViewBuilding"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:text="Building: "
-        android:textColor="#000000"
-        android:textSize="28sp"
-        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="@+id/textViewHandler"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="8dp"
-        app:layout_constraintVertical_bias="0.389"
-        android:layout_marginLeft="0dp" />
+        app:layout_constraintVertical_bias="0.454"
+        android:layout_marginLeft="-15dp" />
 
     <TextView
         android:id="@+id/textViewHandler"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
-        android:text="Handler: "
+        android:text="Barcode ID: "
         android:textColor="#000000"
         android:textSize="28sp"
         android:textStyle="bold"
