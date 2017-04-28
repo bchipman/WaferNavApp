@@ -13,6 +13,7 @@
         android:layout_marginTop="8dp"
         android:completionThreshold="1"
         android:hint="Enter Station ID"
+        android:imeOptions="actionDone"
         android:inputType="number"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
