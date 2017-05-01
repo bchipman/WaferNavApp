@@ -119,18 +119,38 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
     }
 
     @Override
-    public void startDeliveryButtonHandler(String bluId, Set<String> bibIds) {
+    public void startDeliveryButtonHandler(String id, Set<String> bibIds) {
         Log.i(TAG, "startDeliveryButtonHandler: " + currentOperation);
 
         // Create JSON string to publish, e.g. {"id":123}
         Map<String, Object> returnMap = new HashMap<>();
-        returnMap.put(Field.DIRECTIVE.field(), Directive.GET_NEW_SLT);
-        returnMap.put(Field.BLU_ID.field(), bluId);
-        returnMap.put(Field.BIB_IDS.field(), bibIds.toArray());
 
-        // Add bluId, bibIds to current data map (current state)
-        StateDto.getInstance().setBluId(bluId);
-        StateDto.getInstance().setBibIds(bibIds.toArray(new String[bibIds.size()]));
+        switch (currentOperation) {
+            case TEST:
+                returnMap.put(Field.DIRECTIVE.field(), Directive.GET_NEW_SLT);
+                returnMap.put(Field.BLU_ID.field(), id);
+                returnMap.put(Field.BIB_IDS.field(), bibIds.toArray());
+
+                // Add bluId, bibIds to current data map (current state)
+                StateDto.getInstance().setBluId(id);
+                StateDto.getInstance().setBibIds(bibIds.toArray(new String[bibIds.size()]));
+                break;
+
+            case UNLOAD:
+                returnMap.put(Field.DIRECTIVE.field(), Directive.GET_DONE_BLU);
+                returnMap.put(Field.SLT_ID.field(), id);
+                returnMap.put(Field.BIB_IDS.field(), bibIds.toArray());
+
+                // Add sltId, bibIds to current data map (current state)
+                StateDto.getInstance().setSltId(id);
+                StateDto.getInstance().setBibIds(bibIds.toArray(new String[bibIds.size()]));
+                break;
+
+            case LOAD:
+            default:
+                Log.w(TAG, "This should not have happened.");
+                return;
+        }
 
         mqttClient.publishMapAsJson(returnMap);
     }
@@ -181,15 +201,11 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
                 backStackCount = getFragmentManager().getBackStackEntryCount();
                 Log.i(TAG, "Number on back stack: " + backStackCount);
                 if (backStackCount == 0) {
-                    // On first page so send mqtt message with slt id
-                    returnMap = new HashMap<>();
-                    returnMap.put(Field.DIRECTIVE.field(), Directive.GET_DONE_BLU);
-                    returnMap.put(Field.SLT_ID.field(), id);
-
+                    // On first page so just pass slt id to EnterBibIdsFragment //TODO stop passing id since already save it to StateDto?
+                    Fragment fragment = EnterBibIdsFragment.newInstance(currentOperation, id);
+                    changeFragment(fragment);
                     // Add sltId to current data map (current state)
                     StateDto.getInstance().setSltId(id);
-
-                    mqttClient.publishMapAsJson(returnMap);
                 } else {
                     // Not on first page, so next page is delivery complete page
                     returnMap = new HashMap<>();
