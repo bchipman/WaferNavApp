@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.*;
 import android.view.inputmethod.EditorInfo;
@@ -35,8 +36,10 @@ public class EnterBibIdsFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private Operation mOperation;
     private String mHandlerId;
+    private MainActivity mMainActivity;
     private OnFragmentInteractionListener mListener;
     private AutoCompleteTextView mAutoCompleteTextViewBibIds;
+    private TextView mTextViewSubmissonHistory;
     private Set<String> mBibIds;
 
     public EnterBibIdsFragment() {
@@ -65,7 +68,10 @@ public class EnterBibIdsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_enter_bib_ids, container, false);
 
+        mMainActivity = (MainActivity) getActivity();
         mAutoCompleteTextViewBibIds = (AutoCompleteTextView) view.findViewById(R.id.autoCompleteTextViewBibIds);
+        mTextViewSubmissonHistory = (TextView) view.findViewById(R.id.textViewSubmissionHistory);
+        mTextViewSubmissonHistory.setMovementMethod(new ScrollingMovementMethod());
         mBibIds = new HashSet<>();
 
         // Hide keyboard when (1) click non-EditText object, or (2) press enter in EditText object
@@ -190,7 +196,31 @@ public class EnterBibIdsFragment extends Fragment {
     public void addBibId(String bibId) {
         Log.i(TAG, "addBibId");
         mAutoCompleteTextViewBibIds.setText(null);
+
+        final int bibIdsSizeBefore = mBibIds.size();
         mBibIds.add(bibId);
+        // Don't add bib id to text box if not added to set
+        if (mBibIds.size() == bibIdsSizeBefore) {
+            mMainActivity.makeShortToast("BIB ID already added!");
+            return;
+        }
+        mMainActivity.makeShortToast("Added BIB ID " + bibId);
+
+        // Append new line at start if not the first line
+        if (mTextViewSubmissonHistory.getText().length() == 0) {
+            mTextViewSubmissonHistory.append(bibId);
+        } else {
+            mTextViewSubmissonHistory.append("\n" + bibId);
+        }
+
+        // Keep text view scrolled to bottom
+        final int scrollAmount = mTextViewSubmissonHistory.getLayout().getLineTop(mTextViewSubmissonHistory.getLineCount()) - mTextViewSubmissonHistory.getHeight();
+        if (scrollAmount > 0) {
+            mTextViewSubmissonHistory.scrollTo(0, scrollAmount);
+        } else {
+            mTextViewSubmissonHistory.scrollTo(0, 0);
+        }
+
     }
 
     public void setBibIdText(String bibId) {
