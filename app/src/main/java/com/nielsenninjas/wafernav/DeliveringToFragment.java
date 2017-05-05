@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import com.nielsenninjas.wafernav.enums.Operation;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  A simple {@link Fragment} subclass.
  Activities that contain this fragment must implement the
@@ -24,7 +27,7 @@ public class DeliveringToFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private Operation mOperation;
     private String mHandlerId;
-    private String mHandlerLocation;
+    private String mHandlerInfo;
 
     private OnFragmentInteractionListener mListener;
 
@@ -48,7 +51,7 @@ public class DeliveringToFragment extends Fragment {
         if (getArguments() != null) {
             mOperation = (Operation) getArguments().get(ARG_PARAM0);
             mHandlerId = getArguments().getString(ARG_PARAM1);
-            mHandlerLocation = getArguments().getString(ARG_PARAM2);
+            mHandlerInfo = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -56,11 +59,19 @@ public class DeliveringToFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_delivering_to, container, false);
 
-        TextView textViewHandler = (TextView) view.findViewById(R.id.textViewHandler);
+        // Populate handler id into text view
+        TextView textViewHandler = (TextView) view.findViewById(R.id.textViewHandlerId);
         textViewHandler.append(mHandlerId);
 
-        TextView textViewLocation = (TextView) view.findViewById(R.id.textViewLocation);
-        textViewLocation.append(mHandlerLocation);
+        // Parse and populate handler info into text views
+        Map<Integer, TextView> handlerInfoMap = new HashMap<>();
+        handlerInfoMap.put(0, (TextView) view.findViewById(R.id.textViewSiteName));
+        handlerInfoMap.put(1, (TextView) view.findViewById(R.id.textViewSiteDescription));
+        handlerInfoMap.put(2, (TextView) view.findViewById(R.id.textViewSiteLocation));
+        String[] handlerInfoArr = mHandlerInfo.split(",");
+        for (int i = 0; i < handlerInfoArr.length; i++) {
+            handlerInfoMap.get(i).append(handlerInfoArr[i]);
+        }
 
         // Set button handlers
         Button startDeliveryButton = (Button) view.findViewById(R.id.confirmDeliveryButton);
@@ -68,7 +79,7 @@ public class DeliveringToFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (mListener != null) {
-                    mListener.confirmDeliveryButtonHandler(mHandlerId, mHandlerLocation);
+                    mListener.confirmDeliveryButtonHandler(mHandlerId, mHandlerInfo);
                 }
             }
         });
