@@ -70,7 +70,7 @@ public class DeliveringToFragment extends Fragment {
         handlerInfoMap.put(2, (TextView) view.findViewById(R.id.textViewSiteLocation));
         String[] handlerInfoArr = mHandlerInfo.split(",");
         for (int i = 0; i < handlerInfoArr.length; i++) {
-            handlerInfoMap.get(i).append(handlerInfoArr[i]);
+            handlerInfoMap.get(i).append(handlerInfoArr[i].trim());
         }
 
         // Set button handlers
