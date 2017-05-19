@@ -164,15 +164,18 @@ public class MqttSubscriberCallback implements MqttCallback {
         }
 
         switch(directive) {
-
+            case ERROR:
+                return true;
             case GET_NEW_BLU_RETURN:
             case GET_DONE_BLU_RETURN:
-                return jsonMap.get(Field.BLU_ID.field()) != null && jsonMap.get(Field.BLU_SITE_NAME.field()) != null &&
-                        jsonMap.get(Field.BLU_SITE_DESCRIPTION.field())!= null && jsonMap.get(Field.BLU_SITE_LOCATION.field()) != null;
+                return true;
+                //return jsonMap.get(Field.BLU_ID.field()) != null && jsonMap.get(Field.BLU_SITE_NAME.field()) != null &&
+                        //jsonMap.get(Field.BLU_SITE_DESCRIPTION.field())!= null && jsonMap.get(Field.BLU_SITE_LOCATION.field()) != null;
 
             case GET_NEW_SLT_RETURN:
-                return jsonMap.get(Field.SLT_ID.field()) != null && jsonMap.get(Field.SLT_SITE_NAME.field()) != null &&
-                        jsonMap.get(Field.SLT_SITE_DESCRIPTION.field())!= null && jsonMap.get(Field.SLT_SITE_LOCATION.field()) != null;
+                return true;
+                //return jsonMap.get(Field.SLT_ID.field()) != null && jsonMap.get(Field.SLT_SITE_NAME.field()) != null &&
+                        //jsonMap.get(Field.SLT_SITE_DESCRIPTION.field())!= null && jsonMap.get(Field.SLT_SITE_LOCATION.field()) != null;
 
 
             case COMPLETE_NEW_BLU_RETURN:
