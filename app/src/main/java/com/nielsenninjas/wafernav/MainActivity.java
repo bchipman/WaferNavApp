@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
     }
 
     @Override
-    public void confirmDeliveryButtonHandler(String id, String loc) {
+    public void confirmDeliveryButtonHandler(String id, String name, String description, String location) {
         Log.i(TAG, "confirmDeliveryButtonHandler: " + currentOperation);
 
         // Just transition to new EnterStationIdFragment

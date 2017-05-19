@@ -25,9 +25,14 @@ public class DeliveringToFragment extends Fragment {
     private static final String ARG_PARAM0 = "param0";
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PARAM3 = "param3";
+    private static final String ARG_PARAM4 = "param4";
     private Operation mOperation;
     private String mHandlerId;
-    private String mHandlerInfo;
+    private String mHandlerSiteName;
+    private String mHandlerSiteDescription;
+    private String mHandlerSiteLocation;
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -35,12 +40,14 @@ public class DeliveringToFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static DeliveringToFragment newInstance(Operation operation, String param1, String param2) {
+    public static DeliveringToFragment newInstance(Operation operation, String param1, String param2, String param3, String param4) {
         DeliveringToFragment fragment = new DeliveringToFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_PARAM0, operation);
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_PARAM3, param3);
+        args.putString(ARG_PARAM4, param4);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,7 +58,9 @@ public class DeliveringToFragment extends Fragment {
         if (getArguments() != null) {
             mOperation = (Operation) getArguments().get(ARG_PARAM0);
             mHandlerId = getArguments().getString(ARG_PARAM1);
-            mHandlerInfo = getArguments().getString(ARG_PARAM2);
+            mHandlerSiteName = getArguments().getString(ARG_PARAM2);
+            mHandlerSiteDescription = getArguments().getString(ARG_PARAM3);
+            mHandlerSiteLocation = getArguments().getString(ARG_PARAM4);
         }
     }
 
@@ -68,10 +77,9 @@ public class DeliveringToFragment extends Fragment {
         handlerInfoMap.put(0, (TextView) view.findViewById(R.id.textViewSiteName));
         handlerInfoMap.put(1, (TextView) view.findViewById(R.id.textViewSiteDescription));
         handlerInfoMap.put(2, (TextView) view.findViewById(R.id.textViewSiteLocation));
-        String[] handlerInfoArr = mHandlerInfo.split(",");
-        for (int i = 0; i < handlerInfoArr.length; i++) {
-            handlerInfoMap.get(i).append(handlerInfoArr[i].trim());
-        }
+        handlerInfoMap.get(0).append(mHandlerSiteName);
+        handlerInfoMap.get(1).append(mHandlerSiteDescription);
+        handlerInfoMap.get(2).append(mHandlerSiteLocation);
 
         // Set button handlers
         Button startDeliveryButton = (Button) view.findViewById(R.id.confirmDeliveryButton);
@@ -79,7 +87,7 @@ public class DeliveringToFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (mListener != null) {
-                    mListener.confirmDeliveryButtonHandler(mHandlerId, mHandlerInfo);
+                    mListener.confirmDeliveryButtonHandler(mHandlerId, mHandlerSiteName, mHandlerSiteDescription, mHandlerSiteLocation);
                 }
             }
         });
@@ -114,6 +122,6 @@ public class DeliveringToFragment extends Fragment {
      >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void confirmDeliveryButtonHandler(String id, String loc);
+        void confirmDeliveryButtonHandler(String id, String name, String description, String location);
     }
 }

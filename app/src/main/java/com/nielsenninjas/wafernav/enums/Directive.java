@@ -5,7 +5,7 @@ package com.nielsenninjas.wafernav.enums;
  */
 
 public enum Directive {
-    NULL, UNKNOWN,
+    NULL, UNKNOWN, ERROR,
 
     GET_NEW_BLU,        GET_NEW_BLU_RETURN,
     COMPLETE_NEW_BLU,   COMPLETE_NEW_BLU_RETURN,

@@ -16,10 +16,14 @@ public class StateDto {
 
     private Operation mOperation;
     private String mBluId;
-    private String mBluLocation;
+    private String mBluSiteName;
+    private String mBluSiteDescription;
+    private String mBluSiteLocation;
     private String[] mBibIds;
     private String mSltId;
-    private String mSltLocation;
+    private String mSltSiteName;
+    private String mSltSiteDescription;
+    private String mSltSiteLocation;
     private String mLotId;
 
     private StateDto() {
@@ -57,14 +61,37 @@ public class StateDto {
         Log.v(TAG, "setBluId()");
         this.mBluId = bluId;
     }
-    public String getBluLocation() {
-        Log.v(TAG, "getBluLocation()");
-        return mBluLocation;
+
+    public void setBluSiteLocation(String bluSiteLocation) {
+        Log.v(TAG, "setBluSiteLocation()");
+        this.mBluSiteName = bluSiteLocation;
     }
-    public void setBluLocation(String bluLocation) {
-        Log.v(TAG, "setBluLocation()");
-        this.mBluLocation = bluLocation;
+
+    public void setBluSiteDescription(String bluSiteDescription) {
+        Log.v(TAG, "setBluSiteDescription()");
+        this.mBluSiteName = bluSiteDescription;
     }
+
+    public void setBluSiteName(String bluSiteName) {
+        Log.v(TAG, "setBluSiteName()");
+        this.mBluSiteName = bluSiteName;
+    }
+
+    public String getBluSiteLocation() {
+        Log.v(TAG, "getBluSiteLocation()");
+        return mBluSiteLocation;
+    }
+
+    public String getBluSiteName() {
+        Log.v(TAG, "getBluSiteName()");
+        return mBluSiteName;
+    }
+
+    public String getBluSiteDescription() {
+        Log.v(TAG, "getBluSiteDescription()");
+        return mBluSiteDescription;
+    }
+
     public String[] getBibIds() {
         Log.v(TAG, "getBibIds()");
         return mBibIds;
@@ -81,12 +108,33 @@ public class StateDto {
         Log.v(TAG, "setSltId()");
         this.mSltId = sltId;
     }
-    public String getSltLocation() {
-        Log.v(TAG, "getSltLocation()");
-        return mSltLocation;
+    public void setSltSiteLocation(String sltSiteLocation) {
+        Log.v(TAG, "setSltSiteLocation()");
+        this.mSltSiteName = sltSiteLocation;
     }
-    public void setSltLocation(String sltLocation) {
-        Log.v(TAG, "setSltLocation()");
-        this.mSltLocation = sltLocation;
+
+    public void setSltSiteDescription(String sltSiteDescription) {
+        Log.v(TAG, "setSltSiteDescription()");
+        this.mSltSiteName = sltSiteDescription;
+    }
+
+    public void setSltSiteName(String sltSiteName) {
+        Log.v(TAG, "setSltSiteName()");
+        this.mSltSiteName = sltSiteName;
+    }
+
+    public String getSltSiteLocation() {
+        Log.v(TAG, "getSltSiteLocation()");
+        return mSltSiteLocation;
+    }
+
+    public String getSltSiteName() {
+        Log.v(TAG, "getSltSiteName()");
+        return mSltSiteName;
+    }
+
+    public String getSltSiteDescription() {
+        Log.v(TAG, "getSltSiteDescription()");
+        return mSltSiteDescription;
     }
 }

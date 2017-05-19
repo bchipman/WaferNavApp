@@ -5,15 +5,20 @@ package com.nielsenninjas.wafernav.enums;
  */
 
 public enum Field {
+    ERROR("error"),
     DIRECTIVE("directive"),
     CLIENT_ID("clientId"),
     DEVICE_MODEL("deviceModel"),
     LOT_ID("lotId"),
     SLT_ID("sltId"),
-    SLT_INFO("sltInfo"),
     BIB_IDS("bibIds"),
     BLU_ID("bluId"),
-    BLU_INFO("bluInfo"),
+    SLT_SITE_NAME("sltSiteName"),
+    SLT_SITE_DESCRIPTION("sltSiteDescription"),
+    SLT_SITE_LOCATION("sltSiteLocation"),
+    BLU_SITE_NAME("bluSiteName"),
+    BLU_SITE_DESCRIPTION("bluSiteDescription"),
+    BLU_SITE_LOCATION("bluSiteLocation"),
     CONFIRM("confirm"),
     TRUE("true");
 

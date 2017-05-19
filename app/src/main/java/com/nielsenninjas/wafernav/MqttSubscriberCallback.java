@@ -2,6 +2,8 @@ package com.nielsenninjas.wafernav;
 
 import android.app.Fragment;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.nielsenninjas.wafernav.enums.Directive;
 import com.nielsenninjas.wafernav.enums.Field;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -67,19 +69,28 @@ public class MqttSubscriberCallback implements MqttCallback {
         Directive directive = Directive.valueOf(jsonMap.get(Field.DIRECTIVE.field()));
 
         String id;
-        String location;
+        String siteName;
+        String siteDescription;
+        String siteLocation;
         String confirmed;
 
         Log.i(TAG, directive.toString());
 
         switch(directive) {
+            case ERROR:
+                mMainActivity.makeShortToast(jsonMap.get(Field.ERROR.field()));
+                break;
 
             case GET_NEW_BLU_RETURN:
                 id = jsonMap.get(Field.BLU_ID.field());
-                location = jsonMap.get(Field.BLU_INFO.field());
+                siteName = jsonMap.get(Field.BLU_SITE_NAME.field());
+                siteDescription = jsonMap.get(Field.BLU_SITE_DESCRIPTION.field());
+                siteLocation = jsonMap.get(Field.BLU_SITE_LOCATION.field());
                 StateDto.getInstance().setBluId(id);
-                StateDto.getInstance().setBluLocation(location);
-                fragment = DeliveringToFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
+                StateDto.getInstance().setBluSiteName(siteName);
+                StateDto.getInstance().setBluSiteDescription(siteDescription);
+                StateDto.getInstance().setBluSiteLocation(siteLocation);
+                fragment = DeliveringToFragment.newInstance(mMainActivity.getCurrentOperation(), id, siteName, siteDescription, siteLocation);
                 break;
 
             case COMPLETE_NEW_BLU_RETURN:
@@ -93,10 +104,14 @@ public class MqttSubscriberCallback implements MqttCallback {
 
             case GET_NEW_SLT_RETURN:
                 id = jsonMap.get(Field.SLT_ID.field());
-                location = jsonMap.get(Field.SLT_INFO.field());
+                siteName = jsonMap.get(Field.SLT_SITE_NAME.field());
+                siteDescription = jsonMap.get(Field.SLT_SITE_DESCRIPTION.field());
+                siteLocation = jsonMap.get(Field.SLT_SITE_LOCATION.field());;
                 StateDto.getInstance().setSltId(id);
-                StateDto.getInstance().setSltLocation(location);
-                fragment = DeliveringToFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
+                StateDto.getInstance().setSltSiteName(siteName);
+                StateDto.getInstance().setSltSiteDescription(siteDescription);
+                StateDto.getInstance().setSltSiteLocation(siteLocation);
+                fragment = DeliveringToFragment.newInstance(mMainActivity.getCurrentOperation(), id, siteName, siteDescription, siteLocation);
                 break;
 
             case COMPLETE_NEW_SLT_RETURN:
@@ -111,10 +126,14 @@ public class MqttSubscriberCallback implements MqttCallback {
             case GET_DONE_BLU_RETURN:
                 // same as GET_NEW_BLU_RETURN above
                 id = jsonMap.get(Field.BLU_ID.field());
-                location = jsonMap.get(Field.BLU_INFO.field());
+                siteName = jsonMap.get(Field.BLU_SITE_NAME.field());
+                siteDescription = jsonMap.get(Field.BLU_SITE_DESCRIPTION.field());
+                siteLocation = jsonMap.get(Field.BLU_SITE_LOCATION.field());
                 StateDto.getInstance().setBluId(id);
-                StateDto.getInstance().setBluLocation(location);
-                fragment = DeliveringToFragment.newInstance(mMainActivity.getCurrentOperation(), id, location);
+                StateDto.getInstance().setBluSiteName(siteName);
+                StateDto.getInstance().setBluSiteDescription(siteDescription);
+                StateDto.getInstance().setBluSiteLocation(siteLocation);
+                fragment = DeliveringToFragment.newInstance(mMainActivity.getCurrentOperation(), id, siteName, siteDescription, siteLocation);
                 break;
 
             case COMPLETE_DONE_BLU_RETURN:
@@ -148,10 +167,13 @@ public class MqttSubscriberCallback implements MqttCallback {
 
             case GET_NEW_BLU_RETURN:
             case GET_DONE_BLU_RETURN:
-                return jsonMap.get(Field.BLU_ID.field()) != null && jsonMap.get(Field.BLU_INFO.field()) != null;
+                return jsonMap.get(Field.BLU_ID.field()) != null && jsonMap.get(Field.BLU_SITE_NAME.field()) != null &&
+                        jsonMap.get(Field.BLU_SITE_DESCRIPTION.field())!= null && jsonMap.get(Field.BLU_SITE_LOCATION.field()) != null;
 
             case GET_NEW_SLT_RETURN:
-                return jsonMap.get(Field.SLT_ID.field()) != null && jsonMap.get(Field.SLT_INFO.field()) != null;
+                return jsonMap.get(Field.SLT_ID.field()) != null && jsonMap.get(Field.SLT_SITE_NAME.field()) != null &&
+                        jsonMap.get(Field.SLT_SITE_DESCRIPTION.field())!= null && jsonMap.get(Field.SLT_SITE_LOCATION.field()) != null;
+
 
             case COMPLETE_NEW_BLU_RETURN:
             case COMPLETE_NEW_SLT_RETURN:
