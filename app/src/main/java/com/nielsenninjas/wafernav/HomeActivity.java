@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import com.nielsenninjas.wafernav.enums.Operation;
 
 public class HomeActivity extends AppCompatActivity {
@@ -19,6 +20,10 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        int versionCode = BuildConfig.VERSION_CODE;
+        TextView version  = (TextView) this.findViewById(R.id.textViewVersion);
+        version.setText(String.format("Version %s", Integer.toString(versionCode)));
     }
 
     public void LoadButtonHandler(View view) {
