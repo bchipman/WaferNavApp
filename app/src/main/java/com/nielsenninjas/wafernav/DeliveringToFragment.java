@@ -70,16 +70,16 @@ public class DeliveringToFragment extends Fragment {
 
         // Populate handler id into text view
         TextView textViewHandler = (TextView) view.findViewById(R.id.textViewHandlerId);
-        textViewHandler.append(mHandlerId);
+        textViewHandler.setText(mHandlerId);
 
         // Parse and populate handler info into text views
         Map<Integer, TextView> handlerInfoMap = new HashMap<>();
         handlerInfoMap.put(0, (TextView) view.findViewById(R.id.textViewSiteName));
         handlerInfoMap.put(1, (TextView) view.findViewById(R.id.textViewSiteDescription));
         handlerInfoMap.put(2, (TextView) view.findViewById(R.id.textViewSiteLocation));
-        handlerInfoMap.get(0).append(mHandlerSiteName);
-        handlerInfoMap.get(1).append(mHandlerSiteDescription);
-        handlerInfoMap.get(2).append(mHandlerSiteLocation);
+        handlerInfoMap.get(0).setText(mHandlerSiteName);
+        handlerInfoMap.get(1).setText(mHandlerSiteDescription);
+        handlerInfoMap.get(2).setText(mHandlerSiteLocation);
 
         // Set button handlers
         Button startDeliveryButton = (Button) view.findViewById(R.id.confirmDeliveryButton);
