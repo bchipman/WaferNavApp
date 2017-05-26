@@ -78,7 +78,7 @@ public class MqttSubscriberCallback implements MqttCallback {
 
         switch(directive) {
             case ERROR:
-                mMainActivity.makeShortToast(jsonMap.get(Field.ERROR.field()));
+                mMainActivity.makeLongToast(jsonMap.get(Field.ERROR.field()));
                 break;
 
             case GET_NEW_BLU_RETURN:

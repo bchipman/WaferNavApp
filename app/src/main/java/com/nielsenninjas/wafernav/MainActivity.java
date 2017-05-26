@@ -92,6 +92,10 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
         Toast.makeText(getApplicationContext(), toastMessage, Toast.LENGTH_SHORT).show();
     }
 
+    public void makeLongToast(String toastMessage) {
+        Toast.makeText(getApplicationContext(), toastMessage, Toast.LENGTH_LONG).show();
+    }
+
     @Override
     public void publishButtonHandler(String lotId) {
         // Display toast message and return if nothing entered
