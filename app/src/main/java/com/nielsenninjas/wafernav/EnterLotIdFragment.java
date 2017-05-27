@@ -58,9 +58,7 @@ public class EnterLotIdFragment extends Fragment {
         setupHideKeyboardListeners(view);
 
         // AutoCompleteTextView for IDs
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.ids, android.R.layout.simple_dropdown_item_1line);
         mAutoCompleteTextViewId = (AutoCompleteTextView) view.findViewById(R.id.autoCompleteTextViewLotId);
-        mAutoCompleteTextViewId.setAdapter(adapter);
 
         // Focus publish button when start app
         view.findViewById(R.id.buttonPublish).requestFocus();

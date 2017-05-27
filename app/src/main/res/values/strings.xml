@@ -1,55 +1,24 @@
 <resources>
     <string name="app_name">WaferNav</string>
-    <string name="edit_message">Enter a message</string>
-    <string name="button_send">Send</string>
-
-    <string name="latitude_label">Latitude</string>
-    <string name="longitude_label">Longitude</string>
-    <string name="last_update_time_label">Last location update time</string>
-
-    <string name="start_updates">Start updates</string>
-    <string name="stop_updates">Stop updates</string>
-    <string name="location_updated_message">Location updated</string>
-    <string name="id_not_found_message">ID not found</string>
-
-    <string name="title_activity_maps">Map</string>
-    <string name="map_button_label">Map</string>
-
-    <string-array name="sub_topics">
-        <item>wafernav/location_data</item>
-        <item>subs/bbcnews</item>
-    </string-array>
-
-    <string-array name="ids">
-        <item>123</item>
-        <item>456</item>
-        <item>12345</item>
-    </string-array>
 
     <string-array name="blu_ids">
-        <item>75ae9068-c245-4af4-9cab-7ff6c520de8c</item>
-        <item>15e29295-9d53-4f52-bf3d-3fe69cae7a8d</item>
-        <item>dcdb8b88-d6ac-43a7-a7a2-0ad31bf82023</item>
-        <item>d62e4d59-1196-45c4-9243-e6fbf8ffe8b9</item>
-        <item>4e0c2ba6-7430-41e3-97e6-bf43953cfd20</item>
-        <item>feb76ebf-0d7a-4bba-a178-8f17bd032ac8</item>
-        <item>6f9e8b82-5452-493a-b317-f2fb47552c62</item>
-        <item>a13ffc81-43b7-423d-8b25-2f536ad5b0b2</item>
-        <item>1f828955-f791-403c-8b03-d4e9e9eff8a1</item>
-        <item>05f97d5c-7899-43de-a77a-c389af36a88e</item>
+        <item>079303</item>
+        <item>087268</item>
+        <item>105453</item>
+        <item>111690</item>
+        <item>123826</item>
+        <item>233575</item>
+        <item>341512</item>
     </string-array>
 
     <string-array name="slt_ids">
-        <item>dfbbdb1c-8346-44a6-ac0f-be627312460b</item>
-        <item>e5def8d6-e466-4706-99c8-0a49980dd548</item>
-        <item>e95584d7-829f-4e68-afaf-cc566444049f</item>
-        <item>5bd3d648-eb9b-49ef-9d26-d9ad6a0b695e</item>
-        <item>d045c5b5-e544-4bb3-9690-640fdf54a0de</item>
-        <item>029a0825-e991-4b34-8ae6-cf362d36ccf0</item>
-        <item>32c0ef0c-7ae3-4dbd-a32b-5975bf80126c</item>
-        <item>f7c03c6b-7bbc-48d3-bcc4-a693acf852e7</item>
-        <item>cdfc868c-a672-4746-907a-f8a9067230a6</item>
-        <item>7270c8e7-10f3-4e2b-ba02-bf083157fdd0</item>
+        <item>598514</item>
+        <item>614412</item>
+        <item>631746</item>
+        <item>762573</item>
+        <item>796568</item>
+        <item>862986</item>
+        <item>967224</item>
     </string-array>
 
     <!--Barcode reader-->
@@ -65,8 +34,5 @@
     <string name="barcode_success">Barcode read successfully.</string>
     <string name="barcode_failure">No barcode captured.</string>
     <string name="barcode_error">"Error reading barcode: %1$s."</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
