@@ -13,7 +13,7 @@
             android:id="@+id/imageViewA"
             android:layout_width="280dp"
             android:layout_height="140dp"
-            android:src="@drawable/astronics_logo_25"
+            android:src="@drawable/astronics_logo_10"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="8dp"
             android:layout_marginLeft="8dp"
