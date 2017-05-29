@@ -12,6 +12,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.google.android.gms.vision.text.Text;
 import com.nielsenninjas.wafernav.enums.Operation;
 
 import static android.content.ContentValues.TAG;
@@ -25,6 +26,12 @@ import static android.content.ContentValues.TAG;
  create an instance of this fragment.
  */
 public class EnterStationIdFragment extends Fragment {
+    private static final String ARG_PARAM0 = "param0";
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+    private Operation mOperation;
+    private String mStationType;
+    private String mButtonText;
     private OnFragmentInteractionListener mListener;
     private AutoCompleteTextView mAutoCompleteTextViewStationId;
 
@@ -32,13 +39,24 @@ public class EnterStationIdFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static EnterStationIdFragment newInstance() {
-        return new EnterStationIdFragment();
+    public static EnterStationIdFragment newInstance(Operation operation, String stationType, String buttonText) {
+        EnterStationIdFragment fragment = new EnterStationIdFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_PARAM0, operation);
+        args.putString(ARG_PARAM1, stationType);
+        args.putString(ARG_PARAM2, buttonText);
+        fragment.setArguments(args);
+        return fragment;
     }
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mOperation = (Operation) getArguments().get(ARG_PARAM0);
+            mStationType = getArguments().getString(ARG_PARAM1);
+            mButtonText = getArguments().getString(ARG_PARAM2);
+        }
     }
 
     @Override
@@ -46,6 +64,9 @@ public class EnterStationIdFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_enter_station_id, container, false);
 
         mAutoCompleteTextViewStationId = (AutoCompleteTextView) view.findViewById(R.id.autoCompleteTextViewStationId);
+
+        TextView scanStationTextView = (TextView) view.findViewById(R.id.scanStation);
+        scanStationTextView.setText("Scan " + mStationType + " Station Barcode");
 
         // Hide keyboard when (1) click non-EditText object, or (2) press enter in EditText object
         setupHideKeyboardListeners(view);
@@ -61,6 +82,9 @@ public class EnterStationIdFragment extends Fragment {
         });
 
         Button publishStationIdButton = (Button) view.findViewById(R.id.buttonPublishStationId);
+        if (mButtonText != null) {
+            publishStationIdButton.setText(mButtonText);
+        }
         publishStationIdButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

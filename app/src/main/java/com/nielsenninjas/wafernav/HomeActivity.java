@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.nielsenninjas.wafernav.enums.Operation;
 
 public class HomeActivity extends AppCompatActivity {
@@ -24,6 +25,10 @@ public class HomeActivity extends AppCompatActivity {
         int versionCode = BuildConfig.VERSION_CODE;
         TextView version  = (TextView) this.findViewById(R.id.textViewVersion);
         version.setText(String.format("Version %s", Integer.toString(versionCode)));
+    }
+
+    public void GetJobButtonHandler(View view) {
+        Toast.makeText(getApplicationContext(), "Feature coming soon!", Toast.LENGTH_SHORT).show();
     }
 
     public void LoadButtonHandler(View view) {

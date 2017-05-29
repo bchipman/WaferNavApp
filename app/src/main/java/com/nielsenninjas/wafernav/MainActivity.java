@@ -52,7 +52,8 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
                 fragment = EnterLotIdFragment.newInstance(currentOperation);
                 break;
             case "EnterStationIdFragment":
-                fragment = EnterStationIdFragment.newInstance();
+                String stationType = currentOperation == Operation.TEST ? "BLU" : "SLT";
+                fragment = EnterStationIdFragment.newInstance(currentOperation, stationType, "Continue");
                 break;
             default:
                 Log.e(TAG, "INITIAL_FRAGMENT null!");
@@ -163,8 +164,16 @@ public class MainActivity extends AppCompatActivity implements EnterLotIdFragmen
     public void confirmDeliveryButtonHandler(String id, String name, String description, String location) {
         Log.i(TAG, "confirmDeliveryButtonHandler: " + currentOperation);
 
+        String stationType;
+        if (currentOperation == Operation.LOAD) {
+            stationType = "BLU";
+        } else if (currentOperation == Operation.TEST) {
+            stationType = "SLT";
+        } else {
+            stationType = "BLU";
+        }
         // Just transition to new EnterStationIdFragment
-        Fragment fragment = EnterStationIdFragment.newInstance();
+        Fragment fragment = EnterStationIdFragment.newInstance(currentOperation, stationType, "Submit Barcode ID");
         changeFragment(fragment);
     }
 
