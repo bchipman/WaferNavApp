@@ -39,9 +39,9 @@
             android:textColor="#000000"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="0dp"
             app:layout_constraintLeft_toLeftOf="@+id/guideline"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="0dp"
             app:layout_constraintHorizontal_bias="0.108"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="8dp"
@@ -65,10 +65,10 @@
             android:layout_marginBottom="8dp"
             app:layout_constraintHorizontal_bias="0.401"
             app:layout_constraintVertical_bias="0.541"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="0dp"
             android:text="id"
             app:layout_constraintRight_toLeftOf="@+id/guideline7"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="0dp"
             app:layout_constraintLeft_toLeftOf="@+id/guideline6"
             />
 
@@ -81,9 +81,9 @@
             android:textColor="#3235e5"
             android:textSize="28sp"
             android:textStyle="bold"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="0dp"
             app:layout_constraintLeft_toLeftOf="@+id/guideline"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="0dp"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="8dp"
@@ -107,10 +107,10 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.175"
             android:text="name"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="0dp"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintRight_toLeftOf="@+id/guideline7"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="0dp"
             />
 
     <TextView
@@ -122,8 +122,8 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:text="Description:"
-            android:layout_marginRight="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginLeft="0dp"
             app:layout_constraintLeft_toLeftOf="@+id/guideline"
             app:layout_constraintHorizontal_bias="0.11"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -150,8 +150,8 @@
             android:text="descrip"
             app:layout_constraintVertical_bias="0.47"
             app:layout_constraintRight_toLeftOf="@+id/guideline7"
-            android:layout_marginRight="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginLeft="0dp"
             />
 
     <TextView
@@ -163,8 +163,8 @@
             android:textColor="#000000"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginRight="8dp"
-            android:layout_marginLeft="8dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginLeft="0dp"
             app:layout_constraintLeft_toLeftOf="@+id/guideline"
             app:layout_constraintHorizontal_bias="0.1"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -190,9 +190,9 @@
             app:layout_constraintHorizontal_bias="0.881"
             app:layout_constraintVertical_bias="0.616"
             android:text="location"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="0dp"
             app:layout_constraintRight_toLeftOf="@+id/guideline7"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="0dp"
             />
 
     <Button
@@ -222,7 +222,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/guideline"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.04"
+            app:layout_constraintGuide_percent="0.03"
             />
 
     <android.support.constraint.Guideline
@@ -230,7 +230,7 @@
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintGuide_percent="0.96"
+            app:layout_constraintGuide_percent="0.97"
             />
 
     <android.support.constraint.Guideline
@@ -238,7 +238,7 @@
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintGuide_percent="0.40"
+            app:layout_constraintGuide_percent="0.45"
             />
 
     <android.support.constraint.Guideline
