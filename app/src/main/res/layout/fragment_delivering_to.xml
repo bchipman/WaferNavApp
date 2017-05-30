@@ -70,6 +70,7 @@
             app:layout_constraintRight_toLeftOf="@+id/guideline7"
             android:layout_marginRight="0dp"
             app:layout_constraintLeft_toLeftOf="@+id/guideline6"
+            android:textIsSelectable="true"
             />
 
     <TextView
@@ -111,6 +112,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintRight_toLeftOf="@+id/guideline7"
             android:layout_marginRight="0dp"
+            android:textIsSelectable="true"
             />
 
     <TextView
@@ -152,6 +154,7 @@
             app:layout_constraintRight_toLeftOf="@+id/guideline7"
             android:layout_marginRight="0dp"
             android:layout_marginLeft="0dp"
+            android:textIsSelectable="true"
             />
 
     <TextView
@@ -193,6 +196,7 @@
             android:layout_marginLeft="0dp"
             app:layout_constraintRight_toLeftOf="@+id/guideline7"
             android:layout_marginRight="0dp"
+            android:textIsSelectable="true"
             />
 
     <Button
