@@ -31,7 +31,6 @@ public class MqttClient {
     public static final String DEFAULT_BROKER_URL = "tcp://iot.eclipse.org:1883";
     public static final String BROKER_REDIRECT_REST_URL = "http://52.53.247.222:1884/broker_url";
     public static String BROKER_URL = DEFAULT_BROKER_URL;
-    //private static final String BROKER_URL = "tcp://68.5.139.114:1883";
     private static final String PUB_TOPIC = "wafernav/location_requests";
     private static final String SUB_TOPIC = "wafernav/location_data";
     private String mClientId;

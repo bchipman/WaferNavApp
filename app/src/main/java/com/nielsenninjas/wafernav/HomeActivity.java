@@ -36,7 +36,7 @@ public class HomeActivity extends AppCompatActivity {
         version.setText(String.format("Version %s", Integer.toString(versionCode)));
 
         mHomeActivity = this;
-        performRestCallToGetBrokerUrl();
+        //performRestCallToGetBrokerUrl();
     }
 
     private void performRestCallToGetBrokerUrl() {
